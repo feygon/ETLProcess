@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FDE8C872-61FC-47C1-872E-4E1723D30977}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>BasicPreprocess</RootNamespace>
+    <AssemblyName>BasicPreprocess</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>8</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Debug\BasicPreprocess.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>8</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="General\Algorithms\CSV.cs" />
+    <Compile Include="General\Containers\Auto_Incr_IntMap.cs" />
+    <Compile Include="General\Containers\HeaderSource.cs" />
+    <Compile Include="General\Containers\KeyColumns.cs" />
+    <Compile Include="General\Containers\_TKeyTypes.cs" />
+    <Compile Include="General\GP.cs" />
+    <Compile Include="General\Interfaces\IDoc.cs" />
+    <Compile Include="General\Interfaces\IDoc_Uses_ImportRows.cs" />
+    <Compile Include="General\Interfaces\IPreP.cs" />
+    <Compile Include="General\Interfaces\IPreP_Specific.cs" />
+    <Compile Include="General\Containers\Members\Address.cs" />
+    <Compile Include="General\Containers\Members\Date.cs" />
+    <Compile Include="General\IO\XML.cs" />
+    <Compile Include="General\IO\ZipFiles.cs" />
+    <Compile Include="General\XMLPreProcess_Takes_Files.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Specific\Documents\AtrioMergedStatementRecord.cs" />
+    <Compile Include="Specific\AtrioPreProcess.cs" />
+    <Compile Include="Specific\Documents\DocM691_Invoice.cs" />
+    <Compile Include="General\Containers\KeyedDocs.cs" />
+    <Compile Include="General\IO\Email.cs" />
+    <Compile Include="General\Containers\BasicDoc.cs" />
+    <Compile Include="Specific\Documents\Doc690_MemberFile.cs" />
+    <Compile Include="Specific\Documents\Document.cs" />
+    <Compile Include="Specific\GetATRIOAccounts.cs" />
+    <Compile Include="General\IO\Log.cs" />
+    <Compile Include="General\Algorithms\Parse.cs" />
+    <Compile Include="Specific\Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Specific\Documents\DocM504A_BalFwdRecord.cs" />
+    <Compile Include="General\IO\SQL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="CodeMaps\Modular Interfaces.dgml" />
+    <None Include="CodeMaps\KeyedDoc_Drilldown.dgml" />
+    <None Include="CodeMaps\Overarching Codemap view.dgml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
