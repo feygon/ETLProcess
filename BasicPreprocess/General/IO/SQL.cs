@@ -8,7 +8,7 @@ namespace BasicPreprocess
     internal static class SQL
     {
         internal static SqlConnection DocGenConnection { get; } =
-            new SqlConnection(@"Data Source=SERVER\INSTANCE;Initial Catalog=DATABASE;Integrated Security=True;");
+            new SqlConnection(@"Data Source=SERVER\INSTANCE;Initial Catalog=DatabaseName;User id=Username;Password=Userpassword;");
 
         /// <summary>
         /// Queries a SQL server and executes a command, returning a DataTable of the results or null in case of an error. 
@@ -50,7 +50,7 @@ namespace BasicPreprocess
         /// </summary>
         /// <param name="command">The compiled command to execute</param>
         /// <returns>A new DataTable object populated with the results of the query commandString. Returns null in case of an error.</returns>
-        internal static DataTable ExecuteBuiltCommand(SqlCommand command)
+        internal static DataTable ExecuteBuiltCommandReturnQuery(SqlCommand command)
         {
             using var returnable = new DataTable();
             using var reader = new SqlDataAdapter(command);

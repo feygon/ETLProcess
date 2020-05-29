@@ -20,22 +20,23 @@ namespace BasicPreprocess.Specific.Boilerplate
 
 
     /// <summary>
-    /// A class to fulfill GPHealth statement and welcome letter document types.
+    /// A class to fulfill Client statement and welcome letter document types.
     /// </summary>
-    public class GPHealthPreProcess : IPreP_Specific<XMLPreProcess_Takes_Files>
+    public class ClientPreProcess : IPreP_Specific<XMLPreProcess_Takes_Files>
     {
         private static string implementation;
 
-        internal (KeyedDocs<DocM691_Invoice>
-        , KeyedDocs<DocM690_MemberRecord>
-        , KeyedDocs<DocM504A_BalFwdRecord>) docs;
+        internal (KeyedRecords<StatementRecords>
+        , KeyedRecords<MemberRecords>
+        , KeyedRecords<BalFwdRecords>) docs;
 
         private XMLPreProcess_Takes_Files PreP;
         /// <summary>
         /// Constructor for boilerplate implementation class files, required by interface.
         /// </summary>
         /// <param name="PreP">The generic pre-processor</param>
-        public GPHealthPreProcess(XMLPreProcess_Takes_Files PreP, string arg)
+        /// <param name="arg"></param>
+        public ClientPreProcess(XMLPreProcess_Takes_Files PreP, string arg)
         {
             // TO DO: ETLPEmail.InitClient(); Does mandrill email the client when this goes off?
             this.PreP = PreP;
@@ -57,11 +58,13 @@ namespace BasicPreprocess.Specific.Boilerplate
 #endif
         }
 
-        // Don't worry about it being grayed out. The promise of an interface necessitates this arrangement.
+        // Don't worry about it being grayed out.
+        // Intellisense doesn't understand returning a signature as using it.
+        // The promise of an interface necessitates this arrangement.
         /// <summary>
         /// Delegate to check files for requirements -- in this case, number of files.
         /// </summary>
-        private DelRet<bool, string> checkFilesDelegate = (string[] files) => 
+        private DelRet<bool, string> CheckFilesDelegate = (string[] files) => 
         {
             switch (implementation) // customer requirement implementation performed in preprocessor definitions.
             {
@@ -76,12 +79,10 @@ namespace BasicPreprocess.Specific.Boilerplate
         /// <summary>
         /// Member interface for delegate to check files for requirements.
         /// </summary>
-        public DelRet<bool, string> checkFiles_Delegate
+        public DelRet<bool, string> CheckFiles_Delegate
         {
-            get { return checkFilesDelegate; }
+            get { return CheckFilesDelegate; }
         }
-
-
 
         /// <summary>
         /// Return an enumeration of which document type it is.
@@ -91,9 +92,9 @@ namespace BasicPreprocess.Specific.Boilerplate
         /// <returns></returns>
         public DocType IdentifyDoc(string filename)
         {
-            if (filename.StartsWith("MCSB691", StringComparison.InvariantCultureIgnoreCase)) { return DocType.M691; }
-            if (filename.StartsWith("MCSB504A", StringComparison.InvariantCultureIgnoreCase)) { return DocType.M504A; }
-            if (filename.Contains("Member Billing")) { return DocType.M690; }
+            if (filename.StartsWith("Statement", StringComparison.InvariantCultureIgnoreCase)) { return DocType.Statements; }
+            if (filename.StartsWith("Balance", StringComparison.InvariantCultureIgnoreCase)) { return DocType.Members; }
+            if (filename.Contains("Member")) { return DocType.BalancesForward; }
             return DocType.Error; // error code;
         }
 
@@ -110,20 +111,15 @@ namespace BasicPreprocess.Specific.Boilerplate
         /// </summary>
         /// <param name="files"></param>
         private ValueTuple<
-            KeyedDocs<DocM691_Invoice>
-            , KeyedDocs<DocM690_MemberRecord>
-            , KeyedDocs<DocM504A_BalFwdRecord>> PopulateDocs(string[] files)
+            KeyedRecords<StatementRecords>
+            , KeyedRecords<MemberRecords>
+            , KeyedRecords<BalFwdRecords>> PopulateDocs(string[] files)
         {
             // each will be a dictionary of documents indexed by their respective IDs.
-            Dictionary<AcctID, DocM691_Invoice> MCSB691
-                = new Dictionary<AcctID, DocM691_Invoice>();
-            KeyedDocs<DocM691_Invoice> M691Records = null;
-            KeyedDocs<DocM690_MemberRecord> M690Records = null;
-            KeyedDocs<DocM504A_BalFwdRecord> M504Records = null;
-            Dictionary<AcctID, DocM504A_BalFwdRecord> MCSB504A =
-                new Dictionary<AcctID, DocM504A_BalFwdRecord>();
-            var MCSB691_Primitive = new List<string>();
-            var MSCB690_CSVData = new Dictionary<string, List<StringMap>>();
+            KeyedRecords<StatementRecords> statementRecords = null;
+            KeyedRecords<MemberRecords> memberRecords = null;
+            KeyedRecords<BalFwdRecords> balFwdRecords = null;
+            var StatementRecordData = new List<string>(); // it's used.
 
             DocType docType;
             string filename
@@ -137,36 +133,36 @@ namespace BasicPreprocess.Specific.Boilerplate
                 // put each document type into its headersource (struct of Stringmap and headers list)
                 switch (docType)
                 {
-                    case (DocType.M691):
+                    case (DocType.Statements):
                         
-                        MCSB691_Primitive = CSV.ImportRows(filename);
-                        DocM691_Invoice interfaceDoc = new DocM691_Invoice();
-                        HeaderSource<List<StringMap>, List<string>> src691 =
-                            interfaceDoc.ParseRows(MCSB691_Primitive.ToArray());
-                        M691Records = new KeyedDocs<DocM691_Invoice>(src691);
+                        StatementRecordData = CSV.ImportRows(filename);
+                        StatementRecords interfaceDoc = new StatementRecords();
+                        HeaderSource<List<StringMap>, List<string>> statementSrcData =
+                            interfaceDoc.ParseRows(StatementRecordData.ToArray());
+                        statementRecords = new KeyedRecords<StatementRecords>(statementSrcData);
                         break;
 
-                    case (DocType.M690):
+                    case (DocType.BalancesForward):
 
-                        var M690sByAcctID = CSV.ImportCSVWithHeader(
+                        var membersByAcctID = CSV.ImportCSVWithHeader(
                             filePath
                             , primaryKey: "Group Billing Acct ID"
                             , delimiter: "|"
                             , useQuotes: false);
-                        M690Records = new KeyedDocs<DocM690_MemberRecord>(M690sByAcctID);
+                        memberRecords = new KeyedRecords<MemberRecords>(membersByAcctID);
                         break;
 
-                    case (DocType.M504A):
-                        string[] headers = DocM504A_BalFwdRecord.headers;
+                    case (DocType.Members):
+                        List<string> headers = BalFwdRecords.headers;
 
-                        var M504AsByAcctID = CSV.ImportCSVWithHeader(
+                        var balFwdByAcctID = CSV.ImportCSVWithHeader(
                             filePath
                             , primaryKey: "Account Id"
                             , ","
                             , useQuotes: true
                             , headers);
 
-                        M504Records = new KeyedDocs<DocM504A_BalFwdRecord>(M504AsByAcctID);
+                        balFwdRecords = new KeyedRecords<BalFwdRecords>(balFwdByAcctID);
                         break;
 
                     case (DocType.Error):
@@ -174,39 +170,39 @@ namespace BasicPreprocess.Specific.Boilerplate
                 }
             }
             return new ValueTuple<
-                KeyedDocs<DocM691_Invoice>
-                , KeyedDocs<DocM690_MemberRecord>
-                , KeyedDocs<DocM504A_BalFwdRecord>>(
-                M691Records, M690Records, M504Records);
+                KeyedRecords<StatementRecords>
+                , KeyedRecords<MemberRecords>
+                , KeyedRecords<BalFwdRecords>>(
+                statementRecords, memberRecords, balFwdRecords);
         }
 
 
         internal (
-                KeyedDocs<GPHealthMergedStatementRecord> merged
-                , KeyedDocs<DocM691_Invoice> invoices_MissingMembers
-                , KeyedDocs<DocM504A_BalFwdRecord>balances_MissingMembers)
+                KeyedRecords<ClientMergedStatementRecord> merged
+                , KeyedRecords<StatementRecords> invoices_MissingMembers
+                , KeyedRecords<BalFwdRecords>balances_MissingMembers)
             ProcessDocs(
-                (KeyedDocs<DocM691_Invoice>
-                , KeyedDocs<DocM690_MemberRecord>
-                , KeyedDocs<DocM504A_BalFwdRecord>) gpHealthDocs)
+                (KeyedRecords<StatementRecords>
+                , KeyedRecords<MemberRecords>
+                , KeyedRecords<BalFwdRecords>) clientRecords)
         {
-            KeyedDocs<GPHealthMergedStatementRecord> merged;
-            KeyedDocs<DocM691_Invoice> validInvoices;
-            KeyedDocs<DocM504A_BalFwdRecord> validBalances;
-            List<DocM691_Invoice> invoices_MissingMembers;
-            List<DocM504A_BalFwdRecord> balances_MissingMembers;
+            KeyedRecords<ClientMergedStatementRecord> merged;
+            KeyedRecords<StatementRecords> validInvoices;
+            KeyedRecords<BalFwdRecords> validBalances;
+            List<StatementRecords> invoices_MissingMembers;
+            List<BalFwdRecords> balances_MissingMembers;
 
 
             // instantiate AMSR with primary unique keyed members.
-            merged = GetMergedStatementRecord(gpHealthDocs.Item2);
+            merged = GetMergedStatementRecord(clientRecords.Item2);
 
             // populate AMSRrecords with composite-keyed statements matching member records (account ID, date_if_any)
             // instantiate report records: statements with missing member records, a List of DocM691_Invoice documents
-            (List<DocM691_Invoice> invoice_MissingMembers         // List of invoices of missing members, for report.
-               , KeyedDocs<DocM691_Invoice> invoice_validMembers  // KeyedDocs of invoices of valid members
-            ) invoices = GetInvoices(gpHealthDocs);
+            (List<StatementRecords> invoice_MissingMembers         // List of invoices of missing members, for report.
+               , KeyedRecords<StatementRecords> invoice_validMembers  // KeyedDocs of invoices of valid members
+            ) invoices = GetInvoices(clientRecords);
 
-            //(KeyedDocs<DocM691_Invoice> invoices_MissingMembers , List<StringMap> invoice_valid_List ) invoices = GetInvoices(gpHealthDocs);
+            //(KeyedDocs<DocM691_Invoice> invoices_MissingMembers , List<StringMap> invoice_valid_List ) invoices = GetInvoices(clientDocs);
 
             // get missing members and valid members.
             invoices_MissingMembers = invoices.invoice_MissingMembers;
@@ -215,9 +211,9 @@ namespace BasicPreprocess.Specific.Boilerplate
             // TO DO: add valid invoices to merged.
 
 
-            (List<DocM504A_BalFwdRecord> balance_MissingMembers         // List of balances of missing members, for report.
-               , KeyedDocs<DocM504A_BalFwdRecord> balance_validMembers  // KeyedDocs of balances of valid members.
-           ) balances = GetBalances(gpHealthDocs);
+            (List<BalFwdRecords> balance_MissingMembers         // List of balances of missing members, for report.
+               , KeyedRecords<BalFwdRecords> balance_validMembers  // KeyedDocs of balances of valid members.
+           ) balances = GetBalances(clientRecords);
 
 
             // populate AMSRrecords with composite-indexed-keyed outstanding balances (account ID, date_if_any, index)
@@ -230,14 +226,14 @@ namespace BasicPreprocess.Specific.Boilerplate
         }
 
         private (
-                List<DocM504A_BalFwdRecord> balance_MissingMembers, KeyedDocs<DocM504A_BalFwdRecord> balance_validMembers //tuple
+                List<BalFwdRecords> balance_MissingMembers, KeyedRecords<BalFwdRecords> balance_validMembers //tuple
             ) GetBalances(
-                (KeyedDocs<DocM691_Invoice> statementsNotAppearingInThisFilm
-                , KeyedDocs<DocM690_MemberRecord> members
-                , KeyedDocs<DocM504A_BalFwdRecord> balances) gpHealthDocs) // tuple
+                (KeyedRecords<StatementRecords> statementsNotAppearingInThisFilm
+                , KeyedRecords<MemberRecords> members
+                , KeyedRecords<BalFwdRecords> balances) clientRecords) // tuple
         {
             List<StringMap> validBalFwdRecords = new List<StringMap>();          // TO DO: populate me with member-matched balance fwd records only!
-            List<DocM504A_BalFwdRecord> balFwdRecords_Missing = new List<DocM504A_BalFwdRecord>();  // TO DO: populate me with the rest.
+            List<BalFwdRecords> balFwdRecords_Missing = new List<BalFwdRecords>();  // TO DO: populate me with the rest.
             List<string> balFwdHeaders = new List<string>();
             // TO DO: populate above 3 members with castoff invoices
             //
@@ -249,35 +245,35 @@ namespace BasicPreprocess.Specific.Boilerplate
             HeaderSource<List<StringMap>, List<string>> validBalanceHeaderSource =
                 new HeaderSource<List<StringMap>, List<string>>(validBalFwdRecords, balFwdHeaders.ToArray());
             ///////// Remakes to leave original data intact. That's why the constructor takes a wrapper. /////////
-            KeyedDocs<DocM504A_BalFwdRecord> balances_ValidMembers = new KeyedDocs<DocM504A_BalFwdRecord>(validBalanceHeaderSource);
+            KeyedRecords<BalFwdRecords> balances_ValidMembers = new KeyedRecords<BalFwdRecords>(validBalanceHeaderSource);
 
-            (List<DocM504A_BalFwdRecord> balance_MissingMembers, KeyedDocs<DocM504A_BalFwdRecord> balance_validMembers) ret = (
+            (List<BalFwdRecords> balance_MissingMembers, KeyedRecords<BalFwdRecords> balance_validMembers) ret = (
                 balFwdRecords_Missing, balances_ValidMembers);
 
             return ret;
         }
 
         // Not finished. Add filter algorithm.
-        private (List<DocM691_Invoice> balance_MissingMembers
-               , KeyedDocs<DocM691_Invoice> balance_validMembers
+        private (List<StatementRecords> balance_MissingMembers
+               , KeyedRecords<StatementRecords> balance_validMembers
            ) GetInvoices(
-            (KeyedDocs<DocM691_Invoice> statements
-                , KeyedDocs<DocM690_MemberRecord> members
-                , KeyedDocs<DocM504A_BalFwdRecord> balances) gpHealthDocs)
+            (KeyedRecords<StatementRecords> statements
+                , KeyedRecords<MemberRecords> members
+                , KeyedRecords<BalFwdRecords> balances) clientRecords)
         {
             // get merged arguments for KeyedDocs
             List<StringMap> invoices_ValidMembers = new List<StringMap>(); // TO DO: populate me!
-            List<DocM691_Invoice> invoices_MissingMembers = new List<DocM691_Invoice>(); // TO DO: populate me!
+            List<StatementRecords> invoices_MissingMembers = new List<StatementRecords>(); // TO DO: populate me!
             List<string> invoiceHeaders = new List<string>();
-            // TO DO: use gpHealthDocs to populate above 3 members with valid/castoff invoices
+            // TO DO: use clientRecords to populate above 3 members with valid/castoff invoices
 
             HeaderSource<List<StringMap>, List<string>> validInvoiceHeaderSource =
                 new HeaderSource<List<StringMap>, List<string>>(invoices_ValidMembers, invoiceHeaders.ToArray());
 
-            KeyedDocs<DocM691_Invoice> balance_validMembers = new KeyedDocs<DocM691_Invoice>(validInvoiceHeaderSource);
+            KeyedRecords<StatementRecords> balance_validMembers = new KeyedRecords<StatementRecords>(validInvoiceHeaderSource);
 
-            (List<DocM691_Invoice> balance_MissingMembers
-               , KeyedDocs<DocM691_Invoice> balance_validMembers
+            (List<StatementRecords> balance_MissingMembers
+               , KeyedRecords<StatementRecords> balance_validMembers
            ) ret = (
                 invoices_MissingMembers
                 , balance_validMembers);
@@ -286,18 +282,18 @@ namespace BasicPreprocess.Specific.Boilerplate
         }
 
         // Not finished. Add filter algorithm.
-        private KeyedDocs<GPHealthMergedStatementRecord> GetMergedStatementRecord(
-                KeyedDocs<DocM690_MemberRecord> gpHealthMembers // tuple
+        private KeyedRecords<ClientMergedStatementRecord> GetMergedStatementRecord(
+                KeyedRecords<MemberRecords> clientRecords // tuple
             )
         {
             // get merged arguments for KeyedDocs
             List<StringMap> mergedRecords = new List<StringMap>();  // populate me with member records data only!
             List<string> mergedHeaders = new List<string>();        // populate me with all records!
-            // TO DO: use gpHealthDocs to populate above 2 members.
+            // TO DO: use clientRecords to populate above 2 members.
             HeaderSource<List<StringMap>, List<string>> mergedHeaderSource =
                 new HeaderSource<List<StringMap>, List<string>>(mergedRecords, mergedHeaders.ToArray());
 
-            return new KeyedDocs<GPHealthMergedStatementRecord>(mergedHeaderSource);
+            return new KeyedRecords<ClientMergedStatementRecord>(mergedHeaderSource);
         }
     }
 }

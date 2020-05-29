@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using BasicPreprocess.General;
 using System.Globalization;
@@ -10,9 +11,9 @@ namespace BasicPreprocess.Specific
     using StringMap = Dictionary<string, string>;
 
     /// <summary>
-    /// Container for a primary unique keyed data set reflecting GPHealth's Statement File records.
+    /// Container for a primary unique keyed data set reflecting Client's Statement File records.
     /// </summary>
-    internal sealed class DocM691_Invoice : BasicDoc, IDoc<DocM691_Invoice>, IDoc_Uses_ImportRows<DocM691_Invoice>
+    internal sealed class StatementRecords : BasicRecord, IRecord<StatementRecords>, IRecord_Uses_ImportRows<StatementRecords>
     {
 
 
@@ -27,17 +28,17 @@ namespace BasicPreprocess.Specific
             fromDate
             , toDate;
 
-        public DocM691_Invoice() : base(null, "Group Billing Acct ID", "Invoice Number") { }
+        public StatementRecords() : base(null, new string[] { "Group Billing Acct ID", "Invoice Number" }.ToList()) { }
 
         /// <summary>
         /// Copy Constructor
         /// </summary>
         /// <param name="doc">Source document</param>
-        public DocM691_Invoice(DocM691_Invoice doc)
-            : base(doc.headers, "Group Billing Acct ID", "Invoice Number")
+        public StatementRecords(StatementRecords doc)
+            : base(doc.headers, new string[] { "Group Billing Acct ID", "Invoice Number" }.ToList())
         {
             this.accountNumberGroup = doc.accountNumberGroup;
-            this.compositeKey = doc.compositeKey;
+            this.recordKey = doc.recordKey;
             this.fromDate = doc.fromDate;
             this.invoiceAmount = doc.invoiceAmount;
             this.invoiceNum = doc.invoiceNum;
@@ -46,8 +47,8 @@ namespace BasicPreprocess.Specific
             this.toDate = doc.toDate;
         }
 
-        public DocM691_Invoice(string[] headers, StringMap data) 
-            : base(headers, "Group Billing Acct ID", "Invoice Number")
+        public StatementRecords(List<string> headers, StringMap data) 
+            : base(headers, new string[] { "Group Billing Acct ID", "Invoice Number" }.ToList())
         {
             
             this.accountNumberGroup = data["Group Billing Acct ID"];
@@ -63,20 +64,20 @@ namespace BasicPreprocess.Specific
 
         /// <summary>
         /// A method that calls a Constructor which takes a StringMap
-        /// <br>Satisfies interface <see cref="IDoc{DocM691_Invoice}"/></br>
+        /// <br>Satisfies interface <see cref="IRecord{DocM691_Invoice}"/></br>
         /// </summary>
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
         /// <param name="headers">A string of column headers</param>
         /// <returns></returns>
-        public DocM691_Invoice GetT(StringMap stringMap, string[] headers)
+        public StatementRecords GetRecord(StringMap stringMap, List<string> headers)
         {
-            return new DocM691_Invoice(headers, stringMap);
+            return new StatementRecords(headers, stringMap);
         }
 
         /// <summary>
         /// Get a List of statement document lines from an array of strings.
         /// </summary>
-        /// <param name="lines">Array of text lines in the format specified by GPHealth as a statement file.</param>
+        /// <param name="lines">Array of text lines in the format specified by Client as a statement file.</param>
         /// <returns></returns>
         public HeaderSource<List<StringMap>, List<string>> ParseRows(string[] lines)
         {
@@ -98,6 +99,7 @@ namespace BasicPreprocess.Specific
 
                 docLine.Add("Invoice Amount", Parse.TrimSubstring(line, 47, 19));
                 headerList.Add("Invoice Amount"); 
+                
                 //docLine.Add("invoiceAmount", docLine["Invoice Amount"]);
                 //docLine.Add("InvoiceAmount", docLine["Invoice Amount"]);
                 //docLine.Add("InvoiceAmt", docLine["Invoice Amount"]);

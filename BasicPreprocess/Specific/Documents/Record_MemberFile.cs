@@ -10,9 +10,9 @@ namespace BasicPreprocess.Specific
     using StringMap = Dictionary<string, string>;
 
     /// <summary>
-    /// Container for a primary unique keyed set of data reflecting GPHealth's member records.
+    /// Container for a primary unique keyed set of data reflecting Client's member records.
     /// </summary>
-    internal sealed class DocM690_MemberRecord : BasicDoc, IDoc<DocM690_MemberRecord>
+    internal sealed class MemberRecords : BasicRecord, IRecord<MemberRecords>
     {
         private const string MissingValueTag = "NULL";
         public string
@@ -21,29 +21,29 @@ namespace BasicPreprocess.Specific
             , PremiumWithhold;
         public Address address;
 
-        public DocM690_MemberRecord() : base(null, "Billing Account Number") { }
+        public MemberRecords() : base(null, new string[] { "Billing Account Number" }.ToList()) { }
 
         /// <summary>
         /// A method that calls a Constructor which takes a StringMap
-        /// <br>Satisfies interface <see cref="IDoc{DocM690_MemberRecord}"/></br>
+        /// <br>Satisfies interface <see cref="IRecord{DocM690_MemberRecord}"/></br>
         /// </summary>
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
         /// <param name="headers">The column headers</param>
         /// <returns></returns>
-        public DocM690_MemberRecord GetT(StringMap stringMap, string[] headers)
+        public MemberRecords GetRecord(StringMap stringMap, List<string> headers)
         {
-            return new DocM690_MemberRecord(stringMap, headers);
+            return new MemberRecords(stringMap, headers);
         }
 
         /// <summary>
         /// Constructor that takes a StringMap and headers.
         /// <br>Required by the GetT interface.</br>
-        /// <br><see cref="IDoc{DocM690_MemberRecord}"/></br>
+        /// <br><see cref="IRecord{DocM690_MemberRecord}"/></br>
         /// </summary>
         /// <param name="memberFile">StringMap of a line of data</param>
         /// <param name="headers">Headers of the data</param>
-        public DocM690_MemberRecord(Dictionary<string, string> memberFile, string[] headers) 
-            : base(headers, "Billing Account Number")
+        public MemberRecords(Dictionary<string, string> memberFile, List<string> headers) 
+            : base(headers, new string[] { "Billing Account Number" }.ToList())
         {
             // TO DO: check headers?
 

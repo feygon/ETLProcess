@@ -11,8 +11,8 @@ namespace BasicPreprocess.General.Interfaces
     /// <summary>
     /// An interface to promise that each document based upon a basic doc will implement (a) certain method(s).
     /// </summary>
-    /// <typeparam name="TDoc"></typeparam>
-    public interface IDoc_Uses_ImportRows<TDoc> where TDoc : BasicDoc, IDoc<TDoc>
+    /// <typeparam name="TRecord"></typeparam>
+    public interface IRecord_Uses_ImportRows<TRecord> where TRecord : BasicRecord, IRecord<TRecord>
     {
         /* Example Code
         public DocM690_MemberRecord GetT( StringMap stringMap, string[] headers)

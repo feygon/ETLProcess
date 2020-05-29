@@ -9,10 +9,10 @@ using BasicPreprocess.General.Interfaces;
 namespace BasicPreprocess.Specific
 {
     using BalanceForward = System.Decimal;
-    internal class GPHealthMergedStatementRecord : BasicDoc, IDoc<GPHealthMergedStatementRecord>
-        //where T1 : BasicDoc, iDocType_Takes_StringMap<DocM691_Invoice>, new()
-        //where T2 : BasicDoc, iDocType_Takes_StringMap<DocM691_Invoice>, new()
-        //where T3 : BasicDoc, iDocType_Takes_StringMap<DocM691_Invoice>, new()
+    internal class ClientMergedStatementRecord : BasicRecord, IRecord<ClientMergedStatementRecord>
+    //where T1 : BasicDoc, iDocType_Takes_StringMap<DocM691_Invoice>, new()
+    //where T2 : BasicDoc, iDocType_Takes_StringMap<DocM691_Invoice>, new()
+    //where T3 : BasicDoc, iDocType_Takes_StringMap<DocM691_Invoice>, new()
     {
 
         /*
@@ -28,14 +28,14 @@ namespace BasicPreprocess.Specific
         public Address address;
         public List<BalanceForward> outstandingBalances;
 
-        public GPHealthMergedStatementRecord() : base(null, "AccountID", "StartDate", true) { }
+        public ClientMergedStatementRecord() : base(null, new string[] { "AccountID", "StartDate" }.ToList(), true) { }
 
 
-        public GPHealthMergedStatementRecord(
-                KeyedDocs<DocM691_Invoice> M691_Invoices
-                , KeyedDocs<DocM690_MemberRecord> M690_MemberFiles
-                , KeyedDocs<DocM504A_BalFwdRecord> M504A_BalanceForwards
-            ) : base(null, "AccountID", "StartDate", true)
+        public ClientMergedStatementRecord(
+                KeyedRecords<StatementRecords> M691_Invoices
+                , KeyedRecords<MemberRecords> M690_MemberFiles
+                , KeyedRecords<BalFwdRecords> M504A_BalanceForwards
+            ) : base(null, new string[] { "AccountID", "StartDate" }.ToList(), true)
         {
 
             // instantiate AMSR with pre-filtered records:
@@ -46,23 +46,23 @@ namespace BasicPreprocess.Specific
             throw new NotImplementedException();
         }
 
-        GPHealthMergedStatementRecord(Dictionary<string, string> stringMap, string[] headers)
-            : base(null, "AccountID", "StartDate", true)
+        ClientMergedStatementRecord(Dictionary<string, string> stringMap, List<string> headers)
+            : base(null, new string[] { "AccountID", "StartDate" }.ToList(), true)
         {
 
         }
 
         /// <summary>
         /// A method that calls a Constructor which takes a StringMap
-        /// <br>Satisfies interface <see cref="IDoc{DocM690_MemberRecord}"/></br>
+        /// <br>Satisfies interface <see cref="IRecord{DocM690_MemberRecord}"/></br>
         /// </summary>
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
         /// <param name="headers">The column headers</param>
         /// <returns></returns>
         /// <returns></returns>
-        public GPHealthMergedStatementRecord GetT(Dictionary<string, string> stringMap, string[] headers)
+        public ClientMergedStatementRecord GetRecord(Dictionary<string, string> stringMap, List<string> headers)
         {
-            return new GPHealthMergedStatementRecord(stringMap, headers);
+            return new ClientMergedStatementRecord(stringMap, headers);
         }
     }
 }

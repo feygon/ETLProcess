@@ -9,20 +9,21 @@ using BasicPreprocess.General.Containers;
 namespace BasicPreprocess.Specific.Documents
 {
 	using StringMap = Dictionary<string, string>;
-	internal sealed class Document : BasicDoc, IDoc<Document>
+	internal sealed class OutputDoc : BasicRecord, IRecord<OutputDoc>
     {
         public Address mailingAddress, returnAddress;
         public string statementID, accountNumber, message, statementDate, dueDate;
         public decimal balanceDue, currentBalance, fullBalance, agingFullPastDue, aging30, aging60, aging90, aging120;
-        public Dictionary<string, IDoc<BasicDoc>> details; // string, based on accountNumber type.
-		public Document() : base(null, "accountNumber")
+        public Dictionary<string, IRecord<BasicRecord>> details; // string, based on accountNumber type.
+		public List<BasicDetail> _details;
+		public OutputDoc() : base(null, new string[] { "accountNumber" }.ToList())
 		{
 			this.mailingAddress = new Address();
 			this.returnAddress = new Address();
 			this.accountNumber = "";
 			this.statementDate = "";
 			this.balanceDue = 0.0m;
-			this.details = new Dictionary<string, IDoc<BasicDoc>>();
+			this.details = new Dictionary<string, IRecord<BasicRecord>>();
 			this.message = "";
 			this.currentBalance = 0.0m;
 			this.aging30 = 0.0m;
@@ -34,14 +35,14 @@ namespace BasicPreprocess.Specific.Documents
 			this.fullBalance = 0.0m;
 		}
 
-		public Document(string[] headers, StringMap data) : base(headers, "accountNumber")
+		public OutputDoc(List<string> headers, StringMap data) : base(headers, new string[] { "accountNumber" }.ToList())
 		{
 			// TO DO: Implement boilerplate example.
 		}
 
-		public Document GetT(StringMap stringMap, string[] headers)
+		public OutputDoc GetRecord(StringMap stringMap, List<string> headers)
 		{
-			return new Document(headers, stringMap);
+			return new OutputDoc(headers, stringMap);
 		}
 	}
 }

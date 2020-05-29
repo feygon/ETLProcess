@@ -3,19 +3,19 @@ using System.Data.SqlClient;
 
 namespace BasicPreprocess.Specific
 {
-    internal static class GetGPHealthAccounts
+    internal static class ClientSpecificSQL
     {
         /// <summary>
         /// Updates a Customer in Mail Shop with a new assigned customer code
         /// </summary>
-        internal static DataTable Execute()
+        internal static DataTable Execute(string sqlQueryString)
         {
-            using var command = new SqlCommand(commandText, SQL.DocGenConnection);
-            return SQL.ExecuteBuiltCommand(command);
+            using var command = new SqlCommand(sqlQueryString, SQL.DocGenConnection);
+            return SQL.ExecuteBuiltCommandReturnQuery(command);
         }
 
         // UPDATE Customers with new code
-        private const string commandText = @"
+        internal const string getClientAccounts = @"
 			SELECT
 	            Documents.Account AS MEMBERID,
 	            Documents.Sys_MiscText1 AS ACCOUNTID

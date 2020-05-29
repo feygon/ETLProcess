@@ -23,7 +23,7 @@ namespace BasicPreprocess.General.Interfaces
         /// Promise that a specific implementation object will check files for 
         ///  proper naming and integrity requirements.
         /// </summary>
-        public DelRet<bool, string> checkFiles_Delegate { get; }
+        public DelRet<bool, string> CheckFiles_Delegate { get; }
 
         /// <summary>
         /// Promise that specific pre-processes will provide a way to identify document types.

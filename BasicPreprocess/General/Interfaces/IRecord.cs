@@ -10,8 +10,8 @@ namespace BasicPreprocess.General.Interfaces
     /// <summary>
     /// An interface to promise that each document based upon a basic doc will implement (a) certain method(s).
     /// </summary>
-    /// <typeparam name="TDoc"></typeparam>
-    public interface IDoc<TDoc> where TDoc : BasicDoc
+    /// <typeparam name="TRecord"></typeparam>
+    public interface IRecord<TRecord> where TRecord : BasicRecord
     {
 
         /* Example Code
@@ -32,8 +32,8 @@ namespace BasicPreprocess.General.Interfaces
         /// <param name="stringMap">A sample record</param>
         /// <param name="headers">The headers for the given document</param>
         /// <returns></returns>
-        public TDoc GetT(
+        public TRecord GetRecord(
             Dictionary<string, string> stringMap
-            , string[] headers);
+            , List<string> headers);
     }
 }

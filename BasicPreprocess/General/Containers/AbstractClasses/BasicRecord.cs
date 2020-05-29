@@ -12,43 +12,42 @@ namespace BasicPreprocess.General.Containers
     /// An abstract class for wrapping implementation-specific document types in easily accessible expectations of their contents.
     /// <br>See members for details.</br>
     /// </summary>
-    public abstract class BasicDoc
+    public abstract class BasicRecord
     {
-        /// <summary>
-        /// The name of the column which is the primary key for this class.
-        /// </summary>
-        public string primaryKey;
         /// <summary>
         /// The names of the columns which are the composite keys for this class, in order of primary, secondary.
         /// </summary>
-        public (string primary, string secondary) compositeKey;
+        public List<string> recordKey;
         /// <summary>
         /// Is the primary or composite key a unique identifier, or does it require indexing to be unique?
         /// </summary>
         public bool keyIsUniqueIdentifier;
         /// <summary>
+        /// The unique index of this primary or composite key.
+        /// </summary>
+        public int uniqueIndex;
+        /// <summary>
         /// An array of the names of columns in the document data.
         /// </summary>
-        public string[] headers;
+        public List<string> headers;
+        
         
         /// <summary>
         /// Default Constructor -- only here for XMLSerializer. Do not use!
         /// </summary>
-        public BasicDoc() { }
+        public BasicRecord() { }
 
         /// <summary>
         /// Constructor: A metadata wrapper for different types of 
         ///     unique/redundant primary or composite keyed CSV document classes.
         /// </summary>
         /// <param name="headers">an array of column headers</param>
-        /// <param name="primary">String of primary key.</param>
-        /// <param name="secondary">String of composite key's secondary column, if any.</param>
+        /// <param name="keyHeaders">String of composite key's secondary column, if any.</param>
         /// <param name="keyIsUniqueIdentifier">Is the primary or composite key a unique identifier?
         /// <br>(Sometimes they're not.)</br></param>
-        public BasicDoc(string[] headers, string primary, string secondary = null, bool keyIsUniqueIdentifier = true)
+        public BasicRecord(List<string> headers, List<string> keyHeaders = null, bool keyIsUniqueIdentifier = true)
         {
-            primaryKey = primary;
-            if (secondary != null) { compositeKey = (primaryKey, secondary); }
+            recordKey = keyHeaders;
             this.keyIsUniqueIdentifier = keyIsUniqueIdentifier;
             this.headers = headers;
         }
@@ -57,12 +56,11 @@ namespace BasicPreprocess.General.Containers
         /// Copy Constructor
         /// </summary>
         /// <param name="doc">Document to be copied</param>
-        public BasicDoc(BasicDoc doc)
+        public BasicRecord(BasicRecord doc)
         {
-            this.compositeKey = doc.compositeKey;
+            this.recordKey = doc.recordKey;
             this.headers = doc.headers;
             this.keyIsUniqueIdentifier = doc.keyIsUniqueIdentifier;
-            this.primaryKey = doc.primaryKey;
         }
 
 
