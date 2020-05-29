@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -11,6 +12,8 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,8 +40,15 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -48,13 +58,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="General\Algorithms\CSV.cs" />
-    <Compile Include="General\Containers\Auto_Incr_IntMap.cs" />
+    <Compile Include="General\Containers\AbstractClasses\BasicDetail.cs" />
     <Compile Include="General\Containers\HeaderSource.cs" />
-    <Compile Include="General\Containers\KeyColumns.cs" />
-    <Compile Include="General\Containers\_TKeyTypes.cs" />
     <Compile Include="General\GP.cs" />
-    <Compile Include="General\Interfaces\IDoc.cs" />
-    <Compile Include="General\Interfaces\IDoc_Uses_ImportRows.cs" />
+    <Compile Include="General\Interfaces\IRecord.cs" />
+    <Compile Include="General\Interfaces\IRecord_Uses_ImportRows.cs" />
+    <Compile Include="General\Interfaces\IDetail.cs" />
     <Compile Include="General\Interfaces\IPreP.cs" />
     <Compile Include="General\Interfaces\IPreP_Specific.cs" />
     <Compile Include="General\Containers\Members\Address.cs" />
@@ -63,20 +72,21 @@
     <Compile Include="General\IO\ZipFiles.cs" />
     <Compile Include="General\XMLPreProcess_Takes_Files.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Specific\Documents\AtrioMergedStatementRecord.cs" />
-    <Compile Include="Specific\AtrioPreProcess.cs" />
-    <Compile Include="Specific\Documents\DocM691_Invoice.cs" />
-    <Compile Include="General\Containers\KeyedDocs.cs" />
+    <Compile Include="Specific\ClientBusinessRules.cs" />
+    <Compile Include="Specific\Documents\ClientMergedStatementRecord.cs" />
+    <Compile Include="Specific\ClientPreProcess.cs" />
+    <Compile Include="Specific\Documents\Record_Statement.cs" />
+    <Compile Include="General\Containers\KeyedRecords.cs" />
     <Compile Include="General\IO\Email.cs" />
-    <Compile Include="General\Containers\BasicDoc.cs" />
-    <Compile Include="Specific\Documents\Doc690_MemberFile.cs" />
-    <Compile Include="Specific\Documents\Document.cs" />
-    <Compile Include="Specific\GetATRIOAccounts.cs" />
+    <Compile Include="General\Containers\AbstractClasses\BasicRecord.cs" />
+    <Compile Include="Specific\Documents\Record_MemberFile.cs" />
+    <Compile Include="Specific\Documents\OutputDoc.cs" />
+    <Compile Include="Specific\ClientSpecificSQL.cs" />
     <Compile Include="General\IO\Log.cs" />
     <Compile Include="General\Algorithms\Parse.cs" />
     <Compile Include="Specific\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Specific\Documents\DocM504A_BalFwdRecord.cs" />
+    <Compile Include="Specific\Documents\Record_BalFwd.cs" />
     <Compile Include="General\IO\SQL.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +94,15 @@
     <None Include="CodeMaps\Modular Interfaces.dgml" />
     <None Include="CodeMaps\KeyedDoc_Drilldown.dgml" />
     <None Include="CodeMaps\Overarching Codemap view.dgml" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
 </Project>

@@ -3,9 +3,13 @@ using System.Collections.Generic;
 
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
+using System.Linq;
+
 using BasicPreprocess.Specific;
 using static BasicPreprocess.Parse;
 using BasicPreprocess.General.Containers;
+using System.Data.Entity;
+
 using BasicPreprocess.General;
 using BasicPreprocess.General.IO;
 using BasicPreprocess.Specific.Boilerplate;
@@ -108,20 +112,39 @@ namespace BasicPreprocess.General.Algorithms
 
                 // if header is null, replace header with csvRead.ReadFields(), or with empty string if that's null.
                 headers ??= csvRead.ReadFields() ?? new string[] { }; // no action if headers provided in arguments.
+                List<string> headerList = new List<string>(headers);
+                Dictionary<int, string> headerDict = new Dictionary<int, String>();
+
+                int x = 0;
+                foreach (string hdr in headerList)
+                {
+                    headerDict.Add(x, hdr);
+                    x++;
+                }
+                x = 0;
+
 
                 List<StringMap> records = new List<StringMap>();
+                
+
                 while (!csvRead.EndOfData)
                 {
                     string[] rowData = csvRead.ReadFields() ?? new string[] { };
-                    var newRow = new StringMap();
+
+                    var newRow = Model_Index_Dict<string, string>.Model_Select(
+                        headers, rowData);
+                    
+                    
+
                     for (int n = 0; n < rowData.Length; ++n) // len = number of fields.
                     {
                         newRow.Add(headers[n], rowData[n]);
                     }
                     records.Add(newRow);
+
+
                 }
 
-                List<string> headerList = new List<string>(headers);
                 HeaderSource<List<StringMap>, List<string>> ret =
                     new HeaderSource<List<StringMap>, List<string>>(records, headerList.ToArray());
 

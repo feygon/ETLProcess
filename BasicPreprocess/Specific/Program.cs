@@ -26,17 +26,17 @@ using MemberID = System.String;
 public enum DocType
 {
     /// <summary>
-    /// Atrio's Statement file
+    /// Client's Statement file
     /// </summary>
-    M691,
+    Statements,
     /// <summary>
-    /// Atrio's Member File
+    /// Client's Member File
     /// </summary>
-    M504A,
+    Members,
     /// <summary>
-    /// Atrio's Balance Forward file
+    /// Client's Balance Forward file
     /// </summary>
-    M690,
+    BalancesForward,
     /// <summary>
     /// Catch-all error enumeration.
     /// </summary>
@@ -54,7 +54,7 @@ namespace BasicPreprocess
         public static readonly Uri AssemblyPath = new Uri(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
         public static readonly string AssemblyDirectory = Path.GetDirectoryName(AssemblyPath.LocalPath);
         public static Log Debug;
-        private static AtrioPreProcess atrio;
+        private static ClientPreProcess client;
         private static XMLPreProcess_Takes_Files PreP;
 
         private static void Main(string[] args)
@@ -64,23 +64,21 @@ namespace BasicPreprocess
                 // Get customer rules defined in preprocessor definitions.
 
                 PreP = new XMLPreProcess_Takes_Files(args[0]);
-                atrio = new AtrioPreProcess(PreP, args[1]);
+                client = new ClientPreProcess(PreP, args[1]);
 
-                if (!PreP.Check_Files(atrio.checkFiles_Delegate)) {
+                if (!PreP.Check_Files(client.CheckFiles_Delegate)) {
                     throw new Exception("Bad file count in zipfile.");
                 } // specified check for implementation Statement/WelcomeLetters
 
+                // input data to basic record types (Statement, Balance Forward, 
+                client.PopulateDocs();
 
-                // input data to 691, 504A, 690
-                atrio.PopulateDocs();
-
-                atrio.ProcessDocs(atrio.docs);
+                client.ProcessDocs(client.docs);
                 //throw new Exception("Finish implementing ProcessDocs.");
                 /**********************************/
 
                 // only remove debug if completes.
                 Debug.Remove();
-            
             }
             catch (Exception err)
             {
@@ -187,165 +185,166 @@ namespace BasicPreprocess
 
 
 
-//  Deprecated main processing.
-//        /// <summary>
-//        /// Deprecated thingy.
-//        /// </summary>
-//        /// <returns></returns>
-//        private static List<DocM691_Invoice> MainProcessing()
-//        {
-//            var MCSB691 = new List<string>();
-//            var MCSB690 = new List<StringMap>();
-//            var MCSB504A = new Dictionary<string, List<DocM504A_BalFwdRecord>>();
-//            foreach (string filePath in atrio.Files)
-//            {
-//                string filename = Path.GetFileName(filePath);
-//                string fileExtension = Path.GetExtension(filePath);
-//                Debug.Write($"Processing {filename}");
-//                //
-//                // Process the files into data structures
-//                //
-//                if (filename.StartsWith("MCSB691", StringComparison.InvariantCultureIgnoreCase))
-//                {
-//                    MCSB691.AddRange(ImportRows(filePath));
-//                }
-//                else if (filename.StartsWith("MCSB504A", StringComparison.InvariantCultureIgnoreCase))
-//                {
-//                    const string memberIdHeader = "Member ID";
-//                    const string nameHeader = "Member Name";
-//                    const string contractIdHeader = "Contract ID";
-//                    const string accountIdHeader = "Account ID";
-//                    const string startDateHeader = "From Date";
-//                    const string endDateHeader = "To Date";
-//                    const string outstandingHeader = "Outstanding Amount";
-//                    const string dueDateHeader = "Due Date";
-//                    const string daysOverdueHeader = "Days Overdue";
-//                    DocM504A_BalFwdRecord DictionaryToRecord(StringMap dict) =>
-//                        new DocM504A_BalFwdRecord
-//                        {
-//                            // MemberID = dict[memberIdHeader].PadLeft(9, '0'),
-//                            MemberName = dict[nameHeader],
-//                            // ContractID = dict[contractIdHeader].PadLeft(9, '0'),
-//                            AccountID = dict[accountIdHeader].PadLeft(9, '0'),
-//                            StartDate = Date.Parse(dict[startDateHeader]),
-//                            EndDate = Date.Parse(dict[endDateHeader]),
-//                            OutstandingAmount = DecimalParse(dict[outstandingHeader]),
-//                            // DueDate = Date.Parse(dict[dueDateHeader]),
-//                           // DaysOverdue = IntParse(dict[daysOverdueHeader])
-//                        };
-//                    string[] headers = { memberIdHeader, nameHeader, contractIdHeader, accountIdHeader, startDateHeader, endDateHeader, outstandingHeader, dueDateHeader, daysOverdueHeader };
-//                    HeaderSource<List<StringMap>, List<string>> Records504 = new HeaderSource<List<StringMap>, List<string>>
-//                        ImportCSVWithHeader(
-//                        filePath
-//                        , primaryKey: accountIdHeader
-//                        , delimiter: ","
-//                        , useQuotes: true
-//                        , headers);
+        //  Deprecated main processing.
+        //        /// <summary>
+        //        /// Deprecated thingy.
+        //        /// </summary>
+        //        /// <returns></returns>
+        //        private static List<DocM691_Invoice> MainProcessing()
+        //        {
+        //            var StatementRecords = new List<string>();
+        //            var MemberRecords = new List<StringMap>();
+        //            var BalFwdRecords = new Dictionary<string, List<BalFwdRecord>>();
+        //            foreach (string filePath in Client.Files)
+        //            {
+        //                string filename = Path.GetFileName(filePath);
+        //                string fileExtension = Path.GetExtension(filePath);
+        //                Debug.Write($"Processing {filename}");
+        //                //
+        //                // Process the files into data structures
+        //                //
+        //                if (filename.StartsWith("Statement", StringComparison.InvariantCultureIgnoreCase))
+        //                {
+        //                    MCSB691.AddRange(ImportRows(filePath));
+        //                }
+        //                else if (filename.StartsWith("Balance", StringComparison.InvariantCultureIgnoreCase))
+        //                {
+        //                    const string memberIdHeader = "Member ID";
+        //                    const string nameHeader = "Member Name";
+        //                    const string contractIdHeader = "Contract ID";
+        //                    const string accountIdHeader = "Account ID";
+        //                    const string startDateHeader = "From Date";
+        //                    const string endDateHeader = "To Date";
+        //                    const string outstandingHeader = "Outstanding Amount";
+        //                    const string dueDateHeader = "Due Date";
+        //                    const string daysOverdueHeader = "Days Overdue";
+        //                    DocM504A_BalFwdRecord DictionaryToRecord(StringMap dict) =>
+        //                        new DocM504A_BalFwdRecord
+        //                        {
+        //                            // MemberID = dict[memberIdHeader].PadLeft(9, '0'),
+        //                            MemberName = dict[nameHeader],
+        //                            // ContractID = dict[contractIdHeader].PadLeft(9, '0'),
+        //                            AccountID = dict[accountIdHeader].PadLeft(9, '0'),
+        //                            StartDate = Date.Parse(dict[startDateHeader]),
+        //                            EndDate = Date.Parse(dict[endDateHeader]),
+        //                            OutstandingAmount = DecimalParse(dict[outstandingHeader]),
+        //                            // DueDate = Date.Parse(dict[dueDateHeader]),
+        //                           // DaysOverdue = IntParse(dict[daysOverdueHeader])
+        //                        };
+        //                    string[] headers = { memberIdHeader, nameHeader, contractIdHeader, accountIdHeader, startDateHeader, endDateHeader, outstandingHeader, dueDateHeader, daysOverdueHeader };
+        //                    HeaderSource<List<StringMap>, List<string>> Records504 = new HeaderSource<List<StringMap>, List<string>>
+        //                        ImportCSVWithHeader(
+        //                        filePath
+        //                        , primaryKey: accountIdHeader
+        //                        , delimiter: ","
+        //                        , useQuotes: true
+        //                        , headers);
 
-//                    MCSB504A = x(MemberRecords); // TO DO: ???
-//                    /****************************************
-//                     *          Into the weeds              *
-//                     * **************************************/
+        //                    MCSB504A = x(MemberRecords); // TO DO: ???
+        //                    /****************************************
+        //                     *          Into the weeds              *
+        //                     * **************************************/
 
-//                }
-//                else if (fileExtension.Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
-//                {
-//                    const string memberIdHeader = "MemberID";
+        //                }
+        //                else if (fileExtension.Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
+        //                {
+        //                    const string memberIdHeader = "MemberID";
 
-//                    HeaderSource<List<StringMap>, List<string>> MemberRecords = ImportCSVWithHeader(
-//                        filePath
-//                        , primaryKey: memberIdHeader
-//                        , delimiter: "|"
-//                        , useQuotes: false);
+        //                    HeaderSource<List<StringMap>, List<string>> MemberRecords = ImportCSVWithHeader(
+        //                        filePath
+        //                        , primaryKey: memberIdHeader
+        //                        , delimiter: "|"
+        //                        , useQuotes: false);
 
-//                    var uniqueKeyedCSVData = x(MemberRecords); // TO DO: ???
+        //                    var uniqueKeyedCSVData = x(MemberRecords); // TO DO: ???
 
-//                    foreach (var kvPair in uniqueKeyedCSVData)
-//                    {
-//                        MCSB690.AddRange(kvPair.Value);
-//                    }
-//                }
-//                else
-//                {
-//                    throw new Exception($"Unexpected file found: {filePath}");
-//                }
-//            }
-//            if (MCSB690.Count == 0)
-//            {
-//                throw new Exception("Missing file MCSB690");
-//            }
-//            if (implementation == "S")
-//            {
-//                if (MCSB504A.Count == 0)
-//                {
-//                    throw new Exception("Missing file MCSB504A");
-//                }
-//                if (MCSB691.Count == 0)
-//                {
-//                    throw new Exception("Missing file MCSB691");
-//                }
-//            }
-//            //
-//            // Process the fileData into Document objects
-//            //
-//            var documents = new List<DocM691_Invoice>();
-//            foreach (StringMap CAE in MCSB690)
-//            {
-//                // Create a new document and initialize its values
-//                 documents.Add(new DocM691_Invoice(CAE)); // deprecated constructor called.
-//            }
+        //                    foreach (var kvPair in uniqueKeyedCSVData)
+        //                    {
+        //                        MCSB690.AddRange(kvPair.Value);
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    throw new Exception($"Unexpected file found: {filePath}");
+        //                }
+        //            }
+        //            if (MCSB690.Count == 0)
+        //            {
+        //                throw new Exception("Missing file MCSB690");
+        //            }
+        //            if (implementation == "S")
+        //            {
+        //                if (MCSB504A.Count == 0)
+        //                {
+        //                    throw new Exception("Missing file MCSB504A");
+        //                }
+        //                if (MCSB691.Count == 0)
+        //                {
+        //                    throw new Exception("Missing file MCSB691");
+        //                }
+        //            }
+        //            //
+        //            // Process the fileData into Document objects
+        //            //
+        //            var documents = new List<DocM691_Invoice>();
+        //            foreach (StringMap CAE in MCSB690)
+        //            {
+        //                // Create a new document and initialize its values
+        //                 documents.Add(new DocM691_Invoice(CAE)); // deprecated constructor called.
+        //            }
 
-//            //
-//            // Process this as a member update file if the option is set
-//            //
-//            if (MCSB691.Count == 0 && implementation == "W")
-//            {
-				
-//                // Set all documents to the nomail exclusion
-//                //foreach (Document doc in documents)
-//                //{
-//                //    doc.premiumWithhold = "S";
-//                //}
-				
-//                // Perform query of all current member ID in our database
-//                using DataTable uluroWebAccounts = GetATRIOAccounts.Execute();
-//                // Filter the document list based on this query
-//                for (int iDoc = (documents.Count - 1); (iDoc >= 0); --iDoc)
-//                {
-//                    DocM691_Invoice doc = documents[iDoc];
-//                    // If the docs account/member ID pair exists in the system already then remove it
-//                    if (uluroWebAccounts.Select($@"MEMBERID = '{doc.memberID}' AND ACCOUNTID = '{doc.accountNumber}'").Length > 0)
-//                    {
-//                        documents.RemoveAt(iDoc);
-//                    }
-//                }
-//            }
-//            //
-//            // If the option is not set then ensure the transactional file exists
-//            //
-//            else if (MCSB691.Count == 0)
-//            {
-//                throw new Exception("Missing file MCSB691");
-//            }
-//            //
-//            // Process this as a normal Statements file
-//            //
-//            else
+        //            // Process this as a member update file if the option is set
+        /*        //            if (MCSB691.Count == 0 && implementation == "W")
+                //            {
+
+                //                // Set all documents to the nomail exclusion
+                //                //foreach (Document doc in documents)
+                //                //{
+                //                //    doc.premiumWithhold = "S";
+                //                //}
+
+                //                // Perform query of all current member ID in our database
+                //                using DataTable uluroWebAccounts = GetClientAccounts.Execute();
+                //                // Filter the document list based on this query
+                //                for (int iDoc = (documents.Count - 1); (iDoc >= 0); --iDoc)
+                //                {
+                //                    DocM691_Invoice doc = documents[iDoc];
+                //                    // If the docs account/member ID pair exists in the system already then remove it
+                //                    if (uluroWebAccounts.Select($@"MEMBERID = '{doc.memberID}' AND ACCOUNTID = '{doc.accountNumber}'").Length > 0)
+                //                    {
+                //                        documents.RemoveAt(iDoc);
+                //                    }
+                //                }
+                //            }
+                //            //*/
+
+        //            // If the option is not set then ensure the transactional file exists
+        /*//            else if (MCSB691.Count == 0)
+        //            {
+        //                throw new Exception("Missing file MCSB691");
+        //            }*/
+
+
+        //            // Process this as a normal Statements file
+        /*else
 //            {
 //                if (code == "S")
 //                {
-//                    // Remove documents with the nomail exclusion code "S"
-//                    for (int iDoc = (documents.Count - 1); (iDoc >= 0); --iDoc)
-//                    {
-//                        DocM691_Invoice doc = documents[iDoc];
-//                        if (doc.premiumWithhold == "S")
-//                        {
-//                            documents.RemoveAt(iDoc);
-//                        }
-//                    }
-//                }
-//                // Append detail objects
-//                var bad691Records = new List<string>();
+*/
+        //                    // Remove documents with the nomail exclusion code "S" 
+        /*
+                //                    for (int iDoc = (documents.Count - 1); (iDoc >= 0); --iDoc)
+                //                    {
+                //                        DocM691_Invoice doc = documents[iDoc];
+                //                        if (doc.premiumWithhold == "S")
+                //                        {
+                //                            documents.RemoveAt(iDoc);
+                //                        }
+                //                    }*/
+        //                }
+        //                // Get detail objects, append good ones to statements
+        //                //    and report null returns to bad statement records.
+        /*var bad691Records = new List<string>();
 //                foreach (string BIE in MCSB691)
 //                {
 //                    // dereference a document to mutate its details.
@@ -367,8 +366,10 @@ namespace BasicPreprocess
 //                        doc.details.Add(detail);
 //                        // doc details mutated.
 //                    }
-//                }
-//                /*var bad504Records = new List<Record504A>();
+//                }*/
+
+        //                // add sum of balance forward details to statement as one detail, or report on bad balfwd data
+        /*var bad504Records = new List<Record504A>();
 //                foreach (KeyValuePair<string, List<Record504A>> kvPair in MCSB504A)
 //                {
 //                    List<Record504A> records = kvPair.Value;
@@ -388,70 +389,84 @@ namespace BasicPreprocess
 //                        }
 //                    }
 //                }*/
-//#if !DEBUG
-//                // Email the bad 691 records
-//                if (bad691Records.Count > 0)
-//                {
-//                    var errorEmail = new MetroEmail();
-//                    string badOutFileName = $@"\\uluro-prod\SUBMIT\prt\ATRIO Bad 691 Records {DateTime.Now:yyyyMMdd}.csv";
-//                    errorEmail.To.Add(@"ulurotech@metropresort.com");
-//                    errorEmail.Subject = @"ATRIO Processing Bad Records";
-//                    errorEmail.Body = $"Hello,\r\nPlease upload the file located at {badOutFileName} to ATRIO's SFTP and notify them of the upload.\r\nThank You,\r\nATRIO Statements PreProcessing";
-//                    using (var badOut = new StreamWriter(badOutFileName, false))
-//                    {
-//                        foreach (string s in bad691Records)
-//                        {
-//                            badOut.WriteLine(s);
-//                        }
-//                    }
-//                    errorEmail.Send();
-//                }
-//#endif
-//                // Remove empty documents
-//                for (int iDoc = (documents.Count - 1); (iDoc >= 0); --iDoc)
-//                {
-//                    DocM691_Invoice doc = documents[iDoc];
-//                    if (doc.details.Count == 0)
-//                    {
-//                        documents.RemoveAt(iDoc);
-//                    }
-//                }
-//                // Perform any extra processing on the resulting documents
-//                for (int iDoc = (documents.Count - 1); (iDoc >= 0); --iDoc)
-//                {
-//                    DocM691_Invoice doc = documents[iDoc];
-//                    string statementDate = doc.details.Max(m => m.fromDate).ToString("yyyy-MM-dd");
-//                    Date dueDate = Date.Parse(statementDate).AddMonths(1).Subtract(TimeSpan.FromDays(1));
-//                    doc.statementDate = statementDate;
-//                    doc.dueDate = dueDate.ToString("yyyy-MM-dd");
-//                    doc.balanceDue = doc.details.Sum(s => s.balanceDue + s.lateEnrollmentPenalty - s.lowIncomeSubsidy);
-//                    DateTime now = DateTime.Now;
-//                    doc.agingFullPastDue = doc.details.Where(w => (now - w.toDate).TotalDays > 30).Sum(s => s.balanceDue + s.lateEnrollmentPenalty - s.lowIncomeSubsidy);
-//                }
-//                // Remove 0 sum documents and details
-//                for (int iDoc = (documents.Count - 1); (iDoc >= 0); --iDoc)
-//                {
-//                    DocM691_Invoice doc = documents[iDoc];
-//                    if (doc.balanceDue == 0)
-//                    {
-//                        documents.RemoveAt(iDoc);
-//                    }
-//                    else
-//                    {
-//                        List<Detail_M691> details = doc.details;
-//                        for (int iDetail = (details.Count - 1); (iDetail >= 0); --iDetail)
-//                        {
-//                            Detail_M691 detail = details[iDetail];
-//                            if ((detail.balanceForward == 0) && (detail.balanceDue == 0) && (detail.lateEnrollmentPenalty == 0) && (detail.lowIncomeSubsidy == 0))
-//                            {
-//                                details.RemoveAt(iDetail);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            return documents;
-//        }
+
+        //                // Email the bad 691 records
+        /*#if !DEBUG
+        //                if (bad691Records.Count > 0)
+        //                {
+        //                    var errorEmail = new MetroEmail();
+        //                    string badOutFileName = $@"\\uluro-prod\SUBMIT\prt\Client Bad Statement Records {DateTime.Now:yyyyMMdd}.csv";
+        //                    errorEmail.To.Add(@"ulurotech@metropresort.com");
+        //                    errorEmail.Subject = @"Client Processing Bad Records";
+        //                    errorEmail.Body = $"Hello,\r\nPlease upload the file located at {badOutFileName} to Client's SFTP and notify them of the upload.\r\nThank You,\r\nClient Statements PreProcessing";
+        //                    using (var badOut = new StreamWriter(badOutFileName, false))
+        //                    {
+        //                        foreach (string s in bad691Records)
+        //                        {
+        //                            badOut.WriteLine(s);
+        //                        }
+        //                    }
+        //                    errorEmail.Send();
+        //                }
+        //#endif    */
+
+
+        //                /* Remove empty documents (documents with no details)
+        /*                for (int iDoc = (documents.Count - 1); (iDoc >= 0); --iDoc)
+        //                {
+        //                    DocM691_Invoice doc = documents[iDoc];
+        //                    if (doc.details.Count == 0)
+        //                    {
+        //                        documents.RemoveAt(iDoc);
+        //                    }
+        //                }*/
+
+        //                // Perform any extra processing on the resulting documents
+        /*                for (int iDoc = (documents.Count - 1); (iDoc >= 0); --iDoc)
+        //                {
+        //                    DocM691_Invoice doc = documents[iDoc];
+
+        //                //  Set due dates per client rules.
+        //                    string statementDate = doc.details.Max(m => m.fromDate).ToString("yyyy-MM-dd");
+        //                    Date dueDate = Date.Parse(statementDate).AddMonths(1).Subtract(TimeSpan.FromDays(1));
+        //                    doc.statementDate = statementDate;
+        //                    doc.dueDate = dueDate.ToString("yyyy-MM-dd");
+
+        //                //  Low income subsidy.
+        //                    doc.balanceDue = doc.details.Sum(s => s.balanceDue + s.lateEnrollmentPenalty - s.lowIncomeSubsidy);
+
+        //                //  Reset time.
+        //                    DateTime now = DateTime.Now;
+
+        //                //  Set document aging per client rules.
+        //                    doc.agingFullPastDue = doc.details.Where(w => (now - w.toDate).TotalDays > 30).Sum(s => s.balanceDue + s.lateEnrollmentPenalty - s.lowIncomeSubsidy);
+
+        //                }*/
+
+        //                // Remove documents with a total due of $0
+        /*                for (int iDoc = (documents.Count - 1); (iDoc >= 0); --iDoc)
+        //                {
+        //                    DocM691_Invoice doc = documents[iDoc];
+        //                    if (doc.balanceDue == 0)
+        //                    {
+        //                        documents.RemoveAt(iDoc);
+        //                    }
+        //                    else
+        //                    {
+        //                        List<Detail_M691> details = doc.details;
+        //                        for (int iDetail = (details.Count - 1); (iDetail >= 0); --iDetail)
+        //                        {
+        //                            Detail_M691 detail = details[iDetail];
+        //                            if ((detail.balanceForward == 0) && (detail.balanceDue == 0) && (detail.lateEnrollmentPenalty == 0) && (detail.lowIncomeSubsidy == 0))
+        //                            {
+        //                                details.RemoveAt(iDetail);
+        //                            }
+        //                        }
+        //                    }
+        //                }*/
+        //            }
+        //            return documents;
+        //        }
 
         /// <summary>
         /// Clean up file IO artifacts. (Called on Program.cs Finally)

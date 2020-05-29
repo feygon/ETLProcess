@@ -23,8 +23,8 @@ namespace BasicPreprocess.General.IO
         /// <param name="Debug">The log where debug messages will go.</param>
         public static void Export<TBasicDoc>(
                 string fileName
-                , KeyedDocs<TBasicDoc> documents, Log Debug
-            ) where TBasicDoc : BasicDoc, IDoc<TBasicDoc>, new()
+                , KeyedRecords<TBasicDoc> documents, Log Debug
+            ) where TBasicDoc : BasicRecord, IRecord<TBasicDoc>, new()
         {
             // Export the XML
             Debug.Write("Exporting XML");

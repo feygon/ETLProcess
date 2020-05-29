@@ -53,7 +53,7 @@ namespace BasicPreprocess.General
         /// <summary>
         /// Set the location of the Debug Log
         /// </summary>
-        /// <param name="filename">Filename of the zipFile of atrio documents to be processed.</param>
+        /// <param name="filename">Filename of the zipFile of Client documents to be processed.</param>
         public void SetDebug(string filename)
         {
             Debug = new Log($@"{Program.AssemblyDirectory}\{DateTime.UtcNow.Ticks}{

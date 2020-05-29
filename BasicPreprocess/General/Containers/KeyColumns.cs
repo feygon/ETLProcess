@@ -13,57 +13,53 @@ namespace BasicPreprocess.General.Containers
     /// <summary>
     /// A dictionary of keys (and corresponding indices, any), constructible by the desired key type.
     /// </summary>
-    /// <typeparam name="TBasicDoc"></typeparam>
-    internal sealed class KeyColumns<TBasicDoc> //: Dictionary<_TKeyTypes, TBasicDoc>
-        where TBasicDoc : BasicDoc, IDoc<TBasicDoc>, new()
+    /// <typeparam name="TBasicRecord"></typeparam>
+    internal sealed class KeyColumns<TBasicRecord> //: Dictionary<_TKeyTypes, TBasicDoc>
+        where TBasicRecord : BasicRecord, IRecord<TBasicRecord>, new()
     {
-        public _TKeyTypes keysColumnsByType;
+        public _TKeyTypes<TBasicRecord> keysColumnsByType;
 
-        public KeyColumns() : base() { }
+        public KeyColumns() {
+            
+        }
 
         /// <summary>
         /// Constructor of a different types of maps of keys, in a public _TKeyTypes container.
         /// </summary>
         /// <param name="sample">A default constructed sample instance of the TBasicToc generic class.</param>
-        /// <param name="docKeyType">The type of key in the source data.</param>
-        /// <param name="primaryIndexMap">The map of unique-delineating primary indices, if any.
-        ///     <br>ignored if docKeyType is not a redundant primary key.</br>
-        /// </param>
-        /// <param name="compositeIndexMap">The map of unique-delineating composite indices, if any.
+        /// <param name="indexMap">The map of unique-delineating composite indices, if any.
         ///     <br>ignored if docKeyType is not a redundant composite key.</br>
         /// </param>
         public KeyColumns(
-                TBasicDoc sample
+                TBasicRecord sample
                 //, HeaderSource<List<StringMap>, List<string>> source
-                , KeyType docKeyType
-                , Auto_Incr_IntMap<string> primaryIndexMap = null
-                , Auto_Incr_IntMap<string, string> compositeIndexMap = null
-            ) : base()
+                //, Auto_Incr_IntMap<string> primaryIndexMap = null
+                , Auto_Incr_IntMap<TBasicRecord> indexMap = null
+            )
         {
             // foreach (StringMap doc in source.data)
             // {
             System.Action closure = () =>
             {
-                switch (docKeyType) {
-                    case KeyType.primaryUnique:
-                        keysColumnsByType = new _TKeyTypes(sample.primaryKey);
-                        break;
+                /* deprecated
+                //switch (docKeyType) {
+                //case KeyType.primaryUnique:
+                //    keysColumnsByType = new _TKeyTypes(sample.primaryKey);
+                //    break;
 
-                    case KeyType.primaryRedundant:
-                        keysColumnsByType = new _TKeyTypes(sample.primaryKey, primaryIndexMap);
-                        break;
-
-                    case KeyType.compositeUnique:
-                        keysColumnsByType = new _TKeyTypes(sample.compositeKey);
-                        break;
-
-                    case KeyType.compositeRedundant:
-                        keysColumnsByType = new _TKeyTypes(sample.compositeKey, compositeIndexMap);
-                        break;
-
-                    case KeyType.Error:
-                        throw new Exception("Error type populated in document keytyper.");
+                //case KeyType.primaryRedundant:
+                //    keysColumnsByType = new _TKeyTypes(sample.primaryKey, primaryIndexMap);
+                //    break;
+                */
+                if (sample.keyIsUniqueIdentifier)
+                {
+                    keysColumnsByType = new _TKeyTypes<TBasicRecord>(sample.recordKey);
+                } else {
+                    keysColumnsByType = new _TKeyTypes<TBasicRecord>(sample.recordKey, indexMap);
                 }
+                    //case KeyType.Error:
+                    //    throw new Exception("Error type populated in document keytyper.");
+                //}
 
                 //TBasicDoc inner = sample.GetT(doc, source.headers.ToArray());
                 //Add(keysColumnsByType, inner); // will just send over the same value each time. No need for foreach.
@@ -71,9 +67,5 @@ namespace BasicPreprocess.General.Containers
             closure();
             // } // end loop
         } // end method
-
-
-
-
-    } // end clasee
+    } // end class
 }
