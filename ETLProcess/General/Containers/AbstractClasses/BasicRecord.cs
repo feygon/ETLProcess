@@ -1,0 +1,161 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Globalization;
+using System.CodeDom;
+using System.ComponentModel;
+using System.Data;
+using System.Reflection;
+using ETLProcess.General.Containers.Members;
+using ETLProcess.General.Interfaces;
+
+namespace ETLProcess.General.Containers
+{
+    /// <summary>
+    /// An abstract class for wrapping implementation-specific document types in easily accessible expectations of their contents.
+    /// <br>See members for details.</br>
+    /// </summary>
+    public abstract class BasicRecord : StringMap
+    {
+        /// <summary>
+        /// The client ETL process used to instantiate this record.
+        /// </summary>
+        protected IETLP_Specific<IETLP> process;
+        /// <summary>
+        /// The values in the columns which hold composite keys for this class.
+        /// </summary>
+        public KeyStrings recordKey;
+        /// <summary>
+        /// Is the primary or composite key a unique identifier, or does it require indexing to be unique?
+        /// </summary>
+        public bool keyIsUniqueIdentifier;
+        /// <summary>
+        /// The unique index of this primary or composite key.
+        /// </summary>
+        public int uniqueIndex;
+        /// <summary>
+        /// An action to get a child record type.
+        /// </summary>
+        public DelRet<Type> action_GetRecordType;
+        /// <summary>
+        /// Accessor for the table name;
+        /// </summary>
+        
+
+        /// <summary>
+        /// Default Constructor -- only here for XMLSerializer. Do not use!
+        /// </summary>
+        public BasicRecord() { }
+
+        /// <summary>
+        /// Accessor for child class headers string list.
+        /// </summary>
+        /// <returns></returns>
+        public abstract List<string> GetHeaders();
+
+        /// <summary>
+        /// Return GetType for child.
+        /// </summary>
+        /// <returns></returns>
+        public abstract Type GetChildType();
+
+        /// <summary>
+        /// Constructor: A metadata wrapper for different types of 
+        ///     unique/redundant primary or composite keyed CSV document classes.
+        /// </summary>
+        /// <param name="data">Data from which to derive a key, if any.</param>
+        /// <param name="keyIsUniqueIdentifier">Is the primary or composite key a unique identifier?
+        /// <br>(Sometimes they're not.)</br></param>
+        public BasicRecord(
+            StringMap data = null
+            , bool keyIsUniqueIdentifier = true) : base()
+        {
+            try
+            {
+                if (data != null)
+                {
+
+                    foreach (KeyValuePair<string, string> record in data)
+                    {
+                        Add(record.Key, record.Value);
+                    }
+
+                    recordKey = new KeyStrings();
+                    foreach (string header in process.keyColumns[GetChildType()])
+                    {
+                        bool success = data.TryGetValue(header, out string keyVal);
+                        if (success)
+                        {
+                            recordKey.Add(keyVal);
+                        }
+                        else
+                        {
+                            throw new Exception("Bad key coverage assignent.");
+                        }
+                    }
+                }
+                else
+                {
+                    throw new WarningException("Empty stringmap line or null data in constructor call.");
+                }
+            }catch (WarningException err)
+            {
+                Log.Write("ETLProcess threw Warning: " + err.ToString() + "at BasicRecord constructor.");
+            }
+            this.keyIsUniqueIdentifier = keyIsUniqueIdentifier;
+            //this.headers = keyHeaders;
+        }
+
+        /// <summary>
+        /// Copy Constructor
+        /// </summary>
+        /// <param name="record">Object to be copied from</param>
+        public BasicRecord(BasicRecord record)
+        {
+            this.recordKey = record.recordKey.ToArray().ToList() as KeyStrings; // force copy
+            this.keyIsUniqueIdentifier = record.keyIsUniqueIdentifier;
+            foreach (KeyValuePair<string, string> cell in record)
+            {
+                Add(cell.Key, cell.Value);
+            }
+        }
+
+        /// <summary>
+        /// Get decimal value from Stringmap entry on specified column. Called by derived constructor
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="column">The header name of a column where the value in a single record is to be found.</param>
+        /// <returns></returns>
+        protected static decimal GetDecimalColumn(StringMap data, string column)
+        {
+            try
+            {
+                return Parse.DecimalParse(data[column]);
+            } catch (Exception inner)
+            {
+                throw new Exception("Bad column name or unknown exception.", inner);
+            }
+        }
+
+
+        
+        private const string MissingValueTag = "NULL";
+
+        /// <summary>
+        /// Return empty string if MissingValueTab tripped on dereference.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        protected static string FilterMissingValue(string s)
+    => IsMissingValue(s) ? "" : s;
+
+        /// <summary>
+        /// Is a value missing from dereferenceability?
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        protected static bool IsMissingValue(string s)
+            => s.Equals(MissingValueTag, StringComparison.InvariantCultureIgnoreCase);
+    }
+}

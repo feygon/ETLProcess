@@ -1,0 +1,6 @@
+Billing Account Number|First Name|Middle Name|Last Name|Address1|Address2|City|State|Zip|MemberID|Premium Withhold
+ID0000001|John|J|Smith|1234 Crabapple Way||Nowhere|CA|11111|ID0000001|Y
+ID0000002|Jane|J|Jones|1001 Ordinary St|#2|Nowhere|CA|11111|ID0000002|Y
+ID0000004|Donny|J|Goodman|1600 Pennsylvania Ave||Washington|DC|10001|ID0000004|N
+ID0000005|Tom|R|Cruise|19000 Beverly Hills Dr||Beverly Hills|CA|11111|MR1234|N
+ID0000007|Douglas|J|Adams|321 Cherry Tree Lane||Universal Studios|CA|11111|ID0000007|Y
