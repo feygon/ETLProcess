@@ -14,23 +14,9 @@ namespace ETLProcess.Specific
     /// <summary>
     /// Container for a primary unique keyed data set reflecting Client's Statement File records.
     /// </summary>
-    internal sealed class StatementRecords : BasicRecord, IRecord<StatementRecords>, IRecord_Uses_ImportRows<StatementRecords>
+    internal sealed class Record_Statement : BasicRecord<Record_Statement>, IRecord<Record_Statement>, IRecord_Uses_ImportRows<Record_Statement>
     {
-
-        /// <summary>
-        /// required readonly Headers member, implied by interface promise.
-        /// </summary>
-        private static readonly List<string> Headers = new string[] {
-            "Group Billing Acct ID"
-            , "Invoice Number"
-            , "Invoice Amount"
-            , "Low-Income Subsidy Amount"
-            , "Late-Enrollment Penalty Amount"
-            , "Invoice Period From Date"
-            , "Invoice Period To Date"
-        }.ToList();
-
-        private static readonly Dictionary<string, Type> ColumnTypes = new Dictionary<string, Type>{
+        public Dictionary<string, Type> columnTypes { get; } = new Dictionary<string, Type>{
             { "Group Billing Acct ID", typeof(string) }
             ,{ "Invoice Number", typeof(string) }
             ,{ "Invoice Amount", typeof(decimal) }
@@ -40,21 +26,14 @@ namespace ETLProcess.Specific
             ,{ "Invoice Period To Date", typeof(Date) }
         };
 
-    /// <summary>
-    /// Satisfies interface requirement for headers accessor to above readonly Headers member.
-    /// </summary>
-    public List<string> headers
-        {
-            get { return Headers; }
-        }
-
-        public Dictionary<string, Type> columnTypes { get { return columnTypes; } }
-
-
+        /// <summary>
+        /// Satisfies interface requirement for headers accessor to above readonly Headers member.
+        /// </summary>
+        public List<string> headers { get { return columnTypes.Keys.ToList(); } }
 
         public override List<string> GetHeaders()
         {
-            return Headers;
+            return headers;
         }
 
         public override Type GetChildType()
@@ -63,9 +42,9 @@ namespace ETLProcess.Specific
         }
 
         /// <summary>
-        /// Default constructor.
+        /// Default constructor, for samples and XMLSerializer only.
         /// </summary>
-        public StatementRecords() : base(
+        public Record_Statement() : base(
             data: null
             ) 
         {
@@ -75,7 +54,7 @@ namespace ETLProcess.Specific
         /// Copy Constructor
         /// </summary>
         /// <param name="record">Source document</param>
-        public StatementRecords(StatementRecords record)
+        public Record_Statement(Record_Statement record)
             : base(record)
         {
             foreach (KeyValuePair<string, string> cell in record)
@@ -89,14 +68,13 @@ namespace ETLProcess.Specific
         /// </summary>
         /// <param name="headers">Headers of the data</param>
         /// <param name="data"></param>
-        public StatementRecords(StringMap data, List<string> headers) 
+        public Record_Statement(StringMap data, List<string> headers) 
             : base(
                   data: data
                   , keyIsUniqueIdentifier: true)
         {
-
             foreach (string header in headers) {
-                if (!Headers.Contains(header))
+                if (!this.headers.Contains(header))
                 {
                     string temp = "CSV Header \"" + header + "\" not found in Statement Records.";
                     throw new Exception(temp);
@@ -112,9 +90,9 @@ namespace ETLProcess.Specific
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
         /// <param name="headers">A string of column headers</param>
         /// <returns></returns>
-        public StatementRecords Record(StringMap stringMap, List<string> headers)
+        public Record_Statement Record(StringMap stringMap, List<string> headers)
         {
-            return new StatementRecords(stringMap, headers);
+            return new Record_Statement(stringMap, headers);
         }
 
         /// <summary>

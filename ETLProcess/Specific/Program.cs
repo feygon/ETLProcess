@@ -12,6 +12,7 @@ using ETLProcess.Specific;
 using static ETLProcess.Parse;
 using ETLProcess.General.Containers;
 using ETLProcess.General;
+using ETLProcess.General.Profiles;
 using ETLProcess.General.IO;
 using ETLProcess.Specific.Boilerplate;
 using ETLProcess.General.Interfaces;
@@ -26,7 +27,7 @@ namespace ETLProcess {
     /// <summary>
     /// Enumeration of Implementation-specific Document Types
     /// </summary>
-    public enum DocType
+    public enum RecordType
     {
         /// <summary>
         /// Client's Statement file

@@ -11,30 +11,9 @@ namespace ETLProcess.Specific
     /// <summary>
     /// Container for a primary unique keyed set of data reflecting Client's member records.
     /// </summary>
-    internal sealed class MemberRecords : BasicRecord, IRecord<MemberRecords>
+    internal sealed class Record_Members : BasicRecord<Record_Members>, IRecord<Record_Members>
     {
-        private static readonly List<string> Headers = new string[] {
-            "Billing Account Number"
-            , "First Name"
-            , "Middle Name"
-            , "Last Name"
-            , "Address1"
-            , "Address2"
-            , "City"
-            , "State"
-            , "Zip"
-            , "MemberID"
-            , "Premium Withhold"
-        }.ToList();
-
-        /// <summary>
-        /// Satisfies interface requirement for headers accessor to above readonly Headers member.
-        /// </summary>
-        public List<string> headers {
-            get { return Headers; }
-        }
-
-        private readonly Dictionary<string, Type> ColumnTypes = new Dictionary<string, Type>()
+        public Dictionary<string, Type> columnTypes { get; } = new Dictionary<string, Type>()
         {
             { "Billing Account Number", typeof(string) }
             , { "First Name", typeof(string) }
@@ -48,10 +27,14 @@ namespace ETLProcess.Specific
             , { "MemberID", typeof(string) }
             , { "Premium Withhold", typeof(string) }
         };
-        public Dictionary<string, Type> columnTypes { get { return ColumnTypes; } }
+
+        /// <summary>
+        /// Satisfies interface requirement for headers accessor to above readonly Headers member.
+        /// </summary>
+        public List<string> headers { get { return columnTypes.Keys.ToList(); } }
 
         public override List<string> GetHeaders() {
-            return Headers;
+            return headers;
         }
 
         public override Type GetChildType() {
@@ -62,11 +45,11 @@ namespace ETLProcess.Specific
         /// Copy Constructor
         /// </summary>
         /// <param name="record">Record to be copied.</param>
-        public MemberRecords(MemberRecords record) : base(record) 
+        public Record_Members(Record_Members record) : base(record) 
         {
         }
 
-        public MemberRecords() : base(
+        public Record_Members() : base(
             data:null
             , keyIsUniqueIdentifier: true)
         {
@@ -79,9 +62,9 @@ namespace ETLProcess.Specific
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
         /// <param name="headers">The column headers</param>
         /// <returns></returns>
-        public MemberRecords Record(StringMap stringMap, List<string> headers)
+        public Record_Members Record(StringMap stringMap, List<string> headers)
         {
-            return new MemberRecords(stringMap, headers);
+            return new Record_Members(stringMap, headers);
         }
 
         /// <summary>
@@ -90,15 +73,14 @@ namespace ETLProcess.Specific
         /// </summary>
         /// <param name="memberFile">StringMap of a line of data</param>
         /// <param name="headers">Headers of the data</param>
-        public MemberRecords(StringMap memberFile, List<string> headers) 
+        public Record_Members(StringMap memberFile, List<string> headers) 
             : base(
                   data:memberFile
                   , keyIsUniqueIdentifier: true)
         {
-
             foreach (string header in headers)
             {
-                if (!Headers.Contains(header)) { 
+                if (!this.headers.Contains(header)) { 
                     string temp = "CSV Header \"" + header + "\" not found in Member Records.";
                     throw new Exception(temp);
                 }
