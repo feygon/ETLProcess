@@ -11,10 +11,13 @@ using ETLProcess.General.Interfaces;
 using ETLProcess.General.IO;
 using ETLProcess.General.Containers;
 using ETLProcess.General.Algorithms;
+using ETLProcess.General.Profiles;
 
 using String = System.String;
 using AcctID = System.String;
 using MemberID = System.String;
+using SampleColumnTypes = System.Collections.Generic.Dictionary<string, System.Type>;
+using ETLProcess.General.Containers.AbstractClasses;
 using System.ComponentModel.DataAnnotations;
 
 namespace ETLProcess.Specific.Boilerplate
@@ -22,25 +25,35 @@ namespace ETLProcess.Specific.Boilerplate
     /// <summary>
     /// A class to fulfill Client statement and welcome letter document types.
     /// </summary>
-    public class ClientETLProcess : DataSet, IETLP_Specific<FilesIn_XMLOut>
+    public class ClientETLProcess : DataSet, IETLP_Specific_FilesIn<FilesIn_XMLOut>, IETLP_Specific<SQLIn_XMLOut>, I_CSVIn
     {
-        internal KeyedRecords<StatementRecords> statementRecords;
-        internal KeyedRecords<MemberRecords> memberRecords;
-        internal KeyedRecords<BalFwdRecords> balFwdRecords;
+        static readonly List<string> statementHeaders = new string[] { "Group Billing Acct ID", "Invoice Number" }.ToList();
+        static readonly List<string> memberHeaders = new string[] { "Billing Account Number" }.ToList();
+        static readonly List<string> balFwdHeaders = new string[] { "Account ID" }.ToList();
 
-        private readonly static Dictionary<Type, List<string>> KeyColumns = new Dictionary<Type, List<String>>
+        /// <summary>
+        /// Names of Key Columns in each Type
+        /// </summary>
+        public Dictionary<Type, List<string>> CSVColumnNames { get; } = new Dictionary<Type, List<string>>()
         {
-            {typeof(StatementRecords), new string[]{ "Group Billing Acct ID", "Invoice Number" }.ToList() }
-            ,{typeof(MemberRecords), new string[]{ "Billing Account Number" }.ToList() }
-            ,{typeof(BalFwdRecords), new string[]{ "Account ID" }.ToList() }
+            { typeof(Record_Statement), statementHeaders },
+            { typeof(Record_Members), memberHeaders },
+            { typeof(Record_BalFwd), balFwdHeaders }
         };
+
+        internal DataRecords<Record_Statement> statementRecords; // is a DataTable.
+        internal DataRecords<Record_Members> memberRecords;
+        internal DataRecords<Record_BalFwd> balFwdRecords;
+
         /// <summary>
         /// Key Columns of each class (not including indexers).
         /// </summary>
-        public Dictionary<Type, List<string>> keyColumns { get {
-                return KeyColumns;
-            }
-        }
+        public Dictionary<Type, SampleColumnTypes> SampleColumns { get; } =
+            new Dictionary<Type, SampleColumnTypes> {
+                { typeof(Record_Statement), Record_Statement.Sample.columnTypes }
+                ,{ typeof(Record_Members), Record_Members.Sample.columnTypes}
+                ,{ typeof(Record_BalFwd), Record_BalFwd.Sample.columnTypes}
+        };
 
         private readonly FilesIn_XMLOut PreP;
         /// <summary>
@@ -82,9 +95,7 @@ namespace ETLProcess.Specific.Boilerplate
             get { return CheckFilesDelegate; }
         }
 
-        Dictionary<Type, List<string>> IETLP_Specific<FilesIn_XMLOut>.keyColumns => throw new NotImplementedException();
-
-        DelRetArray<bool, string> IETLP_Specific<FilesIn_XMLOut>.CheckFiles_Delegate => throw new NotImplementedException();
+        DelRetArray<bool, string> IETLP_Specific_FilesIn<FilesIn_XMLOut>.CheckFiles_Delegate => throw new NotImplementedException();
 
         /// <summary>
         /// Return an enumeration of which document type it is.
@@ -92,12 +103,12 @@ namespace ETLProcess.Specific.Boilerplate
         /// </summary>
         /// <param name="filename">Filename of the file in question.</param>
         /// <returns></returns>
-        public DocType IdentifyRecordFile(string filename)
+        public RecordType IdentifyRecordFile(string filename)
         {
-            if (filename.StartsWith("Statement", StringComparison.InvariantCultureIgnoreCase)) { return DocType.Statements; }
-            if (filename.StartsWith("Member", StringComparison.InvariantCultureIgnoreCase)) { return DocType.Members; }
-            if (filename.Contains("Balance")) { return DocType.BalancesForward; }
-            return DocType.Error; // error code;
+            if (filename.StartsWith("Statement", StringComparison.InvariantCultureIgnoreCase)) { return RecordType.Statements; }
+            if (filename.StartsWith("Member", StringComparison.InvariantCultureIgnoreCase)) { return RecordType.Members; }
+            if (filename.Contains("Balance")) { return RecordType.BalancesForward; }
+            return RecordType.Error; // error code;
         }
 
         /// <summary>
@@ -105,28 +116,21 @@ namespace ETLProcess.Specific.Boilerplate
         /// </summary>
         public void PopulateRecords() 
         {
-            PopulateRecords(PreP.files, out statementRecords, out memberRecords, out balFwdRecords);
+            PopulateRecords(PreP.files);
         }
 
         /// <summary>
         /// Populate documents with information.
         /// </summary>
         /// <param name="files"></param>
-        /// <param name="statementRecords">Records of client member invoices.</param>
-        /// <param name="memberRecords">Records of client members</param>
-        /// <param name="balFwdRecords">Records of client member balances forward.</param>
-        private void PopulateRecords(string[] files,
-            out KeyedRecords<StatementRecords> statementRecords,
-            out KeyedRecords<MemberRecords> memberRecords,
-            out KeyedRecords<BalFwdRecords> balFwdRecords
-            )
+        private void PopulateRecords(string[] files)
         {
             statementRecords = null;
             memberRecords = null;
             balFwdRecords = null;
             // each will be a dictionary of documents indexed by their respective IDs.
 
-            DocType docType;
+            RecordType recordType;
             string filename
                 , fileExtension;
             Queue<string> fileList = OrderFileList(files);
@@ -135,44 +139,47 @@ namespace ETLProcess.Specific.Boilerplate
             {
                 filename = Path.GetFileName(filePath);
                 fileExtension = Path.GetExtension(filePath);
-                docType = IdentifyRecordFile(filename);
-                ForeignKeyConstraintElements FKConstraint;
+                recordType = IdentifyRecordFile(filename);
                 // put each document type into its headersource (struct of Stringmap and headers list)
-                switch (docType)
+                switch (recordType)
                 {
-                    case (DocType.Statements):
+                    case (RecordType.Statements):
 
 
                         List<string> StatementRecordData = CSV.ImportRows(filePath);
-                        StatementRecords sample = new StatementRecords();
-
-                        FKConstraint = new ForeignKeyConstraintElements(this);
+                        Record_Statement sample = new Record_Statement();
 
                         HeaderSource<List<StringMap>, List<string>> statementSrcData =
                             sample.ParseRows(StatementRecordData.ToArray());
-                        statementRecords = new KeyedRecords<StatementRecords>(
-                            statementSrcData, PreP.guid, (IETLP_Specific<IETLP>)this, FKConstraint);
+                        statementRecords = new DataRecords<Record_Statement>(
+                            statementSrcData
+                            , this
+                            , new ForeignKeyConstraintElements(this));
                         break;
 
-                    case (DocType.Members):
+                    case (RecordType.Members):
+                        // TO DO: once-over post-DataSet/DataTable type changes.
+                        // statementTable already populated, per OrderFileList(files) method.
 
                         var membersByAcctID = CSV.ImportCSVWithHeader(
                             filePath
                             , delimiter: "|"
                             , useQuotes: false);
 
-                        FKConstraint = new ForeignKeyConstraintElements(
-                            this
-                            , new DataColumn[] { Tables[statementRecords.table.TableName].Columns["Group Billing Acct ID"] }
-                            , new String[] { "Billing Account Number" });
-
-                        memberRecords = new KeyedRecords<MemberRecords>(
-                            membersByAcctID, PreP.guid, (IETLP_Specific<IETLP>)this, FKConstraint);
+                        memberRecords = new DataRecords<Record_Members>(
+                            membersByAcctID
+                            , this
+                            , new ForeignKeyConstraintElements(
+                                this
+                                , new DataColumn[] { Tables[statementRecords.TableName].Columns["Group Billing Acct ID"] } // parent key columns.
+                                , new String[] { "Group Billing Acct ID" } )
+                            );
                         break;
 
-                    case (DocType.BalancesForward):
+                    case (RecordType.BalancesForward):
+                        // TO DO: once-over post-DataSet/DataTable type changes.
                         // balfwdfile has no internal headers.
-                        List<string> headers = new BalFwdRecords().headers;
+                        List<string> headers = new Record_BalFwd().headers;
 
                         // TO DO: 
                         var balFwdByAcctID = CSV.ImportCSVWithHeader(
@@ -181,16 +188,17 @@ namespace ETLProcess.Specific.Boilerplate
                             , useQuotes: true
                             , headers);
 
-                            FKConstraint = new ForeignKeyConstraintElements(
+                        balFwdRecords = new DataRecords<Record_BalFwd>(
+                            balFwdByAcctID
+                            , this
+                            , new ForeignKeyConstraintElements(
                                 this
-                                , new DataColumn[] { Tables[statementRecords.table.TableName].Columns["Group Billing Acct ID"] }
-                                , new String[] { "Billing Account Number" });
-
-                        balFwdRecords = new KeyedRecords<BalFwdRecords>(
-                            balFwdByAcctID, PreP.guid, (IETLP_Specific<IETLP>)this, FKConstraint);
+                                , new DataColumn[] { Tables[statementRecords.TableName].Columns["Group Billing Acct ID"] }
+                                , new String[] { "Billing Account Number" } )
+                            );
                         break;
 
-                    case (DocType.Error):
+                    case (RecordType.Error):
                         throw new Exception($"Unexpected file found: {filePath}");
                 }
             }
@@ -208,14 +216,19 @@ namespace ETLProcess.Specific.Boilerplate
 
             // PopulateDocs has already:
             // Got All Invoices, Bal Fwd Records, Member Records, and made them into tables.
-            var newMembers = new List<MemberRecords>();
-            var invoices_MissingMembers = new List<StatementRecords>();
-            var balances_MissingMembers = new List<BalFwdRecords>();
-            ClientBusinessRules.Filter_MissingMembers(this, this.Tables[typeof(StatementRecords).ToString()], invoices_MissingMembers);
-            ClientBusinessRules.Filter_MissingMembers(this, this.Tables[typeof(BalFwdRecords).ToString()], balances_MissingMembers);
+            var newMembers = new List<Record_Members>();
+            var invoices_MissingMembers = new List<Record_Statement>();
+            var balances_MissingMembers = new List<Record_BalFwd>();
+            ClientBusinessRules.Filter_MissingMembers(this, this.Tables[typeof(Record_Statement).ToString()], invoices_MissingMembers);
+            ClientBusinessRules.Filter_MissingMembers(this, this.Tables[typeof(Record_BalFwd).ToString()], balances_MissingMembers);
             ClientBusinessRules.CheckOldClientAccounts(this, newMembers);
             // TO DO: report on missing members
             // TO DO: Output docs
+
+            foreach (DataRow row in statementRecords.Rows)
+            {
+
+            }
 
             // programming progress exception
             throw new NotImplementedException("More polish to be implemented.");
@@ -232,16 +245,16 @@ namespace ETLProcess.Specific.Boilerplate
             var dict = new Dictionary<string, int> ();
             foreach (string file in files)
             {
-                DocType docType = IdentifyRecordFile(file);
+                RecordType docType = IdentifyRecordFile(file);
                 switch (docType)
                 {
-                    case DocType.Statements:
+                    case RecordType.Statements:
                         dict.Add(file, 0);
                         break;
-                    case DocType.Members:
+                    case RecordType.Members:
                         dict.Add(file, 1);
                         break;
-                    case DocType.BalancesForward:
+                    case RecordType.BalancesForward:
                         dict.Add(file, 2);
                         break;
                 }

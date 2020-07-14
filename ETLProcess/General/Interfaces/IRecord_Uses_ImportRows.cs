@@ -12,7 +12,7 @@ namespace ETLProcess.General.Interfaces
     /// An interface to promise that each document based upon a basic doc will implement (a) certain method(s).
     /// </summary>
     /// <typeparam name="TRecord"></typeparam>
-    public interface IRecord_Uses_ImportRows<TRecord> where TRecord : BasicRecord, IRecord<TRecord>
+    public interface IRecord_Uses_ImportRows<TRecord> where TRecord : BasicRecord<TRecord>, IRecord<TRecord>, new()
     {
         /// <summary>
         /// A promise that a default constructed instance of a class will be able to construct

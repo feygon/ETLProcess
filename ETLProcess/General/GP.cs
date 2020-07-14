@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -50,6 +51,9 @@ namespace ETLProcess.General
     /// <param name="t1">The passed instance.</param>
     /// <returns>Returns an instance of the return type.</returns>
     public delegate T0 DelRetArray<T0, T1>(T1[] t1);
+
+
+
     /// <summary>
     /// A dictionary with auto-incrementing integer keys.
     /// </summary>
@@ -112,6 +116,23 @@ namespace ETLProcess.General
                 ret.Add(model[i].Item1, model[i].Item2);
             }
             return ret;
+        }
+    }
+
+    /// <summary>
+    /// A class to make abstract reflection easy, with a method to construct any class generically.
+    /// </summary>
+    public static class GPMethods
+    {
+        /// <summary>
+        /// A way to construct any class generically, from the typeinfo about that class.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T VarToT<T>(Type type) where T: class
+        {
+            ConstructorInfo constructorInfo = type.GetTypeInfo().TypeInitializer;
+            return constructorInfo.Invoke(null) as T;
         }
     }
 }

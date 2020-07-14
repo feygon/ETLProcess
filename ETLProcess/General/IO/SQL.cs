@@ -7,7 +7,7 @@ namespace ETLProcess
 {
     internal static class SQL
     {
-        internal static SqlConnection UluroConnection { get; } =
+        internal static SqlConnection conn { get; } =
             new SqlConnection(@"Data Source=Database\DatabaseName;Initial Catalog=DatabaseName;User id=Username;Password=Userpassword;");
 
         /// <summary>
@@ -49,33 +49,42 @@ namespace ETLProcess
         /// Also handles the error processing in case of errors.
         /// </summary>
         /// <param name="command">The compiled command to execute</param>
+        /// <param name="table">Optional, can take a table if it is already named and populated with columns and types. Otherwise, string column types only.</param>
         /// <returns>A new DataTable object populated with the results of the query commandString. Returns null in case of an error.</returns>
-        internal static DataTable ExecuteBuiltCommandReturnQuery(SqlCommand command)
+        internal static DataTable ExecuteBuiltCommandReturnQuery(SqlCommand command, DataTable table = null)
         {
-            using var returnable = new DataTable();
-            using var reader = new SqlDataAdapter(command);
-            // Open the connection and read in data
-            command.Connection.Open();
-            command.Prepare();
-            returnable.Locale = CultureInfo.InvariantCulture;
-            reader.Fill(returnable);
-            foreach (DataRow row in returnable.Rows)
+            var returnable = table ?? new DataTable();
+            try
             {
-                foreach (DataColumn column in returnable.Columns)
+                using var reader = new SqlDataAdapter(command);
+                // Open the connection and read in data
+                command.Connection.Open();
+                command.Prepare();
+                returnable.Locale = CultureInfo.InvariantCulture;
+                reader.Fill(returnable);
+                foreach (DataRow row in returnable.Rows)
                 {
-                    if (column.DataType != Type.GetType("System.String"))
-                        continue;
-                    if (row[column.ColumnName] == DBNull.Value)
+                    foreach (DataColumn column in returnable.Columns)
                     {
-                        row[column.ColumnName] = string.Empty;
-                    }
-                    else
-                    {
-                        row[column.ColumnName] = ((string)row[column.ColumnName]).Trim();
+                        if (table == null) {
+                            if (column.DataType != Type.GetType("System.String"))
+                                continue;
+                        }
+
+                        if (row[column.ColumnName] == DBNull.Value)
+                        {
+                            row[column.ColumnName] = string.Empty;
+                        }
+                        else
+                        {
+                            row[column.ColumnName] = ((string)row[column.ColumnName]).Trim();
+                        }
                     }
                 }
+                command.Connection.Close();
+            } catch (Exception err) {
+                throw new Exception("Error in sql call or unknown exception.", err);
             }
-            command.Connection.Close();
             return returnable;
         }
 

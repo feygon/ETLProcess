@@ -9,6 +9,8 @@ using ETLProcess.General;
 using System.Reflection;
 using System.Data;
 
+using ETLProcess.General.Containers.Members;
+
 namespace ETLProcess.Specific.Documents
 {
 	internal sealed class OutputDoc : IOutputDoc
@@ -43,6 +45,7 @@ namespace ETLProcess.Specific.Documents
 		public OutputDoc(
 			DataRow docRow)
 		{
+
 			// TO DO: implement constructor.
 			throw new NotImplementedException();
 		}

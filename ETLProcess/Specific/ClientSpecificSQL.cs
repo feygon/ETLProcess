@@ -10,7 +10,7 @@ namespace ETLProcess.Specific
         /// </summary>
         internal static DataTable Execute(string sqlQueryString)
         {
-            using var command = new SqlCommand(sqlQueryString, SQL.UluroConnection);
+            using var command = new SqlCommand(sqlQueryString, SQL.conn);
             return SQL.ExecuteBuiltCommandReturnQuery(command);
         }
 
@@ -18,12 +18,14 @@ namespace ETLProcess.Specific
         internal const string getClientAccounts = @"
 			SELECT
 	            Documents.Account AS MEMBERID,
-	            Documents.Sys_MiscText1 AS ACCOUNTID
-            FROM Uluro.dbo.Submissions
-            LEFT JOIN Uluro.dbo.Documents ON Submissions.Submid = Documents.Submid
-            WHERE Submissions.subtypeid IN (131,373)
+	            Documents.Misc1 AS ACCOUNTID
+            FROM ExampleDB.dbo.Submissions
+            LEFT JOIN ExampleDB.dbo.Documents ON Submissions.Submid = Documents.Submid
+            LEFT JOIN ExampleDB.dbo.Subtypes ON Submissions.SubtypeID = Subtypes.SubtypeID
+            LEFT JOIN ExampleDB.dbo.Customer ON Subtypes.CustID = Customer.CustID
+            WHERE Submissions.subtypeid IN (Alpha, Beta)
                 AND Submissions.[Status] = 'C'
-            GROUP BY Documents.Account, Documents.Sys_MiscText1
+            GROUP BY Documents.Account, Documents.Misc1
 		";
     }
 }

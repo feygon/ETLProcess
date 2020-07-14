@@ -10,18 +10,25 @@ using System.Reflection;
 using ETLProcess.General.Containers.Members;
 using ETLProcess.General.Interfaces;
 
+
+
 namespace ETLProcess.General.Containers
 {
     /// <summary>
     /// An abstract class for wrapping implementation-specific document types in easily accessible expectations of their contents.
     /// <br>See members for details.</br>
     /// </summary>
-    public abstract class BasicRecord : StringMap
+    public abstract class BasicRecord<T> : StringMap where T: BasicRecord<T>, new()
     {
+        /// <summary>
+        /// Singleton sample accessor for child class. Child class should have constraint: "BasicRecord-ChildClass",
+        ///     where Childclass is in generic brackets.
+        /// </summary>
+        public static T Sample { get; } = new T();
         /// <summary>
         /// The client ETL process used to instantiate this record.
         /// </summary>
-        protected IETLP_Specific<IETLP> process;
+        protected I_CSVIn process;
         /// <summary>
         /// The values in the columns which hold composite keys for this class.
         /// </summary>
@@ -38,10 +45,6 @@ namespace ETLProcess.General.Containers
         /// An action to get a child record type.
         /// </summary>
         public DelRet<Type> action_GetRecordType;
-        /// <summary>
-        /// Accessor for the table name;
-        /// </summary>
-        
 
         /// <summary>
         /// Default Constructor -- only here for XMLSerializer. Do not use!
@@ -68,36 +71,28 @@ namespace ETLProcess.General.Containers
         /// <param name="keyIsUniqueIdentifier">Is the primary or composite key a unique identifier?
         /// <br>(Sometimes they're not.)</br></param>
         public BasicRecord(
-            StringMap data = null
+            StringMap data
             , bool keyIsUniqueIdentifier = true) : base()
         {
             try
             {
-                if (data != null)
+                foreach (KeyValuePair<string, string> record in data)
                 {
-
-                    foreach (KeyValuePair<string, string> record in data)
-                    {
-                        Add(record.Key, record.Value);
-                    }
-
-                    recordKey = new KeyStrings();
-                    foreach (string header in process.keyColumns[GetChildType()])
-                    {
-                        bool success = data.TryGetValue(header, out string keyVal);
-                        if (success)
-                        {
-                            recordKey.Add(keyVal);
-                        }
-                        else
-                        {
-                            throw new Exception("Bad key coverage assignent.");
-                        }
-                    }
+                    Add(record.Key, record.Value);
                 }
-                else
+
+                recordKey = new KeyStrings();
+                foreach (KeyValuePair<string, Type> headerData in process.SampleColumns[GetChildType()])
                 {
-                    throw new WarningException("Empty stringmap line or null data in constructor call.");
+                    bool success = data.TryGetValue(headerData.Key, out string dataValue);
+                    if (success)
+                    {
+                        recordKey.Add((dataValue ??= data[headerData.Key], headerData.Key));
+                    }
+                    else
+                    {
+                        Log.WriteException("Bad key assignent or unknown failure in TryGetValue.");
+                    }
                 }
             }catch (WarningException err)
             {
@@ -111,7 +106,7 @@ namespace ETLProcess.General.Containers
         /// Copy Constructor
         /// </summary>
         /// <param name="record">Object to be copied from</param>
-        public BasicRecord(BasicRecord record)
+        public BasicRecord(BasicRecord<T> record)
         {
             this.recordKey = record.recordKey.ToArray().ToList() as KeyStrings; // force copy
             this.keyIsUniqueIdentifier = record.keyIsUniqueIdentifier;
@@ -137,8 +132,6 @@ namespace ETLProcess.General.Containers
                 throw new Exception("Bad column name or unknown exception.", inner);
             }
         }
-
-
         
         private const string MissingValueTag = "NULL";
 

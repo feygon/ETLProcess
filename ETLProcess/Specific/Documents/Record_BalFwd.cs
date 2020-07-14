@@ -6,26 +6,17 @@ using ETLProcess.General.Containers;
 using ETLProcess.General;
 using System.Linq;
 using ETLProcess.General.Containers.Members;
+using System.Runtime.CompilerServices;
+using SampleColumnTypes = System.Collections.Generic.Dictionary<string, System.Type>;
 
 namespace ETLProcess.Specific
 {
     /// <summary>
     /// Container for a primary redundant keyed data set reflecting Client's balance forward records.
     /// </summary>
-    internal sealed class BalFwdRecords : BasicDetail, IRecord<BalFwdRecords>
+    internal sealed class Record_BalFwd : BasicRecord<Record_BalFwd>, IRecord<Record_BalFwd>
     {
-        private static readonly List<string> Headers = new string[]{
-            "Member ID"
-            ,"Member Name"
-            ,"Contract ID"
-            ,"Account ID"
-            ,"Billing Period From Date"
-            ,"Billing Period Thru Date"
-            ,"Outstanding Amount"
-            ,"Number of Days Overdue"
-        }.ToList();
-
-        private static readonly Dictionary<string, Type> ColumnTypes = new Dictionary<string, Type>
+        public SampleColumnTypes columnTypes { get; } = new SampleColumnTypes
         {
             { "Member ID", typeof(string) }
             ,{ "Member Name", typeof(string) }
@@ -40,16 +31,11 @@ namespace ETLProcess.Specific
         /// <summary>
         /// Satisfies interface requirement for headers accessor to above readonly Headers member.
         /// </summary>
-        public List<string> headers
-        {
-            get { return Headers; }
-        }
-
-        public Dictionary<string, Type> columnTypes { get { return ColumnTypes; } }
+        public List<string> headers { get { return columnTypes.Keys.ToList(); } }
 
         public override List<string> GetHeaders()
         {
-            return Headers;
+            return headers;
         }
 
         public override Type GetChildType()
@@ -61,14 +47,15 @@ namespace ETLProcess.Specific
         /// Copy Constructor
         /// </summary>
         /// <param name="record">Record to be copied.</param>
-        public BalFwdRecords(BalFwdRecords record) : base(record)
+        public Record_BalFwd(Record_BalFwd record) : base(record)
         {
+
         }
 
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public BalFwdRecords() : base(
+        public Record_BalFwd() : base(
             data: null
             , keyIsUniqueIdentifier: false) 
         {
@@ -81,16 +68,16 @@ namespace ETLProcess.Specific
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
         /// <param name="sirNotAppearingInThisFilm">A member which is unused in this implementation.</param>
         /// <returns></returns>
-        public BalFwdRecords Record(StringMap stringMap, List<string> sirNotAppearingInThisFilm = null)
+        public Record_BalFwd Record(StringMap stringMap, List<string> sirNotAppearingInThisFilm = null)
         {
-            return new BalFwdRecords(stringMap);
+            return new Record_BalFwd(stringMap);
         }
 
         /// <summary>
         /// Constructor, takes Stringmap.
         /// </summary>
         /// <param name="init"></param>
-        public BalFwdRecords(StringMap init)
+        public Record_BalFwd(StringMap init)
             : base(
                   data: init
                   , keyIsUniqueIdentifier: false)

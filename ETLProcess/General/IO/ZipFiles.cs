@@ -9,7 +9,7 @@ using Microsoft.VisualBasic.FileIO;
 
 namespace ETLProcess.General.IO
 {
-    class ZipFiles
+    internal sealed class ZipFiles
     {
         private const string _7ZipExecutable = @"C:\Program Files\7-Zip\7z.exe";
         public static string _TempLocation;

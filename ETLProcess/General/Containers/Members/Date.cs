@@ -444,11 +444,11 @@ namespace ETLProcess.General.Containers.Members
         /// <summary>
         /// Get date from Stringmap entry on specified column. Called by derived constructor.
         /// </summary>
-        /// <param name="data">Stringmap data</param>
+        /// <param name="data">Stringmap data. Remember that a BasicRecord is a StringMap.</param>
         /// <param name="column">specified column of data</param>
         /// <param name="format">Format of data as string, to convert to Date</param>
         /// <returns></returns>
-        public static Date GetDateColumn<T>(BasicRecord data, string column, string format = "yyyy-MM-dd")
+        public static Date GetDateColumn<T>(StringMap data, string column, string format = "yyyy-MM-dd")
         {
             try
             {

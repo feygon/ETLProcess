@@ -21,7 +21,22 @@ namespace ETLProcess
 			}
 		}
 
-        internal static int IntParse(string s)
+		internal static float FloatParse(string s)
+		{
+			try
+			{
+				// Perform a Regex to only maintain characters which SHOULD be valid
+				s = Regex.Replace(s, "[^0123456789.-]", "");
+				return float.Parse(s, CultureInfo.InvariantCulture);
+			}
+			// Always return a 0 instead of an error
+			catch (Exception)
+			{
+				return 0.00f;
+			}
+		}
+
+		internal static int IntParse(string s)
 		{
 			try
 			{

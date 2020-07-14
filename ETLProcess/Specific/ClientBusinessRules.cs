@@ -41,7 +41,7 @@ namespace ETLProcess.Specific
         public static void Filter_MissingMembers<TRecord>(
             DataSet data
             , DataTable checkTable
-            , List<TRecord> missingRecords) where TRecord: BasicRecord
+            , List<TRecord> missingRecords) where TRecord: BasicRecord<TRecord>, new()
         {
             missingRecords ??= new List<TRecord>();
 
@@ -59,19 +59,22 @@ namespace ETLProcess.Specific
         public static void CheckOldClientAccounts(
             DataTable statementTable
             , DataTable memberTable
-            , List<MemberRecords> newMembers)
+            , List<Record_Members> newMembers)
         {
-            newMembers ??= new List<MemberRecords>();
+            newMembers ??= new List<Record_Members>();
             // TO DO:
             // call a DataTable of old clients, and compare the new client member file records.
             // Any that aren't in the old clients file, exclude that member from statements (by ID) (and put out a report of them?).
         }
 
-        internal static void CheckOldClientAccounts(DataSet data, List<MemberRecords> newMembers)
+        internal static void CheckOldClientAccounts(DataSet data, List<Record_Members> newMembers)
         {
-            newMembers ??= new List<MemberRecords>();
+            newMembers ??= new List<Record_Members>();
 
             //TO DO: Make a sql call and check against it.
+            //
+            //
+            //
             throw new NotImplementedException();
         }
     }

@@ -12,9 +12,8 @@ namespace ETLProcess.General.Interfaces
     /// An interface to promise that each document based upon a basic doc will implement (a) certain method(s).
     /// </summary>
     /// <typeparam name="TRecord"></typeparam>
-    public interface IRecord<TRecord> where TRecord : BasicRecord
+    public interface IRecord<TRecord> where TRecord : BasicRecord<TRecord>, new()
     {
-
         /// <summary>
         /// An array of the names of columns in the document data.
         /// </summary>

@@ -7,7 +7,7 @@ namespace ETLProcess.General
     /// <summary>
     /// A class for logging and outputting debug messages.
     /// </summary>
-    public class Log
+    internal sealed class Log
     {
         private readonly FileInfo logFileInfo;
         /// <summary>
@@ -57,6 +57,16 @@ namespace ETLProcess.General
             writer.WriteLine($"- - - - - - - - - - {DateTime.Now.ToLongTimeString()}\r\n{message}\r\n\r\n");
 			writer.Flush();
 		}
+
+        public static void WriteException(string message, Exception err = null)
+        {
+            Write(message);
+            if (err != null) {
+                throw new Exception(message, err);
+            } else {
+                throw new Exception(message);
+            }
+        }
 
         /// <summary>
         /// Dispose of a log.

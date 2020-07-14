@@ -7,8 +7,10 @@ namespace ETLProcess
 	/// <summary>
 	/// An object that can send over the metropresort email system. 
 	/// Can throw EmailException when creating the object
+    /// <para>Note! It is not recommended to hard-code credentials into a program!
+    /// Example members are here only to build the boilerplate InitClient method.</para>
 	/// </summary>
-	internal sealed class MetroEmail
+	internal sealed class CompanyEmail
 	{
         private const string smtpUser = @"Username";
         private const string smtpPassword = @"SuperSecretPassword_!";
@@ -38,7 +40,7 @@ namespace ETLProcess
         /// <summary>
 		/// Creates a new email object
 		/// </summary>
-        internal MetroEmail()
+        internal CompanyEmail()
 		{
 			Subject = "";
 			Body = "";
