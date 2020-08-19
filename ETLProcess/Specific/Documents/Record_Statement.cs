@@ -1,29 +1,33 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+
 using ETLProcess.General;
-using System.Globalization;
 using ETLProcess.General.Interfaces;
 using ETLProcess.General.Containers;
-using System.Runtime.Remoting.Messaging;
 using ETLProcess.General.Containers.Members;
+using ETLProcess.General.Containers.AbstractClasses;
+
 
 namespace ETLProcess.Specific
 {
-    using KVP = KeyValuePair<string, Type>;
     /// <summary>
     /// Container for a primary unique keyed data set reflecting Client's Statement File records.
     /// </summary>
-    internal sealed class Record_Statement : BasicRecord<Record_Statement>, IRecord<Record_Statement>, IRecord_Uses_ImportRows<Record_Statement>
+    internal sealed class Record_Statement : 
+        BasicRecord<Record_Statement>
+        , IRecord<Record_Statement>
+        , IRecord_Uses_ImportRows<Record_Statement>
     {
-        public Dictionary<string, Type> columnTypes { get; } = new Dictionary<string, Type>{
-            { "Group Billing Acct ID", typeof(string) }
-            ,{ "Invoice Number", typeof(string) }
-            ,{ "Invoice Amount", typeof(decimal) }
-            ,{ "Low-Income Subsidy Amount", typeof(decimal) }
-            ,{ "Late-Enrollment Penalty Amount", typeof(decimal) }
-            ,{ "Invoice Period From Date", typeof(Date) }
-            ,{ "Invoice Period To Date", typeof(Date) }
+        public SampleColumnTypes columnTypes { get; } = 
+            new SampleColumnTypes {  
+                { "Group Billing Acct ID", (typeof(string), true) }
+                ,{ "Invoice Number", (typeof(string), true) }
+                ,{ "Invoice Amount", (typeof(decimal), false) }
+                ,{ "Low-Income Subsidy Amount", (typeof(decimal), false) }
+                ,{ "Late-Enrollment Penalty Amount", (typeof(decimal), false) }
+                ,{ "Invoice Period From Date", (typeof(Date), false) }
+                ,{ "Invoice Period To Date", (typeof(Date), false) }
         };
 
         /// <summary>
@@ -31,24 +35,18 @@ namespace ETLProcess.Specific
         /// </summary>
         public List<string> headers { get { return columnTypes.Keys.ToList(); } }
 
-        public override List<string> GetHeaders()
-        {
+        public override List<string> GetHeaders() {
             return headers;
         }
 
-        public override Type GetChildType()
-        {
+        public override Type GetChildType() {
             return this.GetType();
         }
 
         /// <summary>
         /// Default constructor, for samples and XMLSerializer only.
         /// </summary>
-        public Record_Statement() : base(
-            data: null
-            ) 
-        {
-        }
+        public Record_Statement() : base(){ keyIsUniqueIdentifier = true; }
 
         /// <summary>
         /// Copy Constructor
@@ -57,6 +55,7 @@ namespace ETLProcess.Specific
         public Record_Statement(Record_Statement record)
             : base(record)
         {
+            keyIsUniqueIdentifier = true;
             foreach (KeyValuePair<string, string> cell in record)
             {
                 Add(cell.Key, cell.Value);
@@ -66,11 +65,15 @@ namespace ETLProcess.Specific
         /// <summary>
         /// /// Constructor that takes a StringMap and headers.
         /// </summary>
-        /// <param name="headers">Headers of the data</param>
         /// <param name="data"></param>
-        public Record_Statement(StringMap data, List<string> headers) 
+        /// <param name="headers">Headers of the data</param>
+        /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
+        public Record_Statement(StringMap data
+            , SampleColumnTypes sampleColumnTypes
+            , List<string> headers) 
             : base(
                   data: data
+                  , sampleColumnTypes
                   , keyIsUniqueIdentifier: true)
         {
             foreach (string header in headers) {
@@ -88,11 +91,15 @@ namespace ETLProcess.Specific
         /// <br>Satisfies interface</br>
         /// </summary>
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
+        /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
         /// <param name="headers">A string of column headers</param>
         /// <returns></returns>
-        public Record_Statement Record(StringMap stringMap, List<string> headers)
+        public Record_Statement Record(
+            StringMap stringMap
+            , SampleColumnTypes sampleColumnTypes
+            , List<string> headers)
         {
-            return new Record_Statement(stringMap, headers);
+            return new Record_Statement(stringMap, sampleColumnTypes, headers);
         }
 
         /// <summary>

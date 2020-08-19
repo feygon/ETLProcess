@@ -7,8 +7,8 @@ using System.Linq;
 
 using ETLProcess.Specific;
 using static ETLProcess.Parse;
-using ETLProcess.General.Containers;
 using ETLProcess.General;
+using ETLProcess.General.Containers;
 using ETLProcess.General.IO;
 using ETLProcess.Specific.Boilerplate;
 
@@ -21,8 +21,7 @@ namespace ETLProcess.General.Algorithms
     /// <summary>
     /// A class of static algorithms, for parsing CSV input files.
     /// </summary>
-    public class CSV
-    {
+    public class CSV {
         /// <summary>
         /// Imports a single file by row. Each string object in the list is 1 row in the file.
         /// </summary>
@@ -33,16 +32,15 @@ namespace ETLProcess.General.Algorithms
             var result = new List<string>();
             using (Stream readFile = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                using (TextReader textReader = new StreamReader(readFile))
-                {
+                using (TextReader textReader = new StreamReader(readFile)) {
                     // Row parsing
                     string input = "";
-                    while ((input = textReader.ReadLine()) != null)
-                    {
+                    while ((input = textReader.ReadLine()) != null) {
                         result.Add(input);
                     }
                 }
             }
+            // TO DO: Analyze for parallelism. Must be ordered.
             return result;
         }
 
@@ -109,7 +107,6 @@ namespace ETLProcess.General.Algorithms
                 headers ??= csvRead.ReadFields() ?? new string[] { }; // no action if headers provided in arguments.
 
                 List<StringMap> records = new List<StringMap>();
-                
 
                 while (!csvRead.EndOfData)
                 {
@@ -122,15 +119,13 @@ namespace ETLProcess.General.Algorithms
                     //{
                     //    newRow.Add(headers[n], rowData[n]);
                     //}
-                    records.Add((StringMap)newRow);
+
+                    records.Add(new StringMap(newRow));
                 }
 
                 HeaderSource<List<StringMap>, List<string>> ret =
                     new HeaderSource<List<StringMap>, List<string>>(records, headers.ToArray());
-
-
                 return ret;
-
             }
         }
     }

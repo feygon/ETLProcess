@@ -111,13 +111,14 @@ namespace ETLProcess.General.Containers
         /// Constructor for object with only a master DataSet.
         /// </summary>
         /// <param name="masterSet">The master data set, to add this to.</param>
+        /// <param name="tableName">Intended name of the table.</param>
         public ForeignKeyConstraintElements(
-            DataSet masterSet)
+            DataSet masterSet, string tableName)
         {
             this.masterSet = masterSet ?? throw new Exception("Cannot be null: Errant Null value passed to Foreign Key Constraint struct.");
             this.primaryFKColumns = null;
             this.childFKColumnNames = null;
-            this.primaryTableName = null;
+            this.primaryTableName = tableName;
             this.primaryTableName = "trunk";
             Log.Write("Null Foreign Key Constraint created. Was this the trunk table of the master set?");
         }

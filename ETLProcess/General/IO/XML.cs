@@ -7,6 +7,8 @@ using ETLProcess.General.Containers;
 using ETLProcess.General;
 using ETLProcess.General.IO;
 using ETLProcess.General.Interfaces;
+using ETLProcess.Specific.Boilerplate;
+using System.Data;
 
 namespace ETLProcess.General.IO
 {
@@ -16,27 +18,23 @@ namespace ETLProcess.General.IO
         /// <summary>
         /// Export to xml
         /// </summary>
-        /// <param name="fileName">The file to export</param>
-        /// <param name="documents">The list of documents to export</param>
-        public static void Export<TOutputDoc>(
-                string fileName
-                , List<IOutputDoc> documents
-            ) where TOutputDoc : IOutputDoc, new()
+        /// <param name="fileNameOut">The file to export</param>
+        /// <param name="processData">The list of documents to export</param>
+        public static void Export(
+                string fileNameOut
+                , ClientETLProcess processData
+            )
         {
             // Export the XML
             Log.Write("Exporting XML");
-#if DEBUG
-            using (Stream saveWorkOrders = File.Open($"{fileName}.xml", FileMode.Create))
-#else
-            using (Stream saveWorkOrders = File.Open(fileName, FileMode.Create))
-#endif
+            using (Stream saveWorkOrders = File.Open($"{fileNameOut}.xml", FileMode.Create))
             {
                 // Save Work Orders
-                var xmlWorkOrders = new XmlSerializer(typeof(List<TOutputDoc>));
-                xmlWorkOrders.Serialize(saveWorkOrders, documents);
+                var xmlWorkOrders = new XmlSerializer(typeof(ClientETLProcess));
+                xmlWorkOrders.Serialize(saveWorkOrders, processData);
             }
-            // Create the Uluro result file
-            using Stream saveResultFile = File.Open($"{fileName}.result", FileMode.Create);
+            // Create the result file
+            using Stream saveResultFile = File.Open($"{fileNameOut}.result", FileMode.Create);
             using TextWriter resultWriter = new StreamWriter(saveResultFile);
             resultWriter.WriteLine("result=0");
         }

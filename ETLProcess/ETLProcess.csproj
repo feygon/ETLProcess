@@ -52,26 +52,36 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="General\Algorithms\CSV.cs" />
-    <Compile Include="General\Containers\AbstractClasses\IOProfile.cs" />
+    <Compile Include="General\Profiles\OutputSingleton.cs" />
     <Compile Include="General\Containers\ForeignKeyConstraintElements.cs" />
-    <Compile Include="General\Interfaces\I_CSVIn.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\IC_CSVFileIn.cs" />
     <Compile Include="General\Containers\KeyStrings.cs" />
     <Compile Include="General\Containers\HeaderSource.cs" />
     <Compile Include="General\GP.cs" />
-    <Compile Include="General\Interfaces\IETLP_Specific_FilesIn.cs" />
-    <Compile Include="General\Interfaces\INew.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\IB_FilesIn.cs" />
     <Compile Include="General\Interfaces\IOutputDetail.cs" />
     <Compile Include="General\Interfaces\IOutputDoc.cs" />
     <Compile Include="General\Interfaces\IRecord.cs" />
     <Compile Include="General\Interfaces\IRecord_Uses_ImportRows.cs" />
     <Compile Include="General\Interfaces\IGeneratesRecords.cs" />
-    <Compile Include="General\Interfaces\IETLP_Specific.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\IA_InputProfile.cs" />
     <Compile Include="General\Containers\Members\Address.cs" />
     <Compile Include="General\Containers\Members\Date.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\IC_FlatFileIn.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\IA_OutputProfile.cs" />
+    <Compile Include="General\IO\IOFiles.cs" />
     <Compile Include="General\IO\XML.cs" />
     <Compile Include="General\IO\ZipFiles.cs" />
-    <Compile Include="General\Profiles\FilesIn_XMLOut.cs" />
-    <Compile Include="General\Profiles\SQLIn_XMLOut.cs" />
+    <Compile Include="General\Profiles\InputSingleton.cs" />
+    <Compile Include="General\Profiles\SingletonProfile.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="General\Profiles\Out\IO_CSVOut.cs" />
+    <Compile Include="General\Profiles\In\IO_FilesIn.cs" />
+    <Compile Include="General\Profiles\Out\IO_FlatfileOut.cs" />
+    <Compile Include="General\Profiles\In\IO_SQLIn.cs" />
+    <Compile Include="General\Profiles\Out\IO_SQLOut.cs" />
+    <Compile Include="General\Profiles\Out\IO_XMLOut.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Specific\ClientBusinessRules.cs" />
     <Compile Include="Specific\Boilerplate\ClientETLProcess.cs">
@@ -79,7 +89,7 @@
     </Compile>
     <Compile Include="Specific\Documents\BalDetail.cs" />
     <Compile Include="Specific\Documents\Record_Statement.cs" />
-    <Compile Include="General\Containers\DataRecords.cs">
+    <Compile Include="General\Containers\FileDataRecords.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="General\IO\Email.cs" />
@@ -103,5 +113,6 @@
   <ItemGroup>
     <Content Include="Specific\SQLInput.sql" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

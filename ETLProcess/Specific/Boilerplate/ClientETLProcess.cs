@@ -16,86 +16,74 @@ using ETLProcess.General.Profiles;
 using String = System.String;
 using AcctID = System.String;
 using MemberID = System.String;
-using SampleColumnTypes = System.Collections.Generic.Dictionary<string, System.Type>;
 using ETLProcess.General.Containers.AbstractClasses;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 
 namespace ETLProcess.Specific.Boilerplate
 {
     /// <summary>
-    /// A class to fulfill Client statement and welcome letter document types.
+    /// A boilerplate example of a class to fulfill Client statement and welcome letter document types.
     /// </summary>
-    public class ClientETLProcess : DataSet, IETLP_Specific_FilesIn<FilesIn_XMLOut>, IETLP_Specific<SQLIn_XMLOut>, I_CSVIn
+    internal sealed class ClientETLProcess : DataSet, IC_CSVFileIn<IO_FilesIn>
     {
-        static readonly List<string> statementHeaders = new string[] { "Group Billing Acct ID", "Invoice Number" }.ToList();
-        static readonly List<string> memberHeaders = new string[] { "Billing Account Number" }.ToList();
-        static readonly List<string> balFwdHeaders = new string[] { "Account ID" }.ToList();
+        //Class members.
+        private readonly IO_FilesIn Process_FilesIn;
+        private FileDataRecords<Record_Statement, ClientETLProcess> statementRecords; // is a DataTable.
+        private FileDataRecords<Record_Members, ClientETLProcess> memberRecords;
+        private FileDataRecords<Record_BalFwd, ClientETLProcess> balFwdRecords;
 
-        /// <summary>
-        /// Names of Key Columns in each Type
-        /// </summary>
-        public Dictionary<Type, List<string>> CSVColumnNames { get; } = new Dictionary<Type, List<string>>()
+        // Key Columns of each class (not including indexers).
+        public Dictionary<Type, SampleColumnTypes> SampleColumns { get; } = null;
+        // Public parameterless constructor, for inheritance.
+        public ClientETLProcess() : base(IOFiles.PrepGuid.ToString()) { }
+        public static string argIn = "";
+
+        // Constructor for boilerplate implementation class files, required by interface.
+        public ClientETLProcess(string arg)
+            : base(IOFiles.PrepGuid.ToString())
         {
-            { typeof(Record_Statement), statementHeaders },
-            { typeof(Record_Members), memberHeaders },
-            { typeof(Record_BalFwd), balFwdHeaders }
-        };
+            Record_Statement.InitSample();
+            Record_Members.InitSample();
+            Record_BalFwd.InitSample();
+            SampleColumns = new Dictionary<Type, SampleColumnTypes> {
+                 { typeof(Record_Statement), new SampleColumnTypes((Record_Statement.Sample).columnTypes) }
+                ,{ typeof(Record_Members), new SampleColumnTypes((Record_Members.Sample).columnTypes) }
+                ,{ typeof(Record_BalFwd), (Record_BalFwd.Sample).columnTypes }
+            };
+            argIn = arg;
 
-        internal DataRecords<Record_Statement> statementRecords; // is a DataTable.
-        internal DataRecords<Record_Members> memberRecords;
-        internal DataRecords<Record_BalFwd> balFwdRecords;
-
-        /// <summary>
-        /// Key Columns of each class (not including indexers).
-        /// </summary>
-        public Dictionary<Type, SampleColumnTypes> SampleColumns { get; } =
-            new Dictionary<Type, SampleColumnTypes> {
-                { typeof(Record_Statement), Record_Statement.Sample.columnTypes }
-                ,{ typeof(Record_Members), Record_Members.Sample.columnTypes}
-                ,{ typeof(Record_BalFwd), Record_BalFwd.Sample.columnTypes}
-        };
-
-        private readonly FilesIn_XMLOut PreP;
-        /// <summary>
-        /// Constructor for boilerplate implementation class files, required by interface.
-        /// </summary>
-        /// <param name="PreP">The generic pre-processor</param>
-        public ClientETLProcess(FilesIn_XMLOut PreP) 
-            : base(FilesIn_XMLOut.PrepGuid.ToString())
-        {
             // TO DO: MetroEmail.InitClient(); Does mandrill email the client when this goes off?
-            this.PreP = PreP;
+            IO_FilesIn.Init(new object[] { arg });
+            this.Process_FilesIn = IO_FilesIn.GetDerivedInstance();
+
+            Process_FilesIn.Check_Input(CheckFiles_Delegate);
+
+            if (!Process_FilesIn.Check_Input(CheckFiles_Delegate)) {
+                Log.WriteException("Bad file count in zipfile.");
+            } // specified check for implementation Statement/WelcomeLetters
+            Log.Write("Client ETL Profile Loaded.");
         }
 
         internal void ExportRecords()
         {
-            throw new NotImplementedException();
+            XML.Export("out", this);
         }
 
-        // Don't worry about it being grayed out.
-        // Intellisense doesn't understand returning a signature as using it.
-        // The promise of an interface necessitates this arrangement.
-        /// <summary>
-        /// Delegate to check files for requirements -- in this case, number of files.
-        /// </summary>
-        private readonly DelRetArray<bool, string> CheckFilesDelegate = (string[] files) => 
-        {
-            if (files.Length != 3)
-            {
-                throw new Exception("Wrong number of files, expected 3");
-            }
-            return true;
-        };
+        // Member interface for delegate to check files for requirements.
+        public DelRet<bool, string[]> CheckFiles_Delegate { get; } =
+            (string[] files) => { 
+                if (files.Length != 3) {
+                    throw new Exception("Wrong number of files, expected 3");
+                }
+                return true;
+            };
 
-        /// <summary>
-        /// Member interface for delegate to check files for requirements.
-        /// </summary>
-        public DelRetArray<bool, string> CheckFiles_Delegate
-        {
-            get { return CheckFilesDelegate; }
-        }
+        //public bool Check_Input(DelRet<bool, string[]> inputs)
+        //{
+        //    return Process_FilesIn.Check_Input(inputs);
+        //}
 
-        DelRetArray<bool, string> IETLP_Specific_FilesIn<FilesIn_XMLOut>.CheckFiles_Delegate => throw new NotImplementedException();
 
         /// <summary>
         /// Return an enumeration of which document type it is.
@@ -105,9 +93,15 @@ namespace ETLProcess.Specific.Boilerplate
         /// <returns></returns>
         public RecordType IdentifyRecordFile(string filename)
         {
-            if (filename.StartsWith("Statement", StringComparison.InvariantCultureIgnoreCase)) { return RecordType.Statements; }
-            if (filename.StartsWith("Member", StringComparison.InvariantCultureIgnoreCase)) { return RecordType.Members; }
-            if (filename.Contains("Balance")) { return RecordType.BalancesForward; }
+            if (Path.GetFileNameWithoutExtension(filename).StartsWith("Statement", StringComparison.InvariantCultureIgnoreCase)) { 
+                return RecordType.Statements; 
+            }
+            if (Path.GetFileNameWithoutExtension(filename).StartsWith("Member", StringComparison.InvariantCultureIgnoreCase)) { 
+                return RecordType.Members; 
+            }
+            if (Path.GetFileNameWithoutExtension(filename).Contains("Balance")) { 
+                return RecordType.BalancesForward; 
+            }
             return RecordType.Error; // error code;
         }
 
@@ -116,20 +110,16 @@ namespace ETLProcess.Specific.Boilerplate
         /// </summary>
         public void PopulateRecords() 
         {
-            PopulateRecords(PreP.files);
+            PopulateRecords(Process_FilesIn.Files);
+            Log.Write("Records Populated.");
         }
 
         /// <summary>
-        /// Populate documents with information.
+        /// Populate documents with information, in the proper order.
         /// </summary>
         /// <param name="files"></param>
         private void PopulateRecords(string[] files)
         {
-            statementRecords = null;
-            memberRecords = null;
-            balFwdRecords = null;
-            // each will be a dictionary of documents indexed by their respective IDs.
-
             RecordType recordType;
             string filename
                 , fileExtension;
@@ -140,21 +130,20 @@ namespace ETLProcess.Specific.Boilerplate
                 filename = Path.GetFileName(filePath);
                 fileExtension = Path.GetExtension(filePath);
                 recordType = IdentifyRecordFile(filename);
+                
                 // put each document type into its headersource (struct of Stringmap and headers list)
                 switch (recordType)
                 {
                     case (RecordType.Statements):
 
-
                         List<string> StatementRecordData = CSV.ImportRows(filePath);
-                        Record_Statement sample = new Record_Statement();
 
                         HeaderSource<List<StringMap>, List<string>> statementSrcData =
-                            sample.ParseRows(StatementRecordData.ToArray());
-                        statementRecords = new DataRecords<Record_Statement>(
+                            Record_Statement.Sample.ParseRows(StatementRecordData.ToArray());
+                        statementRecords = new FileDataRecords<Record_Statement, ClientETLProcess>(
                             statementSrcData
-                            , this
-                            , new ForeignKeyConstraintElements(this));
+                            , new ForeignKeyConstraintElements(this, typeof(Record_Statement).Name));
+                        Log.Write("Statement Records files populated.");
                         break;
 
                     case (RecordType.Members):
@@ -166,20 +155,20 @@ namespace ETLProcess.Specific.Boilerplate
                             , delimiter: "|"
                             , useQuotes: false);
 
-                        memberRecords = new DataRecords<Record_Members>(
+                        memberRecords = new FileDataRecords<Record_Members, ClientETLProcess>(
                             membersByAcctID
-                            , this
                             , new ForeignKeyConstraintElements(
                                 this
                                 , new DataColumn[] { Tables[statementRecords.TableName].Columns["Group Billing Acct ID"] } // parent key columns.
                                 , new String[] { "Group Billing Acct ID" } )
                             );
+                        Log.Write("Member Records populated.");
                         break;
 
                     case (RecordType.BalancesForward):
                         // TO DO: once-over post-DataSet/DataTable type changes.
                         // balfwdfile has no internal headers.
-                        List<string> headers = new Record_BalFwd().headers;
+                        List<string> headers = Record_BalFwd.Sample.headers;
 
                         // TO DO: 
                         var balFwdByAcctID = CSV.ImportCSVWithHeader(
@@ -188,14 +177,14 @@ namespace ETLProcess.Specific.Boilerplate
                             , useQuotes: true
                             , headers);
 
-                        balFwdRecords = new DataRecords<Record_BalFwd>(
+                        balFwdRecords = new FileDataRecords<Record_BalFwd, ClientETLProcess>(
                             balFwdByAcctID
-                            , this
                             , new ForeignKeyConstraintElements(
                                 this
                                 , new DataColumn[] { Tables[statementRecords.TableName].Columns["Group Billing Acct ID"] }
                                 , new String[] { "Billing Account Number" } )
                             );
+                        Log.Write("Balance Forward Records populated.");
                         break;
 
                     case (RecordType.Error):
@@ -261,11 +250,12 @@ namespace ETLProcess.Specific.Boilerplate
             }
 
             var ret = new Queue<String>();
-            for (int i=0; i < dict.Count; i++)
+            while (dict.Count > 0)
             {
-                string max = dict.Max().Key;
-                ret.Enqueue(max);
-                dict.Remove(max);
+                int minInt = dict.Values.Min();
+                string min = dict.Keys.Where((x) => dict[x] == minInt).FirstOrDefault(); // allows multiple keys hashing to a bucket int value.
+                ret.Enqueue(min);
+                dict.Remove(min);
             }
             return ret;
         }

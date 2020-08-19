@@ -17,10 +17,10 @@ namespace ETLProcess.General.Interfaces
         /// <summary>
         /// Promise of a dictionary of bools, indicating whether a specific KeyString is unique in the interfaced class.
         /// </summary>
-        public Dictionary<KeyStrings, bool> uniqueKeys_YN { get; }
+        public Dictionary<KeyStrings, bool> UniqueKeys_YN { get; }
         /// <summary>
         /// Promise of a counter for redundant records.
         /// </summary>
-        public int redundantRecords { get; }
+        public int RedundantRecords { get; }
     }
 }

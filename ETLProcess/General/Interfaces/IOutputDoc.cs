@@ -12,6 +12,6 @@ namespace ETLProcess.General.Interfaces
 {
     internal interface IOutputDoc
     {
-        public IOutputDoc Record(DataRow data);
+        public IOutputDoc Record(DataRow data, object[] obj = null);
     }
 }

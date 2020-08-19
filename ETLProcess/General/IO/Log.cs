@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Diagnostics;
+using ETLProcess.General.IO;
 
 namespace ETLProcess.General
 {
@@ -9,7 +10,14 @@ namespace ETLProcess.General
     /// </summary>
     internal sealed class Log
     {
-        private readonly FileInfo logFileInfo;
+        public static Log Instance { get; } = new Log(); // Singleton Constructor.
+        public static string logFileName = "";
+        /// <summary>
+        /// Constructor for singleton output log
+        /// </summary>
+		private Log() { }
+
+        private static FileInfo logFileInfo;
         /// <summary>
         /// Access this to write a line with the writeline command.
         /// </summary>
@@ -38,14 +46,20 @@ namespace ETLProcess.General
         }
 
         /// <summary>
-        /// Constructor for output log
+        /// Set the location of the Debug Log, for use in the constructor.
         /// </summary>
-        /// <param name="directory"></param>
-		public Log(string directory)
-		{
-			writer = File.CreateText(directory);
-            logFileInfo = new FileInfo(directory);
+        /// <param name="filename">Filename of the zipFile of Client documents to be processed.</param>
+        public static void InitLog(string filename = null)
+        {
+            IOFiles.SetTempDir();
+            logFileName = string.Format($"{IOFiles.TempLocation}\\{Path.GetFileNameWithoutExtension(filename)}.log");
+            writer = File.CreateText(logFileName);
+            logFileInfo = new FileInfo(logFileName);
+
+            //return new Log($@"{IOFiles.TempLocation}\{filename ??= "Process"}_Debug.log");
         }
+
+        /*****Operation Methods*****/
 
         /// <summary>
         /// Write to the output log
@@ -71,7 +85,7 @@ namespace ETLProcess.General
         /// <summary>
         /// Dispose of a log.
         /// </summary>
-        public void Remove()
+        public static void Remove()
         {
             writer.Dispose();
             logFileInfo.Delete();

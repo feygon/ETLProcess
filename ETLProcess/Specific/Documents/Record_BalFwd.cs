@@ -7,7 +7,8 @@ using ETLProcess.General;
 using System.Linq;
 using ETLProcess.General.Containers.Members;
 using System.Runtime.CompilerServices;
-using SampleColumnTypes = System.Collections.Generic.Dictionary<string, System.Type>;
+
+using ETLProcess.General.Containers.AbstractClasses;
 
 namespace ETLProcess.Specific
 {
@@ -18,14 +19,14 @@ namespace ETLProcess.Specific
     {
         public SampleColumnTypes columnTypes { get; } = new SampleColumnTypes
         {
-            { "Member ID", typeof(string) }
-            ,{ "Member Name", typeof(string) }
-            ,{ "Contract ID", typeof(string) }
-            ,{ "Account ID", typeof(string) }
-            ,{ "Billing Period From Date", typeof(Date) }
-            ,{ "Billing Period Thru Date", typeof(Date) }
-            ,{ "Outstanding Amount", typeof(decimal) }
-            ,{ "Number of Days Overdue", typeof(int) }
+            { "Member ID", (typeof(string), false) }
+            ,{ "Member Name", (typeof(string), false) }
+            ,{ "Contract ID", (typeof(string), false) }
+            ,{ "Account ID", (typeof(string), true) }
+            ,{ "Billing Period From Date", (typeof(Date), false) }
+            ,{ "Billing Period Thru Date", (typeof(Date), false) }
+            ,{ "Outstanding Amount", (typeof(decimal), false) }
+            ,{ "Number of Days Overdue", (typeof(int), false) }
         };
 
         /// <summary>
@@ -55,33 +56,36 @@ namespace ETLProcess.Specific
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public Record_BalFwd() : base(
-            data: null
-            , keyIsUniqueIdentifier: false) 
-        {
+        public Record_BalFwd() : base(){ }
+
+        /// <summary>
+        /// Constructor, takes Stringmap.
+        /// </summary>
+        /// <param name="init"></param>
+        /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
+        public Record_BalFwd(StringMap init, SampleColumnTypes sampleColumnTypes)
+            : base(
+                  data: init
+                  , sampleColumnTypes
+                  , keyIsUniqueIdentifier: false)
+        { // as normal. 
         }
+
 
         /// <summary>
         /// A method that calls a Constructor which takes a StringMap
         /// <br>Satisfies interface <see cref="IRecord{DocM504A_BalFwdRecord}"/></br>
         /// </summary>
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
+        /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
         /// <param name="sirNotAppearingInThisFilm">A member which is unused in this implementation.</param>
         /// <returns></returns>
-        public Record_BalFwd Record(StringMap stringMap, List<string> sirNotAppearingInThisFilm = null)
+        public Record_BalFwd Record(
+            StringMap stringMap
+            , SampleColumnTypes sampleColumnTypes
+            , List<string> sirNotAppearingInThisFilm = null)
         {
-            return new Record_BalFwd(stringMap);
-        }
-
-        /// <summary>
-        /// Constructor, takes Stringmap.
-        /// </summary>
-        /// <param name="init"></param>
-        public Record_BalFwd(StringMap init)
-            : base(
-                  data: init
-                  , keyIsUniqueIdentifier: false)
-        { // as normal. 
+            return new Record_BalFwd(stringMap, sampleColumnTypes);
         }
     }
 }

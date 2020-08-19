@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ETLProcess.General.Containers;
+using ETLProcess.General.Containers.AbstractClasses;
+
+using SampleColumnTypes = System.Collections.Generic.Dictionary<string, System.Type>;
 
 namespace ETLProcess.General.Interfaces
 {
@@ -22,48 +25,24 @@ namespace ETLProcess.General.Interfaces
         /// <summary>
         /// A dictionary of the types that each column will have in the final document, by header.
         /// </summary>
-        public Dictionary<string, Type> columnTypes { get; }
+        public SampleColumnTypes columnTypes { get; }
         /// <summary>
         /// Called by sample.
         /// <br>A function is required which takes a delegate of the 'getDocStringMap' configuration.</br>
         /// <br>This will promise that a constructor is called which uses a StringMap as an argument, and may use an array of strings.</br>
         /// <code>(See above comment block for sample code)</code>
         /// </summary>
-        /// <param name="stringMap">A sample record</param>
+        /// <param name="stringMap">A sample record
+        ///     <para>Explicit cast to base type of type argument may be required.</para></param>
+        /// <param name="sampleColumnTypes">A dictionary of column types by header name in the interfaced type of Record</param>
         /// <param name="headers">The headers for the given document</param>
         /// <returns></returns>
         public TRecord Record(
             StringMap stringMap
+            , SampleColumnTypes sampleColumnTypes
             , List<string> headers);
 
-
         // Code guidance for constructors:
-        /*
-            //Default constructor example:
-            public TRecord() : 
-                base(List<string> headers // all column names
-                , List<string> keyHeaders // composite key column names
-                , StringMap data);
-        */
-
-        /*
-            //Copy constructor example:
-            public TRecord(TRecord doc)
-            : base(
-                 headers: doc.headers.ToArray().ToList()
-                 , keyHeaders: new string[] { "Key1", "Key2", ... }.ToList() // composite key column names
-                 , data: null // directly copy values in constructor body.
-                 , keyIsUniqueIdentifier: doc.keyIsUniqueIdentifier
-         */
-
-        /*
-            //Constructor that takes a StringMap and headers (used in concert with Record method above, which is called by accessing sample).
-            public StatementRecords(StringMap data, List<string> headers) 
-            : base(
-                  headers: headers
-                  , keyHeaders: new string[] { "Key1", "Key2", ... }.ToList() // composite key column names
-                  , data: data
-                  , keyIsUniqueIdentifier: true)
-        */
+        // TO DO: write this commentary.
     }
 }
