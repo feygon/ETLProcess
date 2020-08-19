@@ -4,8 +4,9 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using ETLProcess.General;
 using ETLProcess.General.Containers;
+using ETLProcess.General.Containers.Members;
 
 namespace ETLProcess.Specific
 {
@@ -77,5 +78,17 @@ namespace ETLProcess.Specific
             //
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Add a graceperiod to a statement end date, to get the due date of that statement.
+        /// </summary>
+        /// <param name="statementEndDate">The end date of the statement.</param>
+        /// <param name="gracePeriod">The number of days of grace period after a statement before payment is due.</param>
+        /// <returns>Returns a due Date.</returns>
+        internal static Date GetDueDate(Date statementEndDate, int gracePeriod)
+        {
+            return statementEndDate.AddDays(gracePeriod);
+        }
+        internal static readonly int StatementGracePeriod = 15;
     }
 }

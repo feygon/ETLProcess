@@ -459,6 +459,50 @@ namespace ETLProcess.General.Containers.Members
                 throw new Exception("Bad column name or unknown exception.", inner);
             }
         }
+
+        /// <summary>
+        /// Get the number of days in the month, inclusive of leap years.
+        /// </summary>
+        /// <param name="date">The date containing the month in question.</param>
+        /// <returns></returns>
+        public static int GetDaysInMonth(Date date)
+        {
+            switch (date.Month)
+            {
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                case 8:
+                case 10:
+                case 12:
+                    return 31;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    return 30;
+                case 2:
+                    if (IsLeapYear(date.Year)) {
+                        return 29;
+                    } else {
+                        return 28;
+                    }
+                default:
+                    throw new Exception("Bad dates... (Poor monkey...)... or unknown exception.");
+            }
+        }
+
+        /// <summary>
+        /// Get the number of days in the month, inclusive of leap years.
+        /// </summary>
+        /// <param name="month">The number of the month.</param>
+        /// <param name="year">The year of the month, default 1900 (not a leap year).</param>
+        /// <returns></returns>
+        public static int GetDaysInMonth(int month, int year = 1900)
+        {
+            return GetDaysInMonth(new Date(year, month, 1));
+        }
     }
     /// <summary>
     /// 
@@ -472,6 +516,4 @@ namespace ETLProcess.General.Containers.Members
         /// <returns></returns>
         public static Date ToDate(this DateTime dt) => new Date(dt);
     }
-
-
 }

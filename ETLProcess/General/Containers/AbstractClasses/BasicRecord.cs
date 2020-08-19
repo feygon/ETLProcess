@@ -7,10 +7,13 @@ using System.CodeDom;
 using System.ComponentModel;
 using System.Data;
 using System.Reflection;
+
 using ETLProcess.General.Containers.Members;
 using ETLProcess.General.Interfaces;
+using ETLProcess.General.Containers.AbstractClasses;
+using ETLProcess.Specific.Boilerplate;
 
-
+using SampleColumnTypes = System.Collections.Generic.Dictionary<string, System.Type>;
 
 namespace ETLProcess.General.Containers
 {
@@ -18,17 +21,19 @@ namespace ETLProcess.General.Containers
     /// An abstract class for wrapping implementation-specific document types in easily accessible expectations of their contents.
     /// <br>See members for details.</br>
     /// </summary>
-    public abstract class BasicRecord<T> : StringMap where T: BasicRecord<T>, new()
+    public abstract class BasicRecord<T> : StringMap where T : BasicRecord<T>, new()
     {
         /// <summary>
         /// Singleton sample accessor for child class. Child class should have constraint: "BasicRecord-ChildClass",
         ///     where Childclass is in generic brackets.
         /// </summary>
-        public static T Sample { get; } = new T();
+        public static T Sample { get; private set; } = null;
+
         /// <summary>
-        /// The client ETL process used to instantiate this record.
+        /// Initializer for Static Sample.
         /// </summary>
-        protected I_CSVIn process;
+        public static void InitSample() { Sample = new T(); }
+
         /// <summary>
         /// The values in the columns which hold composite keys for this class.
         /// </summary>
@@ -49,7 +54,7 @@ namespace ETLProcess.General.Containers
         /// <summary>
         /// Default Constructor -- only here for XMLSerializer. Do not use!
         /// </summary>
-        public BasicRecord() { }
+        public BasicRecord() : base(){}
 
         /// <summary>
         /// Accessor for child class headers string list.
@@ -68,10 +73,12 @@ namespace ETLProcess.General.Containers
         ///     unique/redundant primary or composite keyed CSV document classes.
         /// </summary>
         /// <param name="data">Data from which to derive a key, if any.</param>
+        /// <param name="sampleColumnTypes">A dictionary of column types in the derived type of Record</param>
         /// <param name="keyIsUniqueIdentifier">Is the primary or composite key a unique identifier?
         /// <br>(Sometimes they're not.)</br></param>
         public BasicRecord(
             StringMap data
+            , SampleColumnTypes sampleColumnTypes
             , bool keyIsUniqueIdentifier = true) : base()
         {
             try
@@ -82,7 +89,10 @@ namespace ETLProcess.General.Containers
                 }
 
                 recordKey = new KeyStrings();
-                foreach (KeyValuePair<string, Type> headerData in process.SampleColumns[GetChildType()])
+
+                // TO DO: Decouple from clientETLProcess (should be providable from FileDataRecords).
+                foreach (KeyValuePair<string, (Type colType, bool isKey)> headerData
+                    in sampleColumnTypes.Where((x)=> x.Value.isKey == true))
                 {
                     bool success = data.TryGetValue(headerData.Key, out string dataValue);
                     if (success)

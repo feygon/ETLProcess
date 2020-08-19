@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using ETLProcess.General.Interfaces;
 using ETLProcess.General.Containers;
 using ETLProcess.General;
+using ETLProcess.General.Containers.AbstractClasses;
+
 
 namespace ETLProcess.Specific
 {
@@ -13,20 +16,22 @@ namespace ETLProcess.Specific
     /// </summary>
     internal sealed class Record_Members : BasicRecord<Record_Members>, IRecord<Record_Members>
     {
-        public Dictionary<string, Type> columnTypes { get; } = new Dictionary<string, Type>()
+        public SampleColumnTypes columnTypes { get; } = new SampleColumnTypes()
         {
-            { "Billing Account Number", typeof(string) }
-            , { "First Name", typeof(string) }
-            , { "Middle Name", typeof(string) }
-            , { "Last Name", typeof(string) }
-            , { "Address1", typeof(string) }
-            , { "Address2", typeof(string) }
-            , { "City", typeof(string) }
-            , { "State", typeof(string) }
-            , { "Zip", typeof(string) }
-            , { "MemberID", typeof(string) }
-            , { "Premium Withhold", typeof(string) }
-        };
+            { "Billing Account Number", (typeof(string), true) }
+            , { "First Name", (typeof(string), false)}
+            , { "Middle Name", (typeof(string), false)}
+            , { "Last Name", (typeof(string), false)}
+            , { "Address1", (typeof(string), false)}
+            , { "Address2", (typeof(string), false)}
+            , { "City", (typeof(string), false)}
+            , { "State", (typeof(string), false)}
+            , { "Zip", (typeof(string), false)}
+            , { "MemberID", (typeof(string), false)}
+            , { "Premium Withhold", (typeof(string), false)}
+        }
+        //.ToDictionary((x) => x.Key, (y) => y.Value)
+            ;
 
         /// <summary>
         /// Satisfies interface requirement for headers accessor to above readonly Headers member.
@@ -49,22 +54,22 @@ namespace ETLProcess.Specific
         {
         }
 
-        public Record_Members() : base(
-            data:null
-            , keyIsUniqueIdentifier: true)
-        {
-        }
+        public Record_Members() : base(){ }
 
         /// <summary>
         /// A method that calls a Constructor which takes a StringMap
         /// <br>Satisfies interface</br>
         /// </summary>
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
+        /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
         /// <param name="headers">The column headers</param>
         /// <returns></returns>
-        public Record_Members Record(StringMap stringMap, List<string> headers)
+        public Record_Members Record(
+            StringMap stringMap
+            , SampleColumnTypes sampleColumnTypes
+            , List<string> headers)
         {
-            return new Record_Members(stringMap, headers);
+            return new Record_Members(stringMap, sampleColumnTypes, headers);
         }
 
         /// <summary>
@@ -72,10 +77,15 @@ namespace ETLProcess.Specific
         /// <br>Required by the IRecord interface.</br>
         /// </summary>
         /// <param name="memberFile">StringMap of a line of data</param>
+        /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
         /// <param name="headers">Headers of the data</param>
-        public Record_Members(StringMap memberFile, List<string> headers) 
+        public Record_Members(
+            StringMap memberFile
+            , SampleColumnTypes sampleColumnTypes
+            , List<string> headers) 
             : base(
                   data:memberFile
+                  , sampleColumnTypes
                   , keyIsUniqueIdentifier: true)
         {
             foreach (string header in headers)

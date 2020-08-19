@@ -3,12 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ETLProcess.General
 {
+    /// <summary>
+    /// Wrapper for a string-keyed Dictionary with ValueTuple values of Type and bool.
+    /// </summary>
+    public class SampleColumnTypes : Dictionary<string, (Type colType, bool isKey)>
+    {
+        /// <summary>
+        /// public parameterless constructor.
+        /// </summary>
+        public SampleColumnTypes():base() { }
+        internal SampleColumnTypes(int capacity) : base(capacity) { }
+        internal SampleColumnTypes(IEqualityComparer<string> comparer) : base(comparer) { }
+        internal SampleColumnTypes(IDictionary<string, (Type colType, bool isKey)> dictionary) : base(dictionary) { }
+        internal SampleColumnTypes(int capacity, IEqualityComparer<string> comparer) : base(capacity, comparer) { }
+        internal SampleColumnTypes(SerializationInfo info, StreamingContext context) : base(info, context) { }
+        internal SampleColumnTypes(IDictionary<string, (Type colType, bool isKey)> dictionary, IEqualityComparer<string> comparer)
+            : base(dictionary, comparer) { }
+    }
+
     /// <summary>
     /// Alias class for string-keyed Dictionary of strings
     /// </summary>
@@ -18,6 +37,19 @@ namespace ETLProcess.General
         /// Default constructor
         /// </summary>
         public StringMap() : base() { }
+
+        /// <summary>
+        /// Copy constructor.
+        /// </summary>
+        /// <param name="dict"></param>
+
+        public StringMap(Dictionary<string, string> dict) : base()
+        {
+            foreach (var x in dict)
+            {
+                Add(x.Key, x.Value);
+            }
+        }
 
     }
 
@@ -42,16 +74,6 @@ namespace ETLProcess.General
     /// <typeparam name="T0">The return type.</typeparam>
     /// <returns></returns>
     public delegate T0 DelRet<T0>();
-
-    /// <summary>
-    /// A delegate that takes any type and returns the other type.
-    /// </summary>
-    /// <typeparam name="T0">The return type.</typeparam>
-    /// <typeparam name="T1">The passed array type.</typeparam>
-    /// <param name="t1">The passed instance.</param>
-    /// <returns>Returns an instance of the return type.</returns>
-    public delegate T0 DelRetArray<T0, T1>(T1[] t1);
-
 
 
     /// <summary>
@@ -120,19 +142,167 @@ namespace ETLProcess.General
     }
 
     /// <summary>
-    /// A class to make abstract reflection easy, with a method to construct any class generically.
+    /// A class of static methods extending the C# Reflection API.
+    /// <para>Provides generic calls to GetMethod, GetField, and GetProperty.</para>
     /// </summary>
-    public static class GPMethods
+    /// <typeparam name="TClass">Type of the class to call the static method/field/property from.</typeparam>
+
+    public static class Reflection<TClass> where TClass: class
     {
         /// <summary>
-        /// A way to construct any class generically, from the typeinfo about that class.
+        /// A method to return an instance of type TClass, with optional parameters for its construction.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <param name="classOptions"></param>
         /// <returns></returns>
-        public static T VarToT<T>(Type type) where T: class
+        public static TClass GetReflectedInstance(Type type = null, object[] classOptions = null)
         {
-            ConstructorInfo constructorInfo = type.GetTypeInfo().TypeInitializer;
-            return constructorInfo.Invoke(null) as T;
+            try {
+                return (TClass)Activator.CreateInstance(type, classOptions);
+            } catch (Exception err) {
+                throw new Exception($"Failure creating instance {typeof(TClass).Name}:", err); 
+            }
         }
-    }
-}
+
+        /// <summary>
+        /// Invoke a method on T by its name and return its return value.
+        /// </summary>
+        /// <typeparam name="TRet">Return type of the method.</typeparam>
+        /// <param name="methodName">Name of the method to call.</param>
+        /// <param name="classOptions">Optional parameters used to instantiate the class.</param>
+        /// <param name="methodOptions">Optional parameters used in the static call.</param>
+        /// <param name="methodOptionTypes">Types of the optional parameters used in this method.</param>
+        /// <returns></returns>
+        public static TRet GetReflectedMethod<TRet>(
+            string methodName
+            , object[] classOptions = null
+            , object[] methodOptions = null
+            , Type[] methodOptionTypes = null)
+        {
+            if (methodOptions.Length != methodOptionTypes.Length) {
+                throw new Exception("Options and OptionTypes are not the same length. Reflection will fail.");
+            }
+            try {
+                var instance = Activator.CreateInstance(typeof(TClass), classOptions);
+                MethodInfo InstanceInfo = typeof(TClass).GetMethod(methodName, methodOptionTypes);
+                return (TRet)InstanceInfo.Invoke(instance, methodOptions);
+            }
+            catch (Exception err) {
+                throw new Exception($"Failure invoking method \"{methodName}\" from instance of class {typeof(TClass).Name}: ", err);
+            }
+        }
+
+        /// <summary>
+        /// Invoke a method on T by its name and return its return value.
+        /// </summary>
+        /// <typeparam name="TRet">Return type of the method.</typeparam>
+        /// <param name="methodName">Name of the method to call.</param>
+        /// <param name="instance">Instance of the object to call this on.</param>
+        /// <param name="methodOptions">Optional parameters used in the static call.</param>
+        /// <param name="methodOptionTYpes">Types of the optional parameters used in this method.</param>
+        /// <returns></returns>
+        public static TRet GetReflectedMethod<TRet>(
+            string methodName
+            , TClass instance
+            , object[] methodOptions = null
+            , Type[] methodOptionTYpes = null)
+        {
+            if (methodOptions.Length != methodOptionTYpes.Length) {
+                throw new Exception("Options and OptionTypes are not the same length. Reflection will fail.");
+            }
+            try {
+                MethodInfo InstanceInfo = typeof(TClass).GetMethod(methodName, methodOptionTYpes);
+                return (TRet)InstanceInfo.Invoke(instance, methodOptions);
+            } catch (Exception err) {
+                throw new Exception($"Failure invoking method \"{methodName}\" from instance of class {typeof(TClass).Name}:", err);
+            }
+        }
+
+        /// <summary>
+        /// Return a field value from T by its name.
+        /// </summary>
+        /// <typeparam name="TRet">Return type of the field.</typeparam>
+        /// <param name="fieldName"></param>
+        /// <param name="classOptions">Optional parameters used to instantiate the class.</param>
+        /// <param name="bindingMask">Bitmask of BindingFlags values, reflecting the static/public/etc. attributes of this field.</param>
+        /// <returns></returns>
+        public static TRet GetReflectedField<TRet>(
+            string fieldName
+            , object[] classOptions = null
+            , BindingFlags bindingMask = 0)
+        {
+            var instance = Activator.CreateInstance(typeof(TClass), classOptions);
+            try { 
+                FieldInfo fieldInfo = typeof(TClass).GetField(fieldName, bindingMask);
+                return (TRet)fieldInfo.GetValue(instance);
+            } catch (Exception err) {
+                throw new Exception($"Failure creating field {fieldName} in class {typeof(TClass).Name}:", err);
+            }
+        }
+
+        /// <summary>
+        /// Return a field value from T by its name.
+        /// </summary>
+        /// <typeparam name="TRet">Return type of the field.</typeparam>
+        /// <param name="fieldName"></param>
+        /// <param name="instance">Instance of the object to call this on.</param>
+        /// <param name="bindingMask">Bitmask of BindingFlags values, reflecting the static/public/etc. attributes of this field.</param>
+        /// <returns></returns>
+        public static TRet GetReflectedField<TRet>(
+            string fieldName
+            , TClass instance
+            , BindingFlags bindingMask = 0)
+        {
+            try {
+                FieldInfo fieldInfo = typeof(TClass).GetField(fieldName, bindingMask);
+                return (TRet)fieldInfo.GetValue(instance);
+            } catch (Exception err) {
+                throw new Exception($"Failure creating field {fieldName} in class {typeof(TClass).Name}:", err);
+            }
+        }
+
+        /// <summary>
+        /// Return a property value from T by its name.
+        /// </summary>
+        /// <typeparam name="TRet">Return type of the property.</typeparam>
+        /// <param name="propertyName">Name of the property to return.</param>
+        /// <param name="classOptions">Optional parameters used to instantiate the class.</param>
+        /// <param name="bindingMask">Bitmask of BindingFlags values, reflecting the static/public/etc. attributes of this property.</param>
+        /// <returns></returns>
+        public static TRet GetReflectedProperty<TRet>(
+            string propertyName
+            , object[] classOptions = null
+            , BindingFlags bindingMask = 0)
+        {
+            try
+            {
+                var instance = Activator.CreateInstance(typeof(TClass), classOptions);
+                PropertyInfo propertyInfo = typeof(TClass).GetProperty(propertyName, bindingMask);
+                return (TRet)propertyInfo.GetValue(instance);
+            } catch (Exception err) {
+                throw new Exception($"Failure creating property {propertyName} in class {typeof(TClass).Name}:", err);
+            }
+        }
+
+        /// <summary>
+        /// Return a property value from T by its name.
+        /// </summary>
+        /// <typeparam name="TRet">Return type of the property.</typeparam>
+        /// <param name="propertyName">Name of the property to return.</param>
+        /// <param name="instance">Instance of the object to call this on.</param>
+        /// <param name="bindingMask">Bitmask of BindingFlags values, reflecting the static/public/etc. attributes of this property.</param>
+        /// <returns></returns>
+        public static TRet GetReflectedProperty<TRet>(
+            string propertyName
+            , TClass instance
+            , BindingFlags bindingMask = 0)
+        {
+            try {
+                PropertyInfo propertyInfo = typeof(TClass).GetProperty(propertyName, bindingMask);
+                return (TRet)propertyInfo.GetValue(instance);
+            } catch (Exception err) {
+                throw new Exception($"Failure creating property {propertyName} in class {typeof(TClass).Name}:", err);
+            }
+        } // end method
+    } // end class
+} // end namespace

@@ -9,11 +9,9 @@ using Microsoft.VisualBasic.FileIO;
 
 namespace ETLProcess.General.IO
 {
-    internal sealed class ZipFiles
+    internal sealed class ZipFiles : IOFiles
     {
         private const string _7ZipExecutable = @"C:\Program Files\7-Zip\7z.exe";
-        public static string _TempLocation;
-
 
         /// <summary>
         /// Uses 7Zip to extract the filePath to the _TempLocation. If the extract fails then it is assumed the file is not an archive
@@ -38,7 +36,7 @@ namespace ETLProcess.General.IO
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 FileName = "cmd.exe",
-                Arguments = $"{@"/C"} \"\"{_7ZipExecutable}\" {@"e -bd -y -o"}\"{_TempLocation}\" \"{filePath}\"\""
+                Arguments = $"{@"/C"} \"\"{_7ZipExecutable}\" {@"e -bd -y -o"}\"{TempLocation}\" \"{filePath}\"\""
             };
             Log.Write($"Executing: {startInfo.FileName} {startInfo.Arguments}");
             process.StartInfo = startInfo;
@@ -50,8 +48,8 @@ namespace ETLProcess.General.IO
             if (process.ExitCode != 0)
             {
                 Log.Write("Not an archive? Processing as single file.");
-                Directory.CreateDirectory(_TempLocation);
-                File.Copy(filePath, Path.Combine(_TempLocation, inputFile.Name));
+                Directory.CreateDirectory(TempLocation);
+                File.Copy(filePath, Path.Combine(TempLocation, inputFile.Name));
             }
         }
 
@@ -62,15 +60,13 @@ namespace ETLProcess.General.IO
         /// <returns></returns>
         public static string[] GetFiles(string filepath)
         {
-
-
             // Begin the process
             Log.Write("ETLProcess Begun");
             // Handle 7zip extraction
             ZipFiles.Extract(filepath);
 
             // Begin file processing on files in the temp location
-            return Directory.GetFiles(_TempLocation);
+            return Directory.GetFiles(TempLocation);
         }
     }
 }
