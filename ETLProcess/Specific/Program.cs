@@ -1,4 +1,4 @@
-﻿#define Statement
+#define Statement
 
 using System;
 using System.Diagnostics;
@@ -53,7 +53,7 @@ namespace ETLProcess {
                 client.PopulateRecords();
 
                 // Enact client business rules
-                List<IOutputDoc> docs = client.ProcessRecords();
+                client.ProcessRecords();
 
                 // output data to client profiles
                 client.ExportRecords();

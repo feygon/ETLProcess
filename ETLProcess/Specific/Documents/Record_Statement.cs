@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -26,8 +26,8 @@ namespace ETLProcess.Specific
                 ,{ "Invoice Amount", (typeof(decimal), false) }
                 ,{ "Low-Income Subsidy Amount", (typeof(decimal), false) }
                 ,{ "Late-Enrollment Penalty Amount", (typeof(decimal), false) }
-                ,{ "Invoice Period From Date", (typeof(Date), false) }
-                ,{ "Invoice Period To Date", (typeof(Date), false) }
+                ,{ "Invoice Period From Date", (typeof(DateTime), false) }
+                ,{ "Invoice Period To Date", (typeof(DateTime), false) }
         };
 
         /// <summary>
@@ -68,7 +68,8 @@ namespace ETLProcess.Specific
         /// <param name="data"></param>
         /// <param name="headers">Headers of the data</param>
         /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
-        public Record_Statement(StringMap data
+        public Record_Statement(
+            StringMap data
             , SampleColumnTypes sampleColumnTypes
             , List<string> headers) 
             : base(

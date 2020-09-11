@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -38,15 +38,20 @@ namespace ETLProcess.Specific
         //                }
         //            }
 
+        public DataSet Output_NewMembers(DataSet allMembersDataSet)
+        {
+            throw new NotImplementedException();
+        }
+
         // Deprecated. Use Datatables.
-        public static void Filter_MissingMembers<TRecord>(
+        public static int Filter_MissingMembers(
             DataSet data
             , DataTable checkTable
-            , List<TRecord> missingRecords) where TRecord: BasicRecord<TRecord>, new()
+            , out DataTable missingRecords)
         {
-            missingRecords ??= new List<TRecord>();
+            throw new NotImplementedException();
 
-            // TO DO: populate ret members with missing invoices
+            // TO DO: populate datatable out members with missing invoices
             //
             //
             //
@@ -57,26 +62,15 @@ namespace ETLProcess.Specific
             //
         }
 
-        public static void CheckOldClientAccounts(
-            DataTable statementTable
-            , DataTable memberTable
-            , List<Record_Members> newMembers)
+        public static int Query_NewMembers(
+            DataSet statementTable
+            , out DataTable newMembers)
         {
-            newMembers ??= new List<Record_Members>();
+            newMembers = new DataTable();
+            throw new NotImplementedException();
             // TO DO:
             // call a DataTable of old clients, and compare the new client member file records.
-            // Any that aren't in the old clients file, exclude that member from statements (by ID) (and put out a report of them?).
-        }
-
-        internal static void CheckOldClientAccounts(DataSet data, List<Record_Members> newMembers)
-        {
-            newMembers ??= new List<Record_Members>();
-
-            //TO DO: Make a sql call and check against it.
-            //
-            //
-            //
-            throw new NotImplementedException();
+            // Any that aren't in the old clients file is a new client.
         }
 
         /// <summary>
@@ -89,6 +83,7 @@ namespace ETLProcess.Specific
         {
             return statementEndDate.AddDays(gracePeriod);
         }
+
         internal static readonly int StatementGracePeriod = 15;
     }
 }

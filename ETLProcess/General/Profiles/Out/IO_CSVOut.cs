@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ETLProcess.General.Containers.AbstractClasses;
 
 namespace ETLProcess.General.Profiles

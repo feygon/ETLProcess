@@ -1,4 +1,4 @@
-﻿select Docid, custname, AccountID, MemberID, DocCreateDate
+select Docid, custname, AccountID, MemberID, DocCreateDate
 from Documents doc
 left join Submissions sub on sub.submid = doc.submid
 left join Subtype ST on ST.subtypeid = sub.subtypeid

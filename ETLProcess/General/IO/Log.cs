@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Diagnostics;
 using ETLProcess.General.IO;
 
-namespace ETLProcess.General
+namespace ETLProcess.General.IO
 {
     /// <summary>
     /// A class for logging and outputting debug messages.

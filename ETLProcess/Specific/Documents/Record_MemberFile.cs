@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,9 +29,7 @@ namespace ETLProcess.Specific
             , { "Zip", (typeof(string), false)}
             , { "MemberID", (typeof(string), false)}
             , { "Premium Withhold", (typeof(string), false)}
-        }
-        //.ToDictionary((x) => x.Key, (y) => y.Value)
-            ;
+        };
 
         /// <summary>
         /// Satisfies interface requirement for headers accessor to above readonly Headers member.

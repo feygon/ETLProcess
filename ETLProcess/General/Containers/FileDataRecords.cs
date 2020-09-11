@@ -51,10 +51,7 @@ namespace ETLProcess.General.Containers
         /*****Constructors*****/
 
         /// <summary>
-        /// A class to contain data whether it is primary or composite keyed,
-        ///     either redundantly or uniquely.
-        ///     <br>TO DO: Could be more general purpose with more explicit interfaces,
-        ///         by promising certain generic types for allBasicDocs and headers</br>
+        /// A class to create a DataTable and link it to a DataSet, according to a constraint.
         /// </summary>
         /// <param name="source">Each Stringmap in the List of Stringmaps is a line of strings, with a string for a column. 
         /// <param name="constraint">Optional assembly of settings for foreign key constraints for this table, if any.</param>
@@ -96,11 +93,12 @@ namespace ETLProcess.General.Containers
                     record
                     );
             }
-            TableName = $"FilesIn_Table_{ typeof(TBasicRecord).Name}_{ IOFiles.PrepGuid}{ctr}";
+            TableName = $"FilesIn_Table_{ typeof(TBasicRecord).Name}_{ IOFiles.PrepGuid}_{ctr}";
             SetColumns();
             SetRows(src);
+            constraint.masterSet.Tables.Add(this);
             LinkTable_FK(constraint);
-            ctr++;
+            ctr++; // TO DO: Needed or not?
         }
 
         /// <summary>
@@ -124,7 +122,7 @@ namespace ETLProcess.General.Containers
                 if (!Columns.Contains(cell.Key)) { Log.WriteException($"Column named \"{cell.Key}\" not present in the table."); }
                 row.SetField(Columns[cell.Key], cell.Value);
             }
-            ImportRow(row); // Does this check against primary keys for uniqueness?
+            Rows.Add(row); // Does this check against primary keys for uniqueness?
         }
 
         /// <summary>
@@ -222,6 +220,7 @@ namespace ETLProcess.General.Containers
                 indexCol.Unique = true;
                 indexCol.AutoIncrement = true;
                 indexCol.ReadOnly = true;
+                Columns.Add(indexCol);
                 primaryKeys.Add(indexCol);
             }
             PrimaryKey = primaryKeys.ToArray();
@@ -234,7 +233,6 @@ namespace ETLProcess.General.Containers
             foreach (KeyValuePair<KeyStrings, TBasicRecord> kvp in source)
             {
                 Add(kvp.Key, kvp.Value);
-                UniqueKeys_YN.Add(kvp.Key, true);
             }
         }
     } // end class.

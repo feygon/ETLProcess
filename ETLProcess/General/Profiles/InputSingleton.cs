@@ -1,4 +1,4 @@
-﻿//using ETLProcess.General.Containers.AbstractClasses;
+//using ETLProcess.General.Containers.AbstractClasses;
 //using ETLProcess.General.Interfaces;
 
 //using System;

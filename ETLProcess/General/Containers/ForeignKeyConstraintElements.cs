@@ -135,11 +135,14 @@ namespace ETLProcess.General.Containers
                 && primaryFKColumns != null
                 && childFKColumnNames != null)
             {
+                DataColumn[] _childColumns = (from hdr in childFKColumnNames select table.Columns[hdr]).ToArray();
+
                 masterSet.Relations.Add(
                     relationName
                     , primaryFKColumns
-                    , (from hdr in childFKColumnNames select table.Columns[hdr]).ToArray());
+                    , _childColumns);
             }
         }
     }
+
 }

@@ -1,3 +1,4 @@
+
 ﻿using System.Collections.Generic;
 
 namespace ETLProcess.General.Interfaces
@@ -21,4 +22,5 @@ namespace ETLProcess.General.Interfaces
         /// </summary>
         public (string recordBegin, string recordEnd) RecordMarkers { get; }
     }
+
 }
