@@ -52,6 +52,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="General\Algorithms\CSV.cs" />
+    <Compile Include="General\Algorithms\LinQOnDataset.cs" />
+    <Compile Include="General\Profiles\In\IO_XMLIn.cs" />
     <Compile Include="General\Profiles\OutputSingleton.cs" />
     <Compile Include="General\Containers\ForeignKeyConstraintElements.cs" />
     <Compile Include="General\Interfaces\Profile Interfaces\IC_CSVFileIn.cs" />
@@ -99,6 +101,8 @@
     <Compile Include="Specific\ClientSpecificSQL.cs" />
     <Compile Include="General\IO\Log.cs" />
     <Compile Include="General\Algorithms\Parse.cs" />
+    <Compile Include="Specific\Information\Info_CSVFile.cs" />
+    <Compile Include="Specific\Information\Info_FlatFile.cs" />
     <Compile Include="Specific\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specific\Documents\Record_BalFwd.cs" />
@@ -115,4 +119,4 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-</Project>
+<Project>

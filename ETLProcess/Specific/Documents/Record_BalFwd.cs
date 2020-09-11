@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using ETLProcess.General.Interfaces;
@@ -23,8 +23,8 @@ namespace ETLProcess.Specific
             ,{ "Member Name", (typeof(string), false) }
             ,{ "Contract ID", (typeof(string), false) }
             ,{ "Account ID", (typeof(string), true) }
-            ,{ "Billing Period From Date", (typeof(Date), false) }
-            ,{ "Billing Period Thru Date", (typeof(Date), false) }
+            ,{ "Billing Period From Date", (typeof(DateTime), false) }
+            ,{ "Billing Period Thru Date", (typeof(DateTime), false) }
             ,{ "Outstanding Amount", (typeof(decimal), false) }
             ,{ "Number of Days Overdue", (typeof(int), false) }
         };
@@ -70,7 +70,6 @@ namespace ETLProcess.Specific
                   , keyIsUniqueIdentifier: false)
         { // as normal. 
         }
-
 
         /// <summary>
         /// A method that calls a Constructor which takes a StringMap

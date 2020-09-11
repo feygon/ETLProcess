@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +9,7 @@ using ETLProcess.General.IO;
 using ETLProcess.General.Interfaces;
 using ETLProcess.Specific.Boilerplate;
 using System.Data;
+using ETLProcess.Specific.Documents;
 
 namespace ETLProcess.General.IO
 {
@@ -19,24 +20,22 @@ namespace ETLProcess.General.IO
         /// Export to xml
         /// </summary>
         /// <param name="fileNameOut">The file to export</param>
-        /// <param name="processData">The list of documents to export</param>
+        /// <param name="outputData">The list of documents to export</param>
         public static void Export(
                 string fileNameOut
-                , ClientETLProcess processData
+                , List<OutputDoc> outputData
             )
         {
             // Export the XML
             Log.Write("Exporting XML");
-            using (Stream saveWorkOrders = File.Open($"{fileNameOut}.xml", FileMode.Create))
-            {
-                // Save Work Orders
-                var xmlWorkOrders = new XmlSerializer(typeof(ClientETLProcess));
-                xmlWorkOrders.Serialize(saveWorkOrders, processData);
-            }
-            // Create the result file
-            using Stream saveResultFile = File.Open($"{fileNameOut}.result", FileMode.Create);
-            using TextWriter resultWriter = new StreamWriter(saveResultFile);
-            resultWriter.WriteLine("result=0");
+
+            Stream saveOutput = File.Open($"{fileNameOut}.xml", FileMode.Create);
+            var xmlWorkOrders = new XmlSerializer(typeof(OutputDoc));
+            xmlWorkOrders.Serialize(saveOutput, outputData);
+            
+            using Stream outputXMLFile = File.Open($"{fileNameOut}.result", FileMode.Create);
+            using TextWriter textWriter = new StreamWriter(outputXMLFile);
+            textWriter.WriteLine("result=0");
         }
     }
 }

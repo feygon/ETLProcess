@@ -1,4 +1,4 @@
-﻿using ETLProcess.General.Interfaces;
+using ETLProcess.General.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,21 +9,23 @@ using ETLProcess.Specific.Documents;
 using System.Data;
 using ETLProcess.General.Containers.Members;
 using System.ComponentModel;
+using ETLProcess.General.IO;
 using ETLProcess.General;
 
 namespace ETLProcess.Specific.Documents
 {
     internal sealed class BalDetail : IOutputDetail
     {
-        string contractID = "";
-        decimal outstandingAmount = 0.0m;
+        public string memberID = "";
+        public string contractID = "";
+        public decimal outstandingAmount = 0.0m;
         public bool daysLate_30 = false
             , daysLate_60 = false
             , daysLate_90 = false
             , daysLate_120 = false;
-        Date billingPeriodFromDate = new Date(1900, 1, 1)
-            ,billingPeriodThruDate = new Date(1900, 1, 31);
-        TimeSpan timeOverdue = new TimeSpan(0, 0, 0, 0, 0);
+        public DateTime billingPeriodFromDate = new DateTime(1900, 1, 1)
+            , billingPeriodThruDate = new DateTime(1900, 1, 31);
+        public TimeSpan timeOverdue = new TimeSpan(0, 0, 0, 0, 0);
 
         public BalDetail() {
             Log.Write("BalDetail Sample instantiated, or unknown call to default constructor."); 
@@ -33,11 +35,13 @@ namespace ETLProcess.Specific.Documents
         {
             try
             {
+                memberID = data.Field<string>("Member ID");
                 contractID = data.Field<string>("Contract ID");
                 outstandingAmount = data.Field<decimal>("Outstanding Amount");
-                billingPeriodFromDate = data.Field<Date>("Billing Period From Date");
-                billingPeriodThruDate = data.Field<Date>("Billing Period Thru Date");
-                timeOverdue = billingPeriodThruDate.Subtract(dueDate ??= billingPeriodThruDate);
+                billingPeriodFromDate = data.Field<DateTime>("Billing Period From Date");
+                billingPeriodThruDate = data.Field<DateTime>("Billing Period Thru Date");
+                timeOverdue = billingPeriodThruDate.Subtract(dueDate 
+                    ??= (Date)billingPeriodThruDate.AddDays(ClientBusinessRules.StatementGracePeriod));
                 daysLate_30 = timeOverdue.Days >= 30;
                 daysLate_60 = timeOverdue.Days >= 60;
                 daysLate_90 = timeOverdue.Days >= 90;
@@ -53,21 +57,15 @@ namespace ETLProcess.Specific.Documents
         /// <param name="data">The balance forward table datarow to be added as a detail.</param>
         /// <param name="option">Index 0 as Date: invoice due date.</param>
         /// <returns>Use return 'as DetailOutputDoc'</returns>
-        public IOutputDoc Record(DataRow data, object[] option = null)
+        public IOutputDetail Record(DataRow data, object[] option = null)
         {
-            if (option != null)
-            {
-                try
-                {
+            if (option != null) {
+                try {
                     return new BalDetail(data, (Date)option[0]);
-                }
-                catch (Exception err)
-                {
+                } catch (Exception err) {
                     throw new Exception("Bad cast type or unknown error", err);
                 }
-            }
-            else
-            {
+            } else {
                 return new BalDetail(data, null);
             }
         }
@@ -85,9 +83,9 @@ namespace ETLProcess.Specific.Documents
         /// <returns></returns>
         public static decimal GetLateBalance(BalDetail[] balances, DelRet<bool> lateCheck = null)
         {
-            IEnumerable<BalDetail> bals = balances.Where(
+            IEnumerable<BalDetail> lateBals = balances.Where(
                 (bal) => lateCheck?.Invoke() ?? bal.daysLate_30 == true);
-            return bals.Select((bal) => bal.outstandingAmount).Sum();
+            return lateBals.Select((bal) => bal.outstandingAmount).Sum();
         }
     }
 }

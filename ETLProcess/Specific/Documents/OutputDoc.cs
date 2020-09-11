@@ -1,72 +1,114 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using System.Data;
-
-using ETLProcess.General;
-using ETLProcess.General.Interfaces;
-using ETLProcess.General.Containers;
 using ETLProcess.General.Containers.Members;
+using ETLProcess.General.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using ETLProcess.General.IO;
 
 namespace ETLProcess.Specific.Documents
 {
-	internal sealed class OutputDoc : IOutputDoc
+    internal sealed class OutputDoc : IOutputDoc
 	{
-		public Address mailingAddress, returnAddress;
-		public string accountNumber, message;
-		Date statementStartDate, statementEndDate, dueDate;
-		public decimal invoiceAmt, currentBalance, fullBalance;
-		public int daysPastDue;
-		public List<IOutputDetail> _details;
-		
+
+		public string
+			groupBillingAccountID_Statement = ""
+			, invoiceNumber = ""
+			, billingAccountNumber_MemberFile = ""
+			, firstName = ""
+			, middleName = ""
+			, lastName = ""
+			, address1 = ""
+			, address2 = ""
+			, city = ""
+			, state = ""
+			, zip = ""
+			, memberID = ""
+			, premiumWithhold = "";
+		public decimal
+			invoiceAmount = 0.0m
+			, lowIncomeSubsidyAmount = 0.0m
+			, lateEnrollmentPenaltyAmount = 0.0m
+			, fullBalance = 0.0m
+			, lateBalance = 0.0m;
+		public DateTime
+			invoicePeriodFromDate = new DateTime(1900, 1, 1)
+			, invoicePeriodToDate = new DateTime(1900, 1, 31)
+			, dueDate = new DateTime(1900, 1, 1);
+		public List<BalDetail> details = new List<BalDetail>();
+		BalDetail sample = new BalDetail();
+
+		// public Address mailingAddress, returnAddress;
+		// public string accountNumber, message;
+		// Date statementStartDate, statementEndDate, dueDate;
+		// public decimal invoiceAmt, currentBalance, fullBalance;
+		// public int daysPastDue;
+		// public List<IOutputDetail> _details;
+
 		/// <summary>
 		/// Default constructor, for getting a sample.
 		/// </summary>
-		public OutputDoc()
-		{
-			this.mailingAddress = new Address();
-			this.returnAddress = new Address();
-			this.accountNumber = "";
-			this.statementStartDate = null;
-			this.statementEndDate = null;
-			this.daysPastDue = 0;
-			this.invoiceAmt = 0.0m;
-			this._details = new List<IOutputDetail>();
-			this.message = "";
-			this.currentBalance = 0.0m;
-			this.dueDate = null;
-			this.fullBalance = 0.0m;
-		}
+		public OutputDoc() { }
 
 		public OutputDoc(
-			DataRow data)
+			DataRow statementData
+			, DataRow memberData
+			, List<DataRow> balFwdData = null)
 		{
-			
-			mailingAddress = data.Field<Address>("Mailing Address");
-			returnAddress = data.Field<Address>("Return Address");
-			accountNumber = data.Field<string>("Account ID");
-			statementStartDate = data.Field<Date>("Invoice Period From Date");
-			statementEndDate = data.Field<Date>("Invoice Period To Date");
-			dueDate = ClientBusinessRules.GetDueDate(data.Field<Date>("Billing Period Thru Date")
-				     ,ClientBusinessRules.StatementGracePeriod);
-			
+			// statement items
+			groupBillingAccountID_Statement = statementData.Field<string>("Group Billing Acct ID");
+			invoiceNumber = statementData.Field<string>("Invoice Number");
+			invoiceAmount = statementData.Field<decimal>("Invoice Amount");
+			lowIncomeSubsidyAmount = statementData.Field<decimal>("Low-Income Subsidy Amount");
+			lateEnrollmentPenaltyAmount = statementData.Field<decimal>("Late-Enrollment Penalty Amount");
+			invoicePeriodFromDate = statementData.Field<DateTime>("Invoice Period From Date");
+			invoicePeriodToDate = statementData.Field<DateTime>("Invoice Period To Date");
 
-			message = data.Field<string>("Message");
-			invoiceAmt = data.Field<decimal>("Invoice Amount");
+			// member file items
+			billingAccountNumber_MemberFile = memberData.Field<string>("Billing Account Number");
+			firstName = memberData.Field<string>("First Name");
+			middleName = memberData.Field<string>("Middle Name");
+			lastName = memberData.Field<string>("Last Name");
+			address1 = memberData.Field<string>("Address1");
+			address2 = memberData.Field<string>("Address2");
+			city = memberData.Field<string>("City");
+			state = memberData.Field<string>("State");
+			zip = memberData.Field<string>("Zip");
+			memberID = memberData.Field<string>("MemberID");
+			premiumWithhold = memberData.Field<string>("Premium Withold");
 
-			currentBalance = data.Field<decimal>("Current Balance");
-			fullBalance = data.Field<decimal>("Full Balance");
+			dueDate = ClientBusinessRules.GetDueDate(
+				statementData.Field<Date>("Billing Period Thru Date")
+				, ClientBusinessRules.StatementGracePeriod);
+
+			fullBalance = invoiceAmount;
+			foreach (var detail in balFwdData)
+            {
+				BalDetail det = (BalDetail)sample.Record(detail, new object[] { dueDate });
+				details.Add(det);
+				fullBalance += det.outstandingAmount;
+            }
+			lateBalance = BalDetail.GetLateBalance(details.ToArray());
 			
 			// TO DO: implement constructor.
 			throw new NotImplementedException();
 		}
 
 		public IOutputDoc Record(
-			DataRow data, object[] sirNotAppearingInThisClass = null)
+			DataRow statementData, object[] otherData = null)
 		{
-			return new OutputDoc(data);
+			if (otherData != null)
+            {
+				try
+                {
+					return new OutputDoc(statementData, (DataRow)otherData[0], (List<DataRow>)otherData[1]);
+				} catch (Exception err) {
+					Log.WriteException("Bad otherData types or unknown error: ", err);
+					return null;
+                }
+            } else {
+				return null;
+			}
 		}
 	}
 }

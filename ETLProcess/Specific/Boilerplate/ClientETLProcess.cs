@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,7 +25,7 @@ namespace ETLProcess.Specific.Boilerplate
     /// <summary>
     /// A boilerplate example of a class to fulfill Client statement and welcome letter document types.
     /// </summary>
-    internal sealed class ClientETLProcess : DataSet, IC_CSVFileIn<IO_FilesIn>
+    public class ClientETLProcess : DataSet, IC_CSVFileIn<IO_FilesIn>
     {
         //Class members.
         private readonly IO_FilesIn Process_FilesIn;
@@ -68,6 +68,8 @@ namespace ETLProcess.Specific.Boilerplate
         internal void ExportRecords()
         {
             XML.Export("out", this);
+            throw new NotImplementedException("Must implement LinqToXML for proper XML tree output of DataSet.");
+            // this may require linq left joins, which must be GP'd.
         }
 
         // Member interface for delegate to check files for requirements.
@@ -130,7 +132,9 @@ namespace ETLProcess.Specific.Boilerplate
                 filename = Path.GetFileName(filePath);
                 fileExtension = Path.GetExtension(filePath);
                 recordType = IdentifyRecordFile(filename);
-                
+
+                DataColumn[] _parentColumns;
+                String[] _childColumns;
                 // put each document type into its headersource (struct of Stringmap and headers list)
                 switch (recordType)
                 {
@@ -155,13 +159,18 @@ namespace ETLProcess.Specific.Boilerplate
                             , delimiter: "|"
                             , useQuotes: false);
 
+                        _parentColumns = new DataColumn[] { Tables[statementRecords.TableName].Columns["Group Billing Acct ID"] }; // parent key columns.
+                        _childColumns = new String[] { "Billing Account Number" };
+
+                        // "must belong to a column" error.
                         memberRecords = new FileDataRecords<Record_Members, ClientETLProcess>(
                             membersByAcctID
                             , new ForeignKeyConstraintElements(
                                 this
-                                , new DataColumn[] { Tables[statementRecords.TableName].Columns["Group Billing Acct ID"] } // parent key columns.
-                                , new String[] { "Group Billing Acct ID" } )
-                            );
+                                , _parentColumns
+                                , _childColumns
+                            )
+                        );
                         Log.Write("Member Records populated.");
                         break;
 
@@ -177,12 +186,15 @@ namespace ETLProcess.Specific.Boilerplate
                             , useQuotes: true
                             , headers);
 
+                        _parentColumns = new DataColumn[] { Tables[statementRecords.TableName].Columns["Group Billing Acct ID"] }; // parent key columns.
+                        _childColumns = new String[] { "Account ID" };
+
                         balFwdRecords = new FileDataRecords<Record_BalFwd, ClientETLProcess>(
                             balFwdByAcctID
                             , new ForeignKeyConstraintElements(
                                 this
-                                , new DataColumn[] { Tables[statementRecords.TableName].Columns["Group Billing Acct ID"] }
-                                , new String[] { "Billing Account Number" } )
+                                , _parentColumns
+                                , _childColumns )
                             );
                         Log.Write("Balance Forward Records populated.");
                         break;
@@ -199,28 +211,47 @@ namespace ETLProcess.Specific.Boilerplate
         /// Any relevant filters have been run, and reports have been made on bad data.</br></Post>
         /// </summary>
         /// <returns></returns>
-        internal List<IOutputDoc> ProcessRecords()
+        internal DataSet ProcessRecords()
         {
-            List<IOutputDoc> outputDocs = new List<IOutputDoc>(); // Generate list of output documents with detail included.
-
             // PopulateDocs has already:
-            // Got All Invoices, Bal Fwd Records, Member Records, and made them into tables.
-            var newMembers = new List<Record_Members>();
-            var invoices_MissingMembers = new List<Record_Statement>();
-            var balances_MissingMembers = new List<Record_BalFwd>();
-            ClientBusinessRules.Filter_MissingMembers(this, this.Tables[typeof(Record_Statement).ToString()], invoices_MissingMembers);
-            ClientBusinessRules.Filter_MissingMembers(this, this.Tables[typeof(Record_BalFwd).ToString()], balances_MissingMembers);
-            ClientBusinessRules.CheckOldClientAccounts(this, newMembers);
-            // TO DO: report on missing members
-            // TO DO: Output docs
-
-            foreach (DataRow row in statementRecords.Rows)
+            // Gotten All Invoices, Bal Fwd Records, Member Records, and made them into tables in a dataset.
+            try
             {
+                // Filter out missing members from statements, return a count of the missing members,
+                //  and put out a DataTable of invoices missing members.
+                int missingMembersQty = ClientBusinessRules.Filter_MissingMembers(
+                    this,
+                    Tables[typeof(Record_Statement).ToString()]
+                    , out DataTable invoices_MissingMembers);
+                
+                // Filter out missing members from balances forward, return a count of the missing members,
+                //  and put out a DataTable of balances forward missing members.
+                int missingBalFwdQty = ClientBusinessRules.Filter_MissingMembers(
+                    this
+                    , Tables[typeof(Record_BalFwd).ToString()]
+                    , out DataTable balances_MissingMembers);
+                
+                // Query a selection of new members by sql call, return a count of new members,
+                //  and put out a DataTable of new members.
+                int newClientQty = ClientBusinessRules.Query_NewMembers(
+                    this
+                    , out DataTable newMembers);
+            } catch (NotImplementedException notImp) { Log.Write(notImp.Message + "\n" + notImp.StackTrace); }
+            string memStr = $"FilesIn_Table_{typeof(Record_Members).Name}_{IOFiles.PrepGuid}_0";
+            string stmStr = $"FilesIn_Table_{typeof(Record_Statement).Name}_{IOFiles.PrepGuid}_0";
+            string balStr = $"FilesIn_Table_{typeof(Record_BalFwd).Name}_{IOFiles.PrepGuid}_0";
 
-            }
+            var mem = Tables[memStr];
+            var stm = Tables[stmStr];
+            var bal = Tables[balStr];
 
-            // programming progress exception
-            throw new NotImplementedException("More polish to be implemented.");
+            //example: query a selection of statements which don't have corresponding members
+            var newMemberQuery = from left in stm.AsEnumerable()
+                                where !(from right in mem.AsEnumerable()
+                                        select right[mem.PrimaryKey[0]]
+                                        ).Contains(left[stm.PrimaryKey[0]])
+                                select left;
+            return this;
         }
 
         /// <summary>

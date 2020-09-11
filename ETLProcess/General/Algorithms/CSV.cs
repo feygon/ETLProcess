@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.VisualBasic.FileIO;
 using System.Linq;
-
 using ETLProcess.Specific;
 using static ETLProcess.Parse;
 using ETLProcess.General;
