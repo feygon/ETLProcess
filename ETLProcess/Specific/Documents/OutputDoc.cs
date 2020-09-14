@@ -8,7 +8,10 @@ using ETLProcess.General.IO;
 
 namespace ETLProcess.Specific.Documents
 {
-    internal sealed class OutputDoc : IOutputDoc
+	/// <summary>
+	/// Client-specific class for outputting documents.
+	/// </summary>
+    public class OutputDoc : IOutputDoc
 	{
 
 		public string
@@ -75,23 +78,22 @@ namespace ETLProcess.Specific.Documents
 			state = memberData.Field<string>("State");
 			zip = memberData.Field<string>("Zip");
 			memberID = memberData.Field<string>("MemberID");
-			premiumWithhold = memberData.Field<string>("Premium Withold");
+			premiumWithhold = memberData.Field<string>("Premium Withhold");
 
 			dueDate = ClientBusinessRules.GetDueDate(
-				statementData.Field<Date>("Billing Period Thru Date")
+				statementData.Field<DateTime>("Invoice Period To Date")
 				, ClientBusinessRules.StatementGracePeriod);
 
 			fullBalance = invoiceAmount;
 			foreach (var detail in balFwdData)
             {
-				BalDetail det = (BalDetail)sample.Record(detail, new object[] { dueDate });
+				BalDetail det = (BalDetail)sample.Record(detail, new object[] { new Date(dueDate.Year, dueDate.Month, dueDate.Day) });
 				details.Add(det);
 				fullBalance += det.outstandingAmount;
             }
 			lateBalance = BalDetail.GetLateBalance(details.ToArray());
 			
 			// TO DO: implement constructor.
-			throw new NotImplementedException();
 		}
 
 		public IOutputDoc Record(

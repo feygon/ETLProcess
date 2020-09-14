@@ -14,23 +14,50 @@ using ETLProcess.General;
 
 namespace ETLProcess.Specific.Documents
 {
-    internal sealed class BalDetail : IOutputDetail
+    /// <summary>
+    /// Output class of balane details.
+    /// </summary>
+    public class BalDetail : IOutputDetail
     {
+        // TO DO: Document better.
+        /// <summary>
+        /// Member
+        /// </summary>
         public string memberID = "";
+        /// <summary>
+        /// Member
+        /// </summary>
         public string contractID = "";
+        /// <summary>
+        /// Member
+        /// </summary>
         public decimal outstandingAmount = 0.0m;
+        /// <summary>
+        /// Member
+        /// </summary>
         public bool daysLate_30 = false
             , daysLate_60 = false
             , daysLate_90 = false
             , daysLate_120 = false;
+        /// <summary>
+        /// Member
+        /// </summary>
         public DateTime billingPeriodFromDate = new DateTime(1900, 1, 1)
             , billingPeriodThruDate = new DateTime(1900, 1, 31);
+        /// <summary>
+        /// Member
+        /// </summary>
         public TimeSpan timeOverdue = new TimeSpan(0, 0, 0, 0, 0);
 
         public BalDetail() {
             Log.Write("BalDetail Sample instantiated, or unknown call to default constructor."); 
         }
 
+        /// <summary>
+        /// Constructor with parameters (use this!)
+        /// </summary>
+        /// <param name="data">Row data, for constructing from.</param>
+        /// <param name="dueDate">Due date of the appropriate statement (can be null)</param>
         public BalDetail(DataRow data, Date dueDate)
         {
             try
@@ -57,7 +84,7 @@ namespace ETLProcess.Specific.Documents
         /// <param name="data">The balance forward table datarow to be added as a detail.</param>
         /// <param name="option">Index 0 as Date: invoice due date.</param>
         /// <returns>Use return 'as DetailOutputDoc'</returns>
-        public IOutputDetail Record(DataRow data, object[] option = null)
+        public IOutputDoc Record(DataRow data, object[] option = null)
         {
             if (option != null) {
                 try {
@@ -69,7 +96,10 @@ namespace ETLProcess.Specific.Documents
                 return new BalDetail(data, null);
             }
         }
-
+        /// <summary>
+        /// Get the type of the child.
+        /// </summary>
+        /// <returns></returns>
         public Type GetChildType()
         {
             return GetType();

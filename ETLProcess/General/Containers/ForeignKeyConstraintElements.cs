@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 
+using ETLProcess.General.IO;
 using ETLProcess.General.Containers;
 
 namespace ETLProcess.General.Containers

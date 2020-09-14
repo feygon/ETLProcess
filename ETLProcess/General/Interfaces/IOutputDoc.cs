@@ -10,7 +10,7 @@ using ETLProcess.Specific.Documents;
 
 namespace ETLProcess.General.Interfaces
 {
-    internal interface IOutputDoc
+    public interface IOutputDoc
     {
         public IOutputDoc Record(DataRow data, object[] obj = null);
     }

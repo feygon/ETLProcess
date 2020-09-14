@@ -12,6 +12,7 @@ using ETLProcess.General.Containers.Members;
 using ETLProcess.General.Interfaces;
 using ETLProcess.General.Containers.AbstractClasses;
 using ETLProcess.Specific.Boilerplate;
+using ETLProcess.General.IO;
 
 using SampleColumnTypes = System.Collections.Generic.Dictionary<string, System.Type>;
 

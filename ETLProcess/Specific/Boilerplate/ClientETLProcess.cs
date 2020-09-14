@@ -19,6 +19,7 @@ using MemberID = System.String;
 using ETLProcess.General.Containers.AbstractClasses;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using ETLProcess.Specific.Documents;
 
 namespace ETLProcess.Specific.Boilerplate
 {
@@ -27,6 +28,10 @@ namespace ETLProcess.Specific.Boilerplate
     /// </summary>
     public class ClientETLProcess : DataSet, IC_CSVFileIn<IO_FilesIn>
     {
+        /// <summary>
+        /// Bucket for tables, for easy reference by type instead of unique identifying string.
+        /// </summary>
+        public Dictionary<Type, List<DataTable>> TablesByType { get; } = new Dictionary<Type, List<DataTable>>();
         //Class members.
         private readonly IO_FilesIn Process_FilesIn;
         private FileDataRecords<Record_Statement, ClientETLProcess> statementRecords; // is a DataTable.
@@ -34,12 +39,22 @@ namespace ETLProcess.Specific.Boilerplate
         private FileDataRecords<Record_BalFwd, ClientETLProcess> balFwdRecords;
 
         // Key Columns of each class (not including indexers).
+        /// <summary>
+        /// Dictionary of column types.
+        /// </summary>
         public Dictionary<Type, SampleColumnTypes> SampleColumns { get; } = null;
-        // Public parameterless constructor, for inheritance.
+        /// <summary>
+        ///  Public parameterless constructor, for inheritance.
+        /// </summary>
         public ClientETLProcess() : base(IOFiles.PrepGuid.ToString()) { }
+        /// <summary>
+        /// Record of the argument that was passed into the boilerplate implementation of ClientETLProcess.
+        /// </summary>
         public static string argIn = "";
-
-        // Constructor for boilerplate implementation class files, required by interface.
+        /// <summary>
+        /// Constructor for boilerplate implementation class files, required by interface.
+        /// </summary>
+        /// <param name="arg">Argument for IOFilesIn initialization.</param>
         public ClientETLProcess(string arg)
             : base(IOFiles.PrepGuid.ToString())
         {
@@ -65,14 +80,17 @@ namespace ETLProcess.Specific.Boilerplate
             Log.Write("Client ETL Profile Loaded.");
         }
 
-        internal void ExportRecords()
+        internal void ExportRecords(List<OutputDoc> outputDocs)
         {
-            XML.Export("out", this);
-            throw new NotImplementedException("Must implement LinqToXML for proper XML tree output of DataSet.");
+            XML.Export("out", outputDocs);
             // this may require linq left joins, which must be GP'd.
         }
 
         // Member interface for delegate to check files for requirements.
+        /// <summary>
+        /// Delegate to satisfy interface requirement of a delegate that will check files for validity.
+        /// In this case, it checks for number of files.
+        /// </summary>
         public DelRet<bool, string[]> CheckFiles_Delegate { get; } =
             (string[] files) => { 
                 if (files.Length != 3) {
@@ -148,6 +166,10 @@ namespace ETLProcess.Specific.Boilerplate
                             statementSrcData
                             , new ForeignKeyConstraintElements(this, typeof(Record_Statement).Name));
                         Log.Write("Statement Records files populated.");
+                        
+                        if (!TablesByType.ContainsKey(typeof(Record_Statement))) { TablesByType.Add(typeof(Record_Statement), new List<DataTable>() { statementRecords }); }
+                        else { TablesByType[typeof(Record_Statement)].Add(statementRecords); }
+
                         break;
 
                     case (RecordType.Members):
@@ -171,6 +193,8 @@ namespace ETLProcess.Specific.Boilerplate
                                 , _childColumns
                             )
                         );
+                        if (!TablesByType.ContainsKey(typeof(Record_Members))) { TablesByType.Add(typeof(Record_Members), new List<DataTable>() { memberRecords }); }
+                        else { TablesByType[typeof(Record_Members)].Add(memberRecords); }
                         Log.Write("Member Records populated.");
                         break;
 
@@ -196,7 +220,10 @@ namespace ETLProcess.Specific.Boilerplate
                                 , _parentColumns
                                 , _childColumns )
                             );
+
                         Log.Write("Balance Forward Records populated.");
+                        if (!TablesByType.ContainsKey(typeof(Record_BalFwd))) { TablesByType.Add(typeof(Record_BalFwd), new List<DataTable>() { balFwdRecords }); }
+                        else { TablesByType[typeof(Record_BalFwd)].Add(balFwdRecords); }
                         break;
 
                     case (RecordType.Error):
@@ -211,7 +238,7 @@ namespace ETLProcess.Specific.Boilerplate
         /// Any relevant filters have been run, and reports have been made on bad data.</br></Post>
         /// </summary>
         /// <returns></returns>
-        internal DataSet ProcessRecords()
+        internal List<OutputDoc> ProcessRecords()
         {
             // PopulateDocs has already:
             // Gotten All Invoices, Bal Fwd Records, Member Records, and made them into tables in a dataset.
@@ -236,7 +263,7 @@ namespace ETLProcess.Specific.Boilerplate
                 int newClientQty = ClientBusinessRules.Query_NewMembers(
                     this
                     , out DataTable newMembers);
-            } catch (NotImplementedException notImp) { Log.Write(notImp.Message + "\n" + notImp.StackTrace); }
+            } catch (Exception err) { Log.Write(err.Message + "\n" + err.StackTrace); }
             string memStr = $"FilesIn_Table_{typeof(Record_Members).Name}_{IOFiles.PrepGuid}_0";
             string stmStr = $"FilesIn_Table_{typeof(Record_Statement).Name}_{IOFiles.PrepGuid}_0";
             string balStr = $"FilesIn_Table_{typeof(Record_BalFwd).Name}_{IOFiles.PrepGuid}_0";
@@ -251,7 +278,37 @@ namespace ETLProcess.Specific.Boilerplate
                                         select right[mem.PrimaryKey[0]]
                                         ).Contains(left[stm.PrimaryKey[0]])
                                 select left;
-            return this;
+
+            List<OutputDoc> outputDocs = new List<OutputDoc>();
+            var eStatementTable = TablesByType[typeof(Record_Statement)][0].AsEnumerable();
+            var eMemberTable = TablesByType[typeof(Record_Members)][0].AsEnumerable();
+            var eBalsFwdTable = TablesByType[typeof(Record_BalFwd)][0].AsEnumerable();
+
+
+            var statementRows = from a_stmRow in eStatementTable
+                                join a_memRow in eMemberTable
+                                on a_stmRow.Field<string>("Group Billing Acct ID") 
+                                equals a_memRow.Field<string>("Billing Account Number")
+                                select a_stmRow;
+            var memberRows = from b_stmRow in eStatementTable
+                             join b_memRow in eMemberTable
+                             on b_stmRow.Field<string>("Group Billing Acct ID") equals b_memRow.Field<string>("Billing Account Number")
+                             select b_memRow;
+            var balFwdRows = from c_balRow in eBalsFwdTable
+                             join c_memRow in memberRows
+                             on c_balRow.Field<string>("Member ID")
+                             equals c_memRow.Field<string>("MemberID")
+                             select c_balRow;
+            foreach (var row in statementRows)
+            {
+                DataRow memberRow = memberRows.Where(x => x.Field<string>("Billing Account Number") == row.Field<string>("Group Billing Acct ID")).First();
+                var eBalFwdRows = (from BalFwdRow in TablesByType[typeof(Record_BalFwd)][0].AsEnumerable()
+                                                     where BalFwdRow.Field<string>("Member ID") == memberRow.Field<string>("MemberID")
+                                                     select BalFwdRow).ToList();
+                outputDocs.Add(new OutputDoc(row, memberRow, eBalFwdRows));
+            }
+
+            return outputDocs;
         }
 
         /// <summary>

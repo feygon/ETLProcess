@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
+using ETLProcess.General.IO;
+
 namespace ETLProcess.General.Containers.AbstractClasses
 {
     /// <summary>

@@ -26,11 +26,13 @@ namespace ETLProcess.General.IO
                 , List<OutputDoc> outputData
             )
         {
+            // TO DO: Decouple OutputDoc from Export using IOutputDoc interface -> Serializable?
+
             // Export the XML
             Log.Write("Exporting XML");
 
             Stream saveOutput = File.Open($"{fileNameOut}.xml", FileMode.Create);
-            var xmlWorkOrders = new XmlSerializer(typeof(OutputDoc));
+            var xmlWorkOrders = new XmlSerializer(typeof(List<OutputDoc>));
             xmlWorkOrders.Serialize(saveOutput, outputData);
             
             using Stream outputXMLFile = File.Open($"{fileNameOut}.result", FileMode.Create);
