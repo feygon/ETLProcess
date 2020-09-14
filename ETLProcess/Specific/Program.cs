@@ -10,6 +10,7 @@ using System.Data;
 using Microsoft.VisualBasic.FileIO;
 using ETLProcess.Specific;
 using static ETLProcess.Parse;
+
 using ETLProcess.General.Containers;
 using ETLProcess.General;
 using ETLProcess.General.Containers.AbstractClasses;
@@ -17,6 +18,7 @@ using ETLProcess.General.Profiles;
 using ETLProcess.General.IO;
 using ETLProcess.Specific.Boilerplate;
 using ETLProcess.General.Interfaces;
+using ETLProcess.Specific.Documents;
 
 using String = System.String;
 using AcctID = System.String;
@@ -53,10 +55,10 @@ namespace ETLProcess {
                 client.PopulateRecords();
 
                 // Enact client business rules
-                client.ProcessRecords();
+                List<OutputDoc> outputDocs = client.ProcessRecords();
 
                 // output data to client profiles
-                client.ExportRecords();
+                client.ExportRecords(outputDocs);
                 //throw new Exception("Finish implementing ProcessDocs.");
                 /**********************************/
 

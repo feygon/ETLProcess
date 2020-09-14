@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ETLProcess.General.IO;
+
 namespace ETLProcess.General.Containers
 {
     /// <summary>

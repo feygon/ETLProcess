@@ -1,4 +1,6 @@
 using System;
+
+using ETLProcess.General.IO;
 using ETLProcess.General.Containers.AbstractClasses;
 
 namespace ETLProcess.General.Profiles

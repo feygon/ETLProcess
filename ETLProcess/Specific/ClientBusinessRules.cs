@@ -79,7 +79,7 @@ namespace ETLProcess.Specific
         /// <param name="statementEndDate">The end date of the statement.</param>
         /// <param name="gracePeriod">The number of days of grace period after a statement before payment is due.</param>
         /// <returns>Returns a due Date.</returns>
-        internal static Date GetDueDate(Date statementEndDate, int gracePeriod)
+        internal static DateTime GetDueDate(DateTime statementEndDate, int gracePeriod)
         {
             return statementEndDate.AddDays(gracePeriod);
         }
