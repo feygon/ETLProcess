@@ -52,7 +52,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="General\Algorithms\CSV.cs" />
-    <Compile Include="General\Algorithms\LinQOnDataset.cs" />
     <Compile Include="General\Profiles\In\IO_XMLIn.cs" />
     <Compile Include="General\Profiles\OutputSingleton.cs" />
     <Compile Include="General\Containers\ForeignKeyConstraintElements.cs" />

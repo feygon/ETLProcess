@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Runtime.Serialization;
 using ETLProcess.General.IO;
 
 namespace ETLProcess.Specific.Documents
@@ -11,9 +12,11 @@ namespace ETLProcess.Specific.Documents
 	/// <summary>
 	/// Client-specific class for outputting documents.
 	/// </summary>
-    public class OutputDoc : IOutputDoc
+    public class OutputDoc : IOutputDoc, ISerializable
 	{
-
+		/// <summary>
+		/// String member.
+		/// </summary>
 		public string
 			groupBillingAccountID_Statement = ""
 			, invoiceNumber = ""
@@ -28,17 +31,27 @@ namespace ETLProcess.Specific.Documents
 			, zip = ""
 			, memberID = ""
 			, premiumWithhold = "";
+		/// <summary>
+		/// Decimal member.
+		/// </summary>
 		public decimal
 			invoiceAmount = 0.0m
 			, lowIncomeSubsidyAmount = 0.0m
 			, lateEnrollmentPenaltyAmount = 0.0m
 			, fullBalance = 0.0m
 			, lateBalance = 0.0m;
+		/// <summary>
+		/// DateTime member.
+		/// </summary>
 		public DateTime
 			invoicePeriodFromDate = new DateTime(1900, 1, 1)
 			, invoicePeriodToDate = new DateTime(1900, 1, 31)
 			, dueDate = new DateTime(1900, 1, 1);
+		/// <summary>
+		/// Detail members.
+		/// </summary>
 		public List<BalDetail> details = new List<BalDetail>();
+		
 		BalDetail sample = new BalDetail();
 
 		// public Address mailingAddress, returnAddress;
@@ -53,6 +66,12 @@ namespace ETLProcess.Specific.Documents
 		/// </summary>
 		public OutputDoc() { }
 
+		/// <summary>
+		/// Constructor with parameters
+		/// </summary>
+		/// <param name="statementData">A DataRow for a statement.</param>
+		/// <param name="memberData">A DataRow for a member matching the statement.</param>
+		/// <param name="balFwdData">A list of DataRows for balance details matching the member.</param>
 		public OutputDoc(
 			DataRow statementData
 			, DataRow memberData
@@ -96,7 +115,38 @@ namespace ETLProcess.Specific.Documents
 			// TO DO: implement constructor.
 		}
 
-		public IOutputDoc Record(
+		/// <summary>
+		/// Satisfies interface serializability.
+		/// </summary>
+		/// <param name="info">Serialization info, such as values and types.</param>
+		/// <param name="context">Streaming context, such as source and destination of serialized stream</param>
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+			info.AddValue("groupBillingID_Statement", groupBillingAccountID_Statement);
+			info.AddValue("invoiceNumber", invoiceAmount);
+			info.AddValue("invoiceAmount", invoiceAmount);
+			info.AddValue("lowIncomeSubsidyAmount", lowIncomeSubsidyAmount);
+			info.AddValue("lateEnrollmentPenaltyAmount", lateEnrollmentPenaltyAmount);
+			info.AddValue("invoicePeriodFromDate", invoicePeriodFromDate);
+			info.AddValue("invoicePeriodToDate", invoicePeriodToDate);
+			info.AddValue("billingAccountNumber_MemberFile", billingAccountNumber_MemberFile);
+			info.AddValue("firstName", firstName);
+			info.AddValue("middleName", middleName);
+			info.AddValue("lastName", lastName);
+			info.AddValue("address1", address1);
+			info.AddValue("address2", address2);
+			info.AddValue("city", city);
+			info.AddValue("state", state);
+			info.AddValue("zip", zip);
+			info.AddValue("memberID", memberID);
+			info.AddValue("premiumWithhold", premiumWithhold);
+			info.AddValue("dueDate", dueDate);
+			info.AddValue("fullBalance", fullBalance);
+			info.AddValue("details", details, typeof(BalDetail));
+			info.AddValue("lateBalance", lateBalance);
+        }
+
+        public IOutputDoc Record(
 			DataRow statementData, object[] otherData = null)
 		{
 			if (otherData != null)

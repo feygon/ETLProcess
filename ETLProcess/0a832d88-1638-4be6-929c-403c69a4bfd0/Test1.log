@@ -1,0 +1,108 @@
+- - - - - - - - - - 3:32:01 PM
+ETLProcess Begun
+
+
+- - - - - - - - - - 3:32:01 PM
+Executing: cmd.exe /C ""C:\Program Files\7-Zip\7z.exe" e -bd -y -o"C:\Repos\ETLProcess\codemap\ETLProcess\0a832d88-1638-4be6-929c-403c69a4bfd0" "IOFiles\Test1.zip""
+
+
+- - - - - - - - - - 3:32:01 PM
+7zip result code: 0
+
+
+- - - - - - - - - - 3:32:01 PM
+Type "IO_FilesIn" added to Singleton's Dictionary of Instances.
+
+
+- - - - - - - - - - 3:32:01 PM
+Initializing class "IO_FilesIn" and garbage collecting first-run instance.
+
+
+- - - - - - - - - - 3:32:01 PM
+Files approved, by checkFiles Delegate.
+
+
+- - - - - - - - - - 3:32:01 PM
+Files approved, by checkFiles Delegate.
+
+
+- - - - - - - - - - 3:32:01 PM
+Client ETL Profile Loaded.
+
+
+- - - - - - - - - - 3:32:01 PM
+Null Foreign Key Constraint created. Was this the trunk table of the master set?
+
+
+- - - - - - - - - - 3:32:01 PM
+Files approved, by checkFiles Delegate.
+
+
+- - - - - - - - - - 3:32:01 PM
+Files approved, by checkFiles Delegate.
+
+
+- - - - - - - - - - 3:32:01 PM
+Client ETL Profile Loaded.
+
+
+- - - - - - - - - - 3:32:01 PM
+Statement Records files populated.
+
+
+- - - - - - - - - - 3:32:01 PM
+Branch table Foreign Key Constraint created.
+trunk_FK_ + <Child Table Name>
+
+
+- - - - - - - - - - 3:32:01 PM
+Files approved, by checkFiles Delegate.
+
+
+- - - - - - - - - - 3:32:01 PM
+Files approved, by checkFiles Delegate.
+
+
+- - - - - - - - - - 3:32:01 PM
+Client ETL Profile Loaded.
+
+
+- - - - - - - - - - 3:32:07 PM
+Member Records populated.
+
+
+- - - - - - - - - - 3:32:07 PM
+Branch table Foreign Key Constraint created.
+trunk_FK_ + <Child Table Name>
+
+
+- - - - - - - - - - 3:32:07 PM
+Files approved, by checkFiles Delegate.
+
+
+- - - - - - - - - - 3:32:07 PM
+Files approved, by checkFiles Delegate.
+
+
+- - - - - - - - - - 3:32:07 PM
+Client ETL Profile Loaded.
+
+
+- - - - - - - - - - 3:32:07 PM
+Balance Forward Records populated.
+
+
+- - - - - - - - - - 3:32:07 PM
+Records Populated.
+
+
+- - - - - - - - - - 3:32:08 PM
+The method or operation is not implemented.
+   at ETLProcess.Specific.ClientBusinessRules.Filter_MissingMembers(DataSet data, DataTable checkTable, DataTable& missingRecords) in C:\Repos\ETLProcess\codemap\ETLProcess\Specific\ClientBusinessRules.cs:line 52
+   at ETLProcess.Specific.Boilerplate.ClientETLProcess.ProcessRecords() in C:\Repos\ETLProcess\codemap\ETLProcess\Specific\Boilerplate\ClientETLProcess.cs:line 250
+
+
+- - - - - - - - - - 3:32:08 PM
+BalDetail Sample instantiated, or unknown call to default constructor.
+
+
