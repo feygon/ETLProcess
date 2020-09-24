@@ -14,11 +14,7 @@ using ETLProcess.General.Algorithms;
 using ETLProcess.General.Profiles;
 
 using String = System.String;
-using AcctID = System.String;
-using MemberID = System.String;
-using ETLProcess.General.Containers.AbstractClasses;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
+
 using ETLProcess.Specific.Documents;
 
 namespace ETLProcess.Specific.Boilerplate
@@ -68,7 +64,6 @@ namespace ETLProcess.Specific.Boilerplate
             };
             argIn = arg;
 
-            // TO DO: MetroEmail.InitClient(); Does mandrill email the client when this goes off?
             IO_FilesIn.Init(new object[] { arg });
             this.Process_FilesIn = IO_FilesIn.GetDerivedInstance();
 
@@ -338,14 +333,13 @@ namespace ETLProcess.Specific.Boilerplate
             }
 
             var ret = new Queue<String>();
-            while (dict.Count > 0)
-            {
+            while (dict.Count > 0) {
                 int minInt = dict.Values.Min();
                 string min = dict.Keys.Where((x) => dict[x] == minInt).FirstOrDefault(); // allows multiple keys hashing to a bucket int value.
                 ret.Enqueue(min);
                 dict.Remove(min);
             }
             return ret;
-        }
-    }
-}
+        } // end method
+    } // end class
+} // end namespace
