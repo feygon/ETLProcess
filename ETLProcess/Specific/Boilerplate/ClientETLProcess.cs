@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Data;
 
@@ -16,13 +14,17 @@ using ETLProcess.General.Profiles;
 using String = System.String;
 
 using ETLProcess.Specific.Documents;
+using ETLProcess.General.Interfaces.Profile_Interfaces;
+using System.Runtime.Serialization;
+using ETLProcess.General.ExtendLinQ;
+using System.ComponentModel;
 
 namespace ETLProcess.Specific.Boilerplate
 {
     /// <summary>
     /// A boilerplate example of a class to fulfill Client statement and welcome letter document types.
     /// </summary>
-    public class ClientETLProcess : DataSet, IC_CSVFileIn<IO_FilesIn>
+    public class ClientETLProcess : DataSet, IIn_C_CSVFile<IO_FilesIn>, IOut_C_XMLOut<IO_XMLOut, OutputDoc>
     {
         /// <summary>
         /// Bucket for tables, for easy reference by type instead of unique identifying string.
@@ -30,6 +32,7 @@ namespace ETLProcess.Specific.Boilerplate
         public Dictionary<Type, List<DataTable>> TablesByType { get; } = new Dictionary<Type, List<DataTable>>();
         //Class members.
         private readonly IO_FilesIn Process_FilesIn;
+        private readonly IO_XMLOut Process_XMLOut;
         private FileDataRecords<Record_Statement, ClientETLProcess> statementRecords; // is a DataTable.
         private FileDataRecords<Record_Members, ClientETLProcess> memberRecords;
         private FileDataRecords<Record_BalFwd, ClientETLProcess> balFwdRecords;
@@ -50,8 +53,9 @@ namespace ETLProcess.Specific.Boilerplate
         /// <summary>
         /// Constructor for boilerplate implementation class files, required by interface.
         /// </summary>
-        /// <param name="arg">Argument for IOFilesIn initialization.</param>
-        public ClientETLProcess(string arg)
+        /// <param name="inArg">Filename argument for IOFilesIn initialization.</param>
+        /// <param name="outArg">Filename argument for IO_XMLOut initialization.</param>
+        public ClientETLProcess(string inArg, string outArg)
             : base(IOFiles.PrepGuid.ToString())
         {
             Record_Statement.InitSample();
@@ -62,10 +66,12 @@ namespace ETLProcess.Specific.Boilerplate
                 ,{ typeof(Record_Members), new SampleColumnTypes((Record_Members.Sample).columnTypes) }
                 ,{ typeof(Record_BalFwd), (Record_BalFwd.Sample).columnTypes }
             };
-            argIn = arg;
+            argIn = inArg;
 
-            IO_FilesIn.Init(new object[] { arg });
+            IO_FilesIn.Init(new object[] { inArg });
             this.Process_FilesIn = IO_FilesIn.GetDerivedInstance();
+            IO_XMLOut.Init(new object[] { outArg });
+            this.Process_XMLOut = IO_XMLOut.GetDerivedInstance();
 
             Process_FilesIn.Check_Input(CheckFiles_Delegate);
 
@@ -75,11 +81,6 @@ namespace ETLProcess.Specific.Boilerplate
             Log.Write("Client ETL Profile Loaded.");
         }
 
-        internal void ExportRecords(List<OutputDoc> outputDocs)
-        {
-            XML.Export("out", outputDocs);
-            // this may require linq left joins, which must be GP'd.
-        }
 
         // Member interface for delegate to check files for requirements.
         /// <summary>
@@ -159,6 +160,7 @@ namespace ETLProcess.Specific.Boilerplate
                             Record_Statement.Sample.ParseRows(StatementRecordData.ToArray());
                         statementRecords = new FileDataRecords<Record_Statement, ClientETLProcess>(
                             statementSrcData
+                            , SampleColumns
                             , new ForeignKeyConstraintElements(this, typeof(Record_Statement).Name));
                         Log.Write("Statement Records files populated.");
                         
@@ -182,6 +184,7 @@ namespace ETLProcess.Specific.Boilerplate
                         // "must belong to a column" error.
                         memberRecords = new FileDataRecords<Record_Members, ClientETLProcess>(
                             membersByAcctID
+                            , SampleColumns
                             , new ForeignKeyConstraintElements(
                                 this
                                 , _parentColumns
@@ -210,6 +213,7 @@ namespace ETLProcess.Specific.Boilerplate
 
                         balFwdRecords = new FileDataRecords<Record_BalFwd, ClientETLProcess>(
                             balFwdByAcctID
+                            , SampleColumns
                             , new ForeignKeyConstraintElements(
                                 this
                                 , _parentColumns
@@ -233,75 +237,29 @@ namespace ETLProcess.Specific.Boilerplate
         /// Any relevant filters have been run, and reports have been made on bad data.</br></Post>
         /// </summary>
         /// <returns></returns>
-        internal List<OutputDoc> ProcessRecords()
+        internal List<OutputDoc> ProcessRecords(
+            out IEnumerable<DataRow> membersWithoutStatements
+            , out IEnumerable<DataRow> balancesWithoutStatements
+            , out IEnumerable<DataRow> statementsWithoutMembers)
         {
             // PopulateDocs has already:
             // Gotten All Invoices, Bal Fwd Records, Member Records, and made them into tables in a dataset.
-            try
-            {
-                // Filter out missing members from statements, return a count of the missing members,
-                //  and put out a DataTable of invoices missing members.
-                int missingMembersQty = ClientBusinessRules.Filter_MissingMembers(
-                    this,
-                    Tables[typeof(Record_Statement).ToString()]
-                    , out DataTable invoices_MissingMembers);
-                
-                // Filter out missing members from balances forward, return a count of the missing members,
-                //  and put out a DataTable of balances forward missing members.
-                int missingBalFwdQty = ClientBusinessRules.Filter_MissingMembers(
-                    this
-                    , Tables[typeof(Record_BalFwd).ToString()]
-                    , out DataTable balances_MissingMembers);
-                
-                // Query a selection of new members by sql call, return a count of new members,
-                //  and put out a DataTable of new members.
-                int newClientQty = ClientBusinessRules.Query_NewMembers(
-                    this
-                    , out DataTable newMembers);
-            } catch (Exception err) { Log.Write(err.Message + "\n" + err.StackTrace); }
-            string memStr = $"FilesIn_Table_{typeof(Record_Members).Name}_{IOFiles.PrepGuid}_0";
-            string stmStr = $"FilesIn_Table_{typeof(Record_Statement).Name}_{IOFiles.PrepGuid}_0";
-            string balStr = $"FilesIn_Table_{typeof(Record_BalFwd).Name}_{IOFiles.PrepGuid}_0";
 
-            var mem = Tables[memStr];
-            var stm = Tables[stmStr];
-            var bal = Tables[balStr];
+            // Get the report lists out.
+            // Datarows from members where there DOES NOT EXIST a statement with a matching Member ID.
+            membersWithoutStatements = ClientBusinessRules.GetMembersWOStmts(this);
+            // DataRows from balances where there DOES NOT EXIST statement with a matching account ID.
+            balancesWithoutStatements = ClientBusinessRules.GetBalancesWOStmts(this);
+            // DataRows from members where there DOES NOT EXIST a member to match a statement.
+            statementsWithoutMembers = ClientBusinessRules.GetStmtsWOMembers(this);
 
-            //example: query a selection of statements which don't have corresponding members
-            var newMemberQuery = from left in stm.AsEnumerable()
-                                where !(from right in mem.AsEnumerable()
-                                        select right[mem.PrimaryKey[0]]
-                                        ).Contains(left[stm.PrimaryKey[0]])
-                                select left;
+            //var balancesWStms = ClientBusinessRules.GetBalancesWStmts(this);
+            //var membersWithStatements = ClientBusinessRules.GetMembersWStmts(this);
+            //var balancesWithMembers = ClientBusinessRules.GetBalancesWMembers(this);
 
-            List<OutputDoc> outputDocs = new List<OutputDoc>();
-            var eStatementTable = TablesByType[typeof(Record_Statement)][0].AsEnumerable();
-            var eMemberTable = TablesByType[typeof(Record_Members)][0].AsEnumerable();
-            var eBalsFwdTable = TablesByType[typeof(Record_BalFwd)][0].AsEnumerable();
+            // Make outputDocs from each statement, its corresponding member, and any and all balances forward.
+            List<OutputDoc> outputDocs = ClientBusinessRules.GetStatementRows(this).ToList();
 
-
-            var statementRows = from a_stmRow in eStatementTable
-                                join a_memRow in eMemberTable
-                                on a_stmRow.Field<string>("Group Billing Acct ID") 
-                                equals a_memRow.Field<string>("Billing Account Number")
-                                select a_stmRow;
-            var memberRows = from b_stmRow in eStatementTable
-                             join b_memRow in eMemberTable
-                             on b_stmRow.Field<string>("Group Billing Acct ID") equals b_memRow.Field<string>("Billing Account Number")
-                             select b_memRow;
-            var balFwdRows = from c_balRow in eBalsFwdTable
-                             join c_memRow in memberRows
-                             on c_balRow.Field<string>("Member ID")
-                             equals c_memRow.Field<string>("MemberID")
-                             select c_balRow;
-            foreach (var row in statementRows)
-            {
-                DataRow memberRow = memberRows.Where(x => x.Field<string>("Billing Account Number") == row.Field<string>("Group Billing Acct ID")).First();
-                var eBalFwdRows = (from BalFwdRow in TablesByType[typeof(Record_BalFwd)][0].AsEnumerable()
-                                                     where BalFwdRow.Field<string>("Member ID") == memberRow.Field<string>("MemberID")
-                                                     select BalFwdRow).ToList();
-                outputDocs.Add(new OutputDoc(row, memberRow, eBalFwdRows));
-            }
 
             return outputDocs;
         }
@@ -341,5 +299,41 @@ namespace ETLProcess.Specific.Boilerplate
             }
             return ret;
         } // end method
+
+        /// <summary>
+        /// Fulfillment of IOut_A_OutputProfile output profile
+        /// , that this class will run a lambda meant to check output.
+        /// </summary>
+        /// <param name="outputs"></param>
+        /// <returns></returns>
+        public bool Check_Output(DelRet<bool, string[]> outputs)
+        {
+            return outputs(new String[]{"out.txt"});
+        }
+
+        /// <summary>
+        /// Fulfillment of IOut_C_XMLOut interface requirement of an output-document-type-specific XMLOutput function.
+        /// </summary>
+        /// <param name="outputDocs"></param>
+        public void XMLExport(List<OutputDoc> outputDocs) 
+        {
+            Process_XMLOut.Export<OutputDoc>(outputDocs.AsEnumerable().ToList());
+            // this may require linq left joins, which must be GP'd.
+        }
+
+        /// <summary>
+        /// Fulfillment of IOut_B_Files interface requirement of a method returning a lambda,
+        /// to pss into the Check_Output method promised by IOut_A_OutputProfile.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public DelRet<bool, string[]> GetCheck_File_Output(object[] options)
+        {
+            return (strs) => 
+                strs.Length > 0 
+                && ((List<OutputDoc>)(options[0])).Count > 0;
+
+            throw new NotImplementedException();
+        }
     } // end class
 } // end namespace

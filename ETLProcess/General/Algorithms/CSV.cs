@@ -51,7 +51,7 @@ namespace ETLProcess.General.Algorithms
         /// <param name="delimiter"></param>
         /// <param name="useQuotes"></param>
         /// <returns>A List of string[] per row</returns>
-        private static List<string[]> ImportCSV(string fileName, string delimiter = ",", bool useQuotes = false)
+        public static List<string[]> ImportCSV(string fileName, string delimiter = ",", bool useQuotes = false)
         {
             var result = new List<string[]>();
             using (Stream readFile = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))

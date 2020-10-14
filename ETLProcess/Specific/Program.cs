@@ -11,6 +11,7 @@ using Microsoft.VisualBasic.FileIO;
 using ETLProcess.Specific;
 using static ETLProcess.Parse;
 
+using ETLProcess.Tests;
 using ETLProcess.General.Containers;
 using ETLProcess.General;
 using ETLProcess.General.Containers.AbstractClasses;
@@ -24,6 +25,8 @@ using String = System.String;
 using AcctID = System.String;
 using MemberID = System.String;
 using System.Reflection;
+
+using ETLProcess.General.Containers.Members;
 
 namespace ETLProcess {
     /// <summary>
@@ -43,22 +46,37 @@ namespace ETLProcess {
 
     internal static class Program {
         private static ClientETLProcess client;
-        private static Log log = Log.Instance;
+        
         private static void Main(string[] args)
         {
-            try {
+            try
+            {
                 Log.InitLog(args[0]);
                 // Get customer rules defined in ETLProcessor definitions.
-                client = new ClientETLProcess(args[0]);
+                Log.Write("Test");
+                HashCodeTest.TestHashSystem();
+                Log.Write("Test");
+
+
+                string arg2 = "out.txt"; 
+                if (args.Length >= 2) { arg2 = args[1] ?? "out.txt"; }
+                client = new ClientETLProcess(args[0], arg2 ?? "out.txt");
 
                 // input data from basic record types (Statement, Balance Forward, Member Files)
                 client.PopulateRecords();
 
                 // Enact client business rules
-                List<OutputDoc> outputDocs = client.ProcessRecords();
+                List<OutputDoc> outputDocs = client.ProcessRecords(
+                    out IEnumerable<DataRow> membersWithoutStatements
+                    , out IEnumerable<DataRow> balancesWithoutStatements 
+                    , out IEnumerable<DataRow> statementsWithoutMembers);
 
+                // Report on these, other than returned outputDocs, probably by SQLBulkCopy to a new or proscribed table,
+                //  or output to csv.
+                
                 // output data to client profiles
-                client.ExportRecords(outputDocs);
+                client.XMLExport(outputDocs);
+
                 //throw new Exception("Finish implementing ProcessDocs.");
                 /**********************************/
 
@@ -87,4 +105,7 @@ namespace ETLProcess {
 #endif
         }
     }
+
+    
+
 }

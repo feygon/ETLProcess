@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using ETLProcess.General.IO;
+using System.ComponentModel;
 
 namespace ETLProcess.General.IO
 {
@@ -71,6 +72,16 @@ namespace ETLProcess.General.IO
             writer.WriteLine($"- - - - - - - - - - {DateTime.Now.ToLongTimeString()}\r\n{message}\r\n\r\n");
 			writer.Flush();
 		}
+
+        public static void WriteWarningException(string message, WarningException err = null) {
+            Write(string.Format($"Warning: {message}"));
+            if (err != null)
+            {
+                throw new WarningException(message, err);
+            } else {
+                throw new WarningException(message);
+            }
+        }
 
         public static void WriteException(string message, Exception err = null)
         {

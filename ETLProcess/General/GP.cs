@@ -17,6 +17,7 @@ using ETLProcess.General.Algorithms;
 using System.Data.Metadata.Edm;
 
 namespace ETLProcess.General
+
 {
     /// <summary>
     /// Wrapper for a string-keyed Dictionary with ValueTuple values of Type and bool.

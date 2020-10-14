@@ -1,6 +1,8 @@
 using System.Data;
 using System.Data.SqlClient;
 
+using ETLProcess.General.IO;
+
 namespace ETLProcess.Specific
 {
     internal static class ClientSpecificSQL
@@ -10,7 +12,7 @@ namespace ETLProcess.Specific
         /// </summary>
         internal static DataTable Execute(string sqlQueryString)
         {
-            using var command = new SqlCommand(sqlQueryString, SQL.conn);
+            using var command = new SqlCommand(sqlQueryString, SQL.Conn);
             return SQL.ExecuteBuiltCommandReturnQuery(command);
         }
 

@@ -1,0 +1,125 @@
+- - - - - - - - - - 10:55:23 PM
+Test
+
+
+- - - - - - - - - - 10:55:23 PM
+GetHashCode found hashStr of 8468e9b4-aff4-440a-a68c-b41d24c295c7##Yo Mama##7/7/1982 12:00:00 AM.
+Returning int.GetHashCode of that: -1703179257
+
+
+- - - - - - - - - - 10:55:23 PM
+-1703179257
+
+
+- - - - - - - - - - 10:55:23 PM
+GetHashCode found hashStr of 8468e9b4-aff4-440a-a68c-b41d24c295c7##Eat at Joe's##12/5/1942 12:00:00 AM.
+Returning int.GetHashCode of that: -1149303888
+
+
+- - - - - - - - - - 10:55:23 PM
+-1149303888
+
+
+- - - - - - - - - - 10:55:23 PM
+GetHashCode found hashStr of 8468e9b4-aff4-440a-a68c-b41d24c295c7##Eat at Joe's##12/5/1942 12:00:00 AM.
+Returning int.GetHashCode of that: -1149303888
+
+
+- - - - - - - - - - 10:55:23 PM
+-1149303888
+
+
+- - - - - - - - - - 10:55:23 PM
+Test
+
+
+- - - - - - - - - - 10:55:23 PM
+ETLProcess Begun
+
+
+- - - - - - - - - - 10:55:23 PM
+Executing: cmd.exe /C ""C:\Program Files\7-Zip\7z.exe" e -bd -y -o"C:\Repos\CodeMap2\CodeMapCVSample\codemap\ETLProcess\8468e9b4-aff4-440a-a68c-b41d24c295c7" "IOFiles\Test1.zip""
+
+
+- - - - - - - - - - 10:55:23 PM
+7zip result code: 0
+
+
+- - - - - - - - - - 10:55:23 PM
+Type "IO_FilesIn" added to Singleton's Dictionary of Instances.
+
+
+- - - - - - - - - - 10:55:23 PM
+Initializing class "IO_FilesIn" and garbage collecting first-run instance.
+
+
+- - - - - - - - - - 10:55:23 PM
+Type "IO_XMLOut" added to Singleton's Dictionary of Instances.
+
+
+- - - - - - - - - - 10:55:23 PM
+Initializing class "IO_XMLOut" and garbage collecting first-run instance.
+
+
+- - - - - - - - - - 10:55:23 PM
+Files approved, by checkFiles Delegate.
+
+
+- - - - - - - - - - 10:55:23 PM
+Client ETL Profile Loaded.
+
+
+- - - - - - - - - - 10:55:23 PM
+Null Foreign Key Constraint created. Was this the trunk table of the master set?
+
+
+- - - - - - - - - - 10:55:23 PM
+Statement Records files populated.
+
+
+- - - - - - - - - - 10:55:23 PM
+Branch table Foreign Key Constraint created.
+Record_Statement_FK_<child table name>
+
+
+- - - - - - - - - - 10:55:23 PM
+Member Records populated.
+
+
+- - - - - - - - - - 10:55:23 PM
+Branch table Foreign Key Constraint created.
+Record_Statement_FK_<child table name>
+
+
+- - - - - - - - - - 10:55:23 PM
+Balance Forward Records populated.
+
+
+- - - - - - - - - - 10:55:23 PM
+Records Populated.
+
+
+- - - - - - - - - - 10:55:30 PM
+BalDetail Sample instantiated, or unknown call to default constructor.
+
+
+- - - - - - - - - - 10:55:30 PM
+BalDetail Sample instantiated, or unknown call to default constructor.
+
+
+- - - - - - - - - - 10:55:30 PM
+BalDetail Sample instantiated, or unknown call to default constructor.
+
+
+- - - - - - - - - - 10:55:30 PM
+BalDetail Sample instantiated, or unknown call to default constructor.
+
+
+- - - - - - - - - - 10:55:30 PM
+BalDetail Sample instantiated, or unknown call to default constructor.
+
+
+- - - - - - - - - - 10:55:59 PM
+Exporting XML
+
+

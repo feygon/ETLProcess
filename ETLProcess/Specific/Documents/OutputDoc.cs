@@ -146,6 +146,12 @@ namespace ETLProcess.Specific.Documents
 			info.AddValue("lateBalance", lateBalance);
         }
 
+		/// <summary>
+		/// A sample-static builder for OutputDocs.
+		/// </summary>
+		/// <param name="statementData"></param>
+		/// <param name="otherData"></param>
+		/// <returns></returns>
         public IOutputDoc Record(
 			DataRow statementData, object[] otherData = null)
 		{

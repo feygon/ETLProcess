@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 using ETLProcess.General.Containers;
 using ETLProcess.General;
 using ETLProcess.General.IO;
@@ -13,18 +14,17 @@ using ETLProcess.Specific.Documents;
 
 namespace ETLProcess.General.IO
 {
-    internal sealed class XML
-    {
+    internal sealed class XML {
         // TO DO: Export finalized statement doc.
         /// <summary>
         /// Export to xml
         /// </summary>
         /// <param name="fileNameOut">The file to export</param>
         /// <param name="outputData">The list of documents to export</param>
-        public static void Export(
+        public static void Export<T>(
                 string fileNameOut
-                , List<OutputDoc> outputData
-            )
+                , List<T> outputData 
+            ) where T : ISerializable
         {
             // TO DO: Decouple OutputDoc from Export using IOutputDoc interface -> Serializable?
 
