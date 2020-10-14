@@ -34,18 +34,19 @@ namespace ETLProcess.General.Profiles
         private string[] files;
         private static bool filesGood = false;
         private static bool filesChecked = false;
+
         /*****Constructor*****/
 
         /// <summary>
         /// Constructor, takes command line arguments where 0 is the zipfile.
         /// </summary>
-        /// <param name="arg">Command line arguments, where index 0 is the zipfile.</param>
-        public IO_FilesIn(string arg) 
+        /// <param name="argIn">Command line arguments, where index 0 is the zipfile.</param>
+        public IO_FilesIn(string argIn) 
             : base(typeof(IO_FilesIn)
-                  , new object[]{ arg }) 
+                  , new object[]{ argIn }) 
         {
             if (!firstRun) {
-                Files = ZipFiles.GetFiles(arg).Where((x) => x != Log.logFileName).ToArray();
+                Files = ZipFiles.GetFiles(argIn).Where((x) => x != Log.logFileName).ToArray();
             }
         }
         /// <summary>
@@ -60,6 +61,7 @@ namespace ETLProcess.General.Profiles
         public bool Check_Input(DelRet<bool, string[]> checkFiles) {
             if (!filesChecked) {
                 filesGood = checkFiles(Files);
+                filesChecked = !filesChecked;
                 if (filesGood) { Log.Write("Files approved, by checkFiles Delegate."); }
             }
             return filesGood;

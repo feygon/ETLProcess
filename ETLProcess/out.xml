@@ -1,0 +1,318 @@
+<?xml version="1.0"?>
+<ArrayOfOutputDoc xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OutputDoc>
+    <groupBillingAccountID_Statement>ID0000001</groupBillingAccountID_Statement>
+    <invoiceNumber>INV000001</invoiceNumber>
+    <billingAccountNumber_MemberFile>ID0000001</billingAccountNumber_MemberFile>
+    <firstName>John</firstName>
+    <middleName>J</middleName>
+    <lastName>Smith</lastName>
+    <address1>1234 Crabapple Way</address1>
+    <address2 />
+    <city>Nowhere</city>
+    <state>CA</state>
+    <zip>11111</zip>
+    <memberID>ID0000001</memberID>
+    <premiumWithhold>Y</premiumWithhold>
+    <invoiceAmount>1001.00</invoiceAmount>
+    <lowIncomeSubsidyAmount>140.00</lowIncomeSubsidyAmount>
+    <lateEnrollmentPenaltyAmount>22.00</lateEnrollmentPenaltyAmount>
+    <fullBalance>2001.00</fullBalance>
+    <lateBalance>0</lateBalance>
+    <invoicePeriodFromDate>1900-01-02T00:00:00</invoicePeriodFromDate>
+    <invoicePeriodToDate>1900-02-01T00:00:00</invoicePeriodToDate>
+    <dueDate>1900-02-16T00:00:00</dueDate>
+    <details>
+      <BalDetail>
+        <memberID>ID0000001</memberID>
+        <contractID>CT1001</contractID>
+        <outstandingAmount>1000.00</outstandingAmount>
+        <daysLate_30>false</daysLate_30>
+        <daysLate_60>false</daysLate_60>
+        <daysLate_90>false</daysLate_90>
+        <daysLate_120>false</daysLate_120>
+        <billingPeriodFromDate>1900-01-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>1900-01-31T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+    </details>
+  </OutputDoc>
+  <OutputDoc>
+    <groupBillingAccountID_Statement>ID0000002</groupBillingAccountID_Statement>
+    <invoiceNumber>INV000002</invoiceNumber>
+    <billingAccountNumber_MemberFile>ID0000002</billingAccountNumber_MemberFile>
+    <firstName>Jane</firstName>
+    <middleName>J</middleName>
+    <lastName>Jones</lastName>
+    <address1>1001 Ordinary St</address1>
+    <address2>#2</address2>
+    <city>Nowhere</city>
+    <state>CA</state>
+    <zip>11111</zip>
+    <memberID>ID0000002</memberID>
+    <premiumWithhold>Y</premiumWithhold>
+    <invoiceAmount>1002.00</invoiceAmount>
+    <lowIncomeSubsidyAmount>140.00</lowIncomeSubsidyAmount>
+    <lateEnrollmentPenaltyAmount>22.00</lateEnrollmentPenaltyAmount>
+    <fullBalance>4002.00</fullBalance>
+    <lateBalance>1000.00</lateBalance>
+    <invoicePeriodFromDate>1900-01-03T00:00:00</invoicePeriodFromDate>
+    <invoicePeriodToDate>1900-02-02T00:00:00</invoicePeriodToDate>
+    <dueDate>1900-02-17T00:00:00</dueDate>
+    <details>
+      <BalDetail>
+        <memberID>ID0000002</memberID>
+        <contractID>CT1002</contractID>
+        <outstandingAmount>1000.00</outstandingAmount>
+        <daysLate_30>false</daysLate_30>
+        <daysLate_60>false</daysLate_60>
+        <daysLate_90>false</daysLate_90>
+        <daysLate_120>false</daysLate_120>
+        <billingPeriodFromDate>1900-01-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>1900-01-31T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000002</memberID>
+        <contractID>CT1102</contractID>
+        <outstandingAmount>1000.00</outstandingAmount>
+        <daysLate_30>false</daysLate_30>
+        <daysLate_60>false</daysLate_60>
+        <daysLate_90>false</daysLate_90>
+        <daysLate_120>false</daysLate_120>
+        <billingPeriodFromDate>1900-02-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>1900-02-28T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000002</memberID>
+        <contractID>CT1202</contractID>
+        <outstandingAmount>1000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>false</daysLate_60>
+        <daysLate_90>false</daysLate_90>
+        <daysLate_120>false</daysLate_120>
+        <billingPeriodFromDate>1900-03-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>1900-03-31T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+    </details>
+  </OutputDoc>
+  <OutputDoc>
+    <groupBillingAccountID_Statement>ID0000004</groupBillingAccountID_Statement>
+    <invoiceNumber>INV000004</invoiceNumber>
+    <billingAccountNumber_MemberFile>ID0000004</billingAccountNumber_MemberFile>
+    <firstName>Donny</firstName>
+    <middleName>J</middleName>
+    <lastName>Goodman</lastName>
+    <address1>1600 Pennsylvania Ave</address1>
+    <address2 />
+    <city>Washington</city>
+    <state>DC</state>
+    <zip>10001</zip>
+    <memberID>ID0000004</memberID>
+    <premiumWithhold>N</premiumWithhold>
+    <invoiceAmount>1004.00</invoiceAmount>
+    <lowIncomeSubsidyAmount>140.00</lowIncomeSubsidyAmount>
+    <lateEnrollmentPenaltyAmount>22.00</lateEnrollmentPenaltyAmount>
+    <fullBalance>12001004.00</fullBalance>
+    <lateBalance>12000000.00</lateBalance>
+    <invoicePeriodFromDate>1900-01-05T00:00:00</invoicePeriodFromDate>
+    <invoicePeriodToDate>1900-02-04T00:00:00</invoicePeriodToDate>
+    <dueDate>1900-02-19T00:00:00</dueDate>
+    <details>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1004</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-01-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-01-31T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1014</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-02-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-02-28T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1024</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-03-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-03-31T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1034</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-04-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-04-30T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1044</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-05-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-05-31T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1054</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-06-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-06-30T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1064</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-07-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-07-31T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1074</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-08-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-08-31T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1084</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-09-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-09-30T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1094</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-10-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-10-31T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1104</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-11-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-11-30T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+      <BalDetail>
+        <memberID>ID0000004</memberID>
+        <contractID>CT1114</contractID>
+        <outstandingAmount>1000000.00</outstandingAmount>
+        <daysLate_30>true</daysLate_30>
+        <daysLate_60>true</daysLate_60>
+        <daysLate_90>true</daysLate_90>
+        <daysLate_120>true</daysLate_120>
+        <billingPeriodFromDate>2000-12-01T00:00:00</billingPeriodFromDate>
+        <billingPeriodThruDate>2000-12-31T00:00:00</billingPeriodThruDate>
+        <timeOverdue />
+      </BalDetail>
+    </details>
+  </OutputDoc>
+  <OutputDoc>
+    <groupBillingAccountID_Statement>ID0000005</groupBillingAccountID_Statement>
+    <invoiceNumber>INV000005</invoiceNumber>
+    <billingAccountNumber_MemberFile>ID0000005</billingAccountNumber_MemberFile>
+    <firstName>Tom</firstName>
+    <middleName>R</middleName>
+    <lastName>Cruise</lastName>
+    <address1>19000 Beverly Hills Dr</address1>
+    <address2 />
+    <city>Beverly Hills</city>
+    <state>CA</state>
+    <zip>11111</zip>
+    <memberID>MR1234</memberID>
+    <premiumWithhold>N</premiumWithhold>
+    <invoiceAmount>1005.00</invoiceAmount>
+    <lowIncomeSubsidyAmount>140.00</lowIncomeSubsidyAmount>
+    <lateEnrollmentPenaltyAmount>22.00</lateEnrollmentPenaltyAmount>
+    <fullBalance>1005.00</fullBalance>
+    <lateBalance>0</lateBalance>
+    <invoicePeriodFromDate>1900-01-06T00:00:00</invoicePeriodFromDate>
+    <invoicePeriodToDate>1900-02-05T00:00:00</invoicePeriodToDate>
+    <dueDate>1900-02-20T00:00:00</dueDate>
+    <details />
+  </OutputDoc>
+  <OutputDoc>
+    <groupBillingAccountID_Statement>ID0000007</groupBillingAccountID_Statement>
+    <invoiceNumber>INV000007</invoiceNumber>
+    <billingAccountNumber_MemberFile>ID0000007</billingAccountNumber_MemberFile>
+    <firstName>Douglas</firstName>
+    <middleName>J</middleName>
+    <lastName>Adams</lastName>
+    <address1>321 Cherry Tree Lane</address1>
+    <address2 />
+    <city>Universal Studios</city>
+    <state>CA</state>
+    <zip>11111</zip>
+    <memberID>ID0000007</memberID>
+    <premiumWithhold>Y</premiumWithhold>
+    <invoiceAmount>1007.00</invoiceAmount>
+    <lowIncomeSubsidyAmount>140.00</lowIncomeSubsidyAmount>
+    <lateEnrollmentPenaltyAmount>22.00</lateEnrollmentPenaltyAmount>
+    <fullBalance>1007.00</fullBalance>
+    <lateBalance>0</lateBalance>
+    <invoicePeriodFromDate>1900-01-08T00:00:00</invoicePeriodFromDate>
+    <invoicePeriodToDate>1900-02-07T00:00:00</invoicePeriodToDate>
+    <dueDate>1900-02-22T00:00:00</dueDate>
+    <details />
+  </OutputDoc>
+</ArrayOfOutputDoc>

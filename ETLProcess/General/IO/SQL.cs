@@ -3,11 +3,11 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 
-namespace ETLProcess
+namespace ETLProcess.General.IO
 {
     internal static class SQL
     {
-        internal static SqlConnection conn { get; } =
+        internal static SqlConnection Conn { get; } =
             new SqlConnection(@"Data Source=Database\DatabaseName;Initial Catalog=DatabaseName;User id=Username;Password=Userpassword;");
 
         /// <summary>

@@ -12,25 +12,25 @@ using ETLProcess.General.Containers.AbstractClasses;
 namespace ETLProcess.General.Profiles
 {
     /// <summary>
-    /// A program class for ETLProcesses that input from a sql query, and output xml.
+    /// A program class for ETLProcesses that input from a sql query.
     /// </summary>
     public class IO_SQLIn : SingletonProfile<IO_SQLIn>, IDisposable {
         /// <summary>
-        /// This object's sql command
+        /// This object's sql input command
         /// </summary>
         public string SqlInCmd {
             get {
                 if (firstRun) {
                     throw new Exception("First run instance should not be accessed. " +
-                        "Try calling static instance SingletonProfile<IO_SQLIn>.Instance. member name");
+                        "Please call IO_SQLIn.Init first, then the singleton.");
                 } else {
                     return sqlInCmd; 
                 }
             }
         }
+
         private readonly string sqlInCmd = File.ReadAllText($@"{IOFiles.AssemblyDirectory}\{
                     Path.GetFileNameWithoutExtension(sqlFileName)}");
-
         private static string sqlFileName = "SQLInput.sql";
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace ETLProcess.General.Profiles
         public SqlCommand Query { 
             get => Query ?? 
                 throw new Exception("Query is blank. Is this the disposable initial instance of this class? " +
-                    "If so, please make sure the Init() method is in use for populating the Singleton Dictionary of Instances.");
+                    "If so, please make sure the Init() method is used for populating the Singleton Dictionary of Instances.");
             private set => Query = value;
         }
 
@@ -67,7 +67,7 @@ namespace ETLProcess.General.Profiles
             IO_SQLIn.sqlFileName = sqlFileName;
             if (!firstRun)
             {
-                Query = new SqlCommand(SqlInCmd, SQL.conn);
+                Query = new SqlCommand(SqlInCmd, SQL.Conn);
                 foreach ((string pname, SqlDbType type) in sqlCmdParams)
                 {
                     Query.Parameters.Add(pname, type);

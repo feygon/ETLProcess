@@ -11,6 +11,7 @@ using ETLProcess.General.Containers.Members;
 using System.ComponentModel;
 using ETLProcess.General.IO;
 using ETLProcess.General;
+using System.Runtime.Serialization;
 
 namespace ETLProcess.Specific.Documents
 {
@@ -49,6 +50,9 @@ namespace ETLProcess.Specific.Documents
         /// </summary>
         public TimeSpan timeOverdue = new TimeSpan(0, 0, 0, 0, 0);
 
+        /// <summary>
+        /// Balance Details
+        /// </summary>
         public BalDetail() {
             Log.Write("BalDetail Sample instantiated, or unknown call to default constructor."); 
         }
@@ -116,6 +120,25 @@ namespace ETLProcess.Specific.Documents
             IEnumerable<BalDetail> lateBals = balances.Where(
                 (bal) => lateCheck?.Invoke() ?? bal.daysLate_30 == true);
             return lateBals.Select((bal) => bal.outstandingAmount).Sum();
+        }
+
+        /// <summary>
+        /// Satisfies interface serializability.
+        /// </summary>
+        /// <param name="info">Serialization info, such as values and types.</param>
+        /// <param name="context">Streaming context, such as source and destination of serialized stream</param>
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("memberID", memberID);
+            info.AddValue("contractID", contractID);
+            info.AddValue("billingPeriodFromDate", billingPeriodFromDate);
+            info.AddValue("billingPeriodThruDate", billingPeriodThruDate);
+            info.AddValue("daysLate_120", daysLate_120);
+            info.AddValue("daysLate_30", daysLate_30);
+            info.AddValue("daysLate_60", daysLate_60);
+            info.AddValue("daysLate_90", daysLate_90);
+            info.AddValue("outstandingAmount", outstandingAmount);
+            info.AddValue("timeOverdue", timeOverdue);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace ETLProcess.General.Containers
         /// <summary>
         /// Accumulator string for the name of the relation to be established.
         /// </summary>
-        public string relationName = "trunk";
+        public string relationName;
 
         /// <summary>
         /// Constructor for critical components a foreign key (FK) constraint,
@@ -44,12 +44,10 @@ namespace ETLProcess.General.Containers
         /// <param name="masterSet"></param>
         /// <param name="primaryFKColumns">The Primary FK columns to match on</param>
         /// <param name="childFKColumnNames">The child columns to form a foreign key on.</param>
-        /// <param name="primaryTableName">The name of the primary table, for naming the relation.</param>
         public ForeignKeyConstraintElements(
             DataSet masterSet
             , DataColumn[] primaryFKColumns
-            , string[] childFKColumnNames
-            , string primaryTableName = "trunk")
+            , string[] childFKColumnNames)
         {
             if (masterSet == null || primaryFKColumns == null || childFKColumnNames == null)
             {
@@ -61,9 +59,9 @@ namespace ETLProcess.General.Containers
             this.masterSet = masterSet;
             this.primaryFKColumns = primaryFKColumns;
             this.childFKColumnNames = childFKColumnNames;
-            this.primaryTableName = primaryTableName;
-            Log.Write("Branch table Foreign Key Constraint created.\n" + 
-                this.primaryTableName + "_FK_ + <Child Table Name>");
+            this.primaryTableName = primaryFKColumns[0].Table.TableName;
+            Log.Write(string.Format($"Branch table Foreign Key Constraint created.\n" + 
+                $"{this.primaryTableName}_FK_<child table name>"));
         }
 
         /// <summary>
@@ -78,13 +76,13 @@ namespace ETLProcess.General.Containers
         /// <param name="childFKColumnNames">The names of the columns in this table
         ///     which will be linked to the other table.</param>
         /// <param name="primaryTableName">The name of the primary table, which will be the first
-        ///     part of the relation name. Default "trunk".</param>
+        ///     part of the relation name.</param>
         public ForeignKeyConstraintElements(
             DataSet masterSet
             , string tableName
             , string[] primaryFKColumnNames
             , string[] childFKColumnNames
-            , string primaryTableName = "trunk")
+            , string primaryTableName)
         {
             if (masterSet == null 
              || tableName == null || tableName == ""
@@ -116,12 +114,12 @@ namespace ETLProcess.General.Containers
         public ForeignKeyConstraintElements(
             DataSet masterSet, string tableName)
         {
-            this.masterSet = masterSet ?? throw new Exception("Cannot be null: Errant Null value passed to Foreign Key Constraint struct.");
+            this.masterSet = masterSet ?? throw new Exception("Cannot be null: Errant Null value passed to Foreign Key Constraint constructor.");
             this.primaryFKColumns = null;
             this.childFKColumnNames = null;
-            this.primaryTableName = tableName;
-            this.primaryTableName = "trunk";
+            this.primaryTableName = tableName ?? throw new Exception("Cannot be null: Errant Null value passed to Foreign Key Constraint constructor.");
             Log.Write("Null Foreign Key Constraint created. Was this the trunk table of the master set?");
+            relationName = string.Format($"{primaryTableName}_FK_");
         }
 
         /// <summary>
@@ -130,8 +128,7 @@ namespace ETLProcess.General.Containers
         /// <param name="table">The child table to link.</param>
         public void SetFKConstraint(DataTable table)
         {
-            relationName += "_FK_";
-            relationName += table.TableName;
+            relationName = string.Format($"{this.primaryTableName}_FK_{table.TableName}");
             if (masterSet != null
                 && primaryFKColumns != null
                 && childFKColumnNames != null)
