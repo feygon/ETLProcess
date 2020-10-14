@@ -52,9 +52,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="General\Algorithms\CSV.cs" />
-    <Compile Include="General\ExtendLinQ\DataTable_Hashing.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="General\Interfaces\Profile Interfaces\IOut_B_Files.cs" />
     <Compile Include="General\Interfaces\Profile Interfaces\IOut_B_SQL.cs" />
     <Compile Include="General\Interfaces\Profile Interfaces\IOut_C_TSQL.cs" />
