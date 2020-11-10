@@ -13,7 +13,7 @@ namespace ETLProcess.General.Interfaces
     /// <summary>
     /// Interface to promise the structure of an ETLProcess which receives files from a ZipFile.
     /// </summary>
-    public interface IIn_A_InputProfile
+    public interface _IInput_Profile
     {
         /// <summary>
         /// Promise that a specific implementation will have a way to populate docs using members in the client object.

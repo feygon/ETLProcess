@@ -24,7 +24,7 @@ namespace ETLProcess.Specific.Boilerplate
     /// <summary>
     /// A boilerplate example of a class to fulfill Client statement and welcome letter document types.
     /// </summary>
-    public class ClientETLProcess : DataSet, IIn_C_CSVFile<IO_FilesIn>, IOut_C_XMLOut<IO_XMLOut, OutputDoc>
+    public class ClientETLProcess : DataSet, IInputFileType_CSV<IO_FilesIn>, IOutputFileType_XML<IO_XMLOut, OutputDoc>
     {
         /// <summary>
         /// Bucket for tables, for easy reference by type instead of unique identifying string.
@@ -37,11 +37,12 @@ namespace ETLProcess.Specific.Boilerplate
         private FileDataRecords<Record_Members, ClientETLProcess> memberRecords;
         private FileDataRecords<Record_BalFwd, ClientETLProcess> balFwdRecords;
 
+
         // Key Columns of each class (not including indexers).
         /// <summary>
         /// Dictionary of column types.
         /// </summary>
-        public Dictionary<Type, SampleColumnTypes> SampleColumns { get; } = null;
+        public Dictionary<Type, TableHeaders> AllTableHeadersByType { get; } = null;
         /// <summary>
         ///  Public parameterless constructor, for inheritance.
         /// </summary>
@@ -58,12 +59,13 @@ namespace ETLProcess.Specific.Boilerplate
         public ClientETLProcess(string inArg, string outArg)
             : base(IOFiles.PrepGuid.ToString())
         {
+
             Record_Statement.InitSample();
             Record_Members.InitSample();
             Record_BalFwd.InitSample();
-            SampleColumns = new Dictionary<Type, SampleColumnTypes> {
-                 { typeof(Record_Statement), new SampleColumnTypes((Record_Statement.Sample).columnTypes) }
-                ,{ typeof(Record_Members), new SampleColumnTypes((Record_Members.Sample).columnTypes) }
+            AllTableHeadersByType = new Dictionary<Type, TableHeaders> {
+                 { typeof(Record_Statement), new TableHeaders((Record_Statement.Sample).columnTypes) }
+                ,{ typeof(Record_Members), new TableHeaders((Record_Members.Sample).columnTypes) }
                 ,{ typeof(Record_BalFwd), (Record_BalFwd.Sample).columnTypes }
             };
             argIn = inArg;
@@ -94,12 +96,6 @@ namespace ETLProcess.Specific.Boilerplate
                 }
                 return true;
             };
-
-        //public bool Check_Input(DelRet<bool, string[]> inputs)
-        //{
-        //    return Process_FilesIn.Check_Input(inputs);
-        //}
-
 
         /// <summary>
         /// Return an enumeration of which document type it is.
@@ -160,7 +156,7 @@ namespace ETLProcess.Specific.Boilerplate
                             Record_Statement.Sample.ParseRows(StatementRecordData.ToArray());
                         statementRecords = new FileDataRecords<Record_Statement, ClientETLProcess>(
                             statementSrcData
-                            , SampleColumns
+                            , AllTableHeadersByType
                             , new ForeignKeyConstraintElements(this, typeof(Record_Statement).Name));
                         Log.Write("Statement Records files populated.");
                         
@@ -184,7 +180,7 @@ namespace ETLProcess.Specific.Boilerplate
                         // "must belong to a column" error.
                         memberRecords = new FileDataRecords<Record_Members, ClientETLProcess>(
                             membersByAcctID
-                            , SampleColumns
+                            , AllTableHeadersByType
                             , new ForeignKeyConstraintElements(
                                 this
                                 , _parentColumns
@@ -213,7 +209,7 @@ namespace ETLProcess.Specific.Boilerplate
 
                         balFwdRecords = new FileDataRecords<Record_BalFwd, ClientETLProcess>(
                             balFwdByAcctID
-                            , SampleColumns
+                            , AllTableHeadersByType
                             , new ForeignKeyConstraintElements(
                                 this
                                 , _parentColumns

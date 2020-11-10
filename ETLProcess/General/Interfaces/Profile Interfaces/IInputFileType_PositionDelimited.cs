@@ -1,12 +1,13 @@
-
 ﻿using System.Collections.Generic;
 
+using ETLProcess.General.Containers.AbstractClasses;
+using ETLProcess.General.Profiles;
 namespace ETLProcess.General.Interfaces
 {
     /// <summary>
     /// Promise that a class will implement methods specific to taking in position-delimited data files.
     /// </summary>
-    public interface IIn_C_FlatFile
+    public interface IInputFileType_PositionDelimited<Singleton> : _IInputMode_Files where Singleton : SingletonProfile<IO_FilesIn>
     {
         /// <summary>
         /// Promise that a flatfile profile using this interface will provide a schema

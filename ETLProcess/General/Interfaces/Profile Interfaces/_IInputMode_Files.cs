@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ETLProcess.General.Profiles;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace ETLProcess.General.Interfaces
     /// Interface to promise the structure of an ETLProcess which specifically receives files from a ZipFile.
     /// </summary>
 
-    public interface IIn_B_Files : IIn_A_InputProfile
+    public interface _IInputMode_Files : _IInput_Profile
     {
         /// <summary>
         /// Promise of an accessor for a lambda to verify the format of each files, checking

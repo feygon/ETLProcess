@@ -54,13 +54,6 @@ namespace ETLProcess.Specific.Documents
 		
 		BalDetail sample = new BalDetail();
 
-		// public Address mailingAddress, returnAddress;
-		// public string accountNumber, message;
-		// Date statementStartDate, statementEndDate, dueDate;
-		// public decimal invoiceAmt, currentBalance, fullBalance;
-		// public int daysPastDue;
-		// public List<IOutputDetail> _details;
-
 		/// <summary>
 		/// Default constructor, for getting a sample.
 		/// </summary>

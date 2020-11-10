@@ -19,9 +19,9 @@
     <lateEnrollmentPenaltyAmount>22.00</lateEnrollmentPenaltyAmount>
     <fullBalance>2001.00</fullBalance>
     <lateBalance>0</lateBalance>
-    <invoicePeriodFromDate>1900-01-02T00:00:00</invoicePeriodFromDate>
-    <invoicePeriodToDate>1900-02-01T00:00:00</invoicePeriodToDate>
-    <dueDate>1900-02-16T00:00:00</dueDate>
+    <invoicePeriodFromDate>1900-01-01T00:00:00</invoicePeriodFromDate>
+    <invoicePeriodToDate>1900-01-31T00:00:00</invoicePeriodToDate>
+    <dueDate>1900-02-15T00:00:00</dueDate>
     <details>
       <BalDetail>
         <memberID>ID0000001</memberID>
@@ -56,9 +56,9 @@
     <lateEnrollmentPenaltyAmount>22.00</lateEnrollmentPenaltyAmount>
     <fullBalance>4002.00</fullBalance>
     <lateBalance>1000.00</lateBalance>
-    <invoicePeriodFromDate>1900-01-03T00:00:00</invoicePeriodFromDate>
-    <invoicePeriodToDate>1900-02-02T00:00:00</invoicePeriodToDate>
-    <dueDate>1900-02-17T00:00:00</dueDate>
+    <invoicePeriodFromDate>1900-01-01T00:00:00</invoicePeriodFromDate>
+    <invoicePeriodToDate>1900-01-31T00:00:00</invoicePeriodToDate>
+    <dueDate>1900-02-15T00:00:00</dueDate>
     <details>
       <BalDetail>
         <memberID>ID0000002</memberID>
@@ -117,9 +117,9 @@
     <lateEnrollmentPenaltyAmount>22.00</lateEnrollmentPenaltyAmount>
     <fullBalance>12001004.00</fullBalance>
     <lateBalance>12000000.00</lateBalance>
-    <invoicePeriodFromDate>1900-01-05T00:00:00</invoicePeriodFromDate>
-    <invoicePeriodToDate>1900-02-04T00:00:00</invoicePeriodToDate>
-    <dueDate>1900-02-19T00:00:00</dueDate>
+    <invoicePeriodFromDate>1900-01-01T00:00:00</invoicePeriodFromDate>
+    <invoicePeriodToDate>1900-01-31T00:00:00</invoicePeriodToDate>
+    <dueDate>1900-02-15T00:00:00</dueDate>
     <details>
       <BalDetail>
         <memberID>ID0000004</memberID>
@@ -286,9 +286,9 @@
     <lateEnrollmentPenaltyAmount>22.00</lateEnrollmentPenaltyAmount>
     <fullBalance>1005.00</fullBalance>
     <lateBalance>0</lateBalance>
-    <invoicePeriodFromDate>1900-01-06T00:00:00</invoicePeriodFromDate>
-    <invoicePeriodToDate>1900-02-05T00:00:00</invoicePeriodToDate>
-    <dueDate>1900-02-20T00:00:00</dueDate>
+    <invoicePeriodFromDate>1900-01-01T00:00:00</invoicePeriodFromDate>
+    <invoicePeriodToDate>1900-01-31T00:00:00</invoicePeriodToDate>
+    <dueDate>1900-02-15T00:00:00</dueDate>
     <details />
   </OutputDoc>
   <OutputDoc>
@@ -310,9 +310,9 @@
     <lateEnrollmentPenaltyAmount>22.00</lateEnrollmentPenaltyAmount>
     <fullBalance>1007.00</fullBalance>
     <lateBalance>0</lateBalance>
-    <invoicePeriodFromDate>1900-01-08T00:00:00</invoicePeriodFromDate>
-    <invoicePeriodToDate>1900-02-07T00:00:00</invoicePeriodToDate>
-    <dueDate>1900-02-22T00:00:00</dueDate>
+    <invoicePeriodFromDate>1900-01-01T00:00:00</invoicePeriodFromDate>
+    <invoicePeriodToDate>1900-01-31T00:00:00</invoicePeriodToDate>
+    <dueDate>1900-02-15T00:00:00</dueDate>
     <details />
   </OutputDoc>
 </ArrayOfOutputDoc>

@@ -52,33 +52,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="General\Algorithms\CSV.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IOut_B_Files.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IOut_B_SQL.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IOut_C_TSQL.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IOut_C_XMLOut.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\_IOutputMode_Files.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\_IOutputMode_SQL.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\IOutputSQLLang_TSQL.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\IOutputFileType_XML.cs" />
     <Compile Include="General\ExtendLinQ\DataRelationKeyColumnComparer.cs" />
     <Compile Include="General\Profiles\In\IO_XMLIn.cs" />
-    <Compile Include="General\Profiles\OutputSingleton.cs" />
     <Compile Include="General\Containers\ForeignKeyConstraintElements.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IIn_C_CSVFile.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\IInputFileType_CSV.cs" />
     <Compile Include="General\Containers\KeyStrings.cs" />
     <Compile Include="General\Containers\HeaderSource.cs" />
     <Compile Include="General\GP.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IIn_B_Files.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\_IInputMode_Files.cs" />
     <Compile Include="General\Interfaces\IOutputDetail.cs" />
     <Compile Include="General\Interfaces\IOutputDoc.cs" />
     <Compile Include="General\Interfaces\IRecord.cs" />
     <Compile Include="General\Interfaces\IRecord_Uses_ImportRows.cs" />
     <Compile Include="General\Interfaces\IGeneratesRecords.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IIn_A_InputProfile.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\_IInput_Profile.cs" />
     <Compile Include="General\Containers\Members\Address.cs" />
     <Compile Include="General\Containers\Members\Date.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IIn_C_FlatFile.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IOut_A_OutputProfile.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\IInputFileType_PositionDelimited.cs" />
+    <Compile Include="General\Interfaces\Profile Interfaces\_IOutput_Profile.cs" />
     <Compile Include="General\IO\IOFiles.cs" />
     <Compile Include="General\IO\XML.cs" />
     <Compile Include="General\IO\ZipFiles.cs" />
-    <Compile Include="General\Profiles\InputSingleton.cs" />
     <Compile Include="General\Profiles\SingletonProfile.cs" />
     <Compile Include="General\Profiles\Out\IO_CSVOut.cs" />
     <Compile Include="General\Profiles\In\IO_FilesIn.cs" />
@@ -114,12 +112,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="CodeMaps\2020-09-24 Map_MajorPlayers.dgml" />
-    <None Include="CodeMaps\Map_Interface_2020-06-28.dgml" />
-    <None Include="CodeMaps\Modular Interfaces.dgml" />
-    <None Include="CodeMaps\KeyedDoc_Drilldown.dgml" />
-    <None Include="CodeMaps\Overarching Codemap view.dgml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CodeMaps\ETLProcess Flow.png" />
     <Content Include="Specific\SQLInput.sql" />
   </ItemGroup>
   <ItemGroup>

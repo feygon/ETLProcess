@@ -3,7 +3,7 @@
     /// <summary>
     /// Promise that a class will implement output profile methods.
     /// </summary>
-    public interface IOut_A_OutputProfile
+    public interface _IOutput_Profile
     {
         /// <summary>
         /// Promise that a class implementing this profile will check its output for validity.

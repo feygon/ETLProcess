@@ -16,7 +16,7 @@ namespace ETLProcess.Specific
     /// </summary>
     internal sealed class Record_Members : BasicRecord<Record_Members>, IRecord<Record_Members>
     {
-        public SampleColumnTypes columnTypes { get; } = new SampleColumnTypes()
+        public TableHeaders columnTypes { get; } = new TableHeaders()
         {
             { "Billing Account Number", (typeof(string), true) }
             , { "First Name", (typeof(string), false)}
@@ -64,7 +64,7 @@ namespace ETLProcess.Specific
         /// <returns></returns>
         public Record_Members Record(
             StringMap stringMap
-            , SampleColumnTypes sampleColumnTypes
+            , TableHeaders sampleColumnTypes
             , List<string> headers)
         {
             return new Record_Members(stringMap, sampleColumnTypes, headers);
@@ -79,7 +79,7 @@ namespace ETLProcess.Specific
         /// <param name="headers">Headers of the data</param>
         public Record_Members(
             StringMap memberFile
-            , SampleColumnTypes sampleColumnTypes
+            , TableHeaders sampleColumnTypes
             , List<string> headers) 
             : base(
                   data:memberFile
