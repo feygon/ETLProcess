@@ -25,25 +25,12 @@ namespace ETLProcess.General.Containers
     public class FileDataRecords<TBasicRecord, TProfile>
         : DataTable, IGeneratesRecords where TBasicRecord
         : BasicRecord<TBasicRecord>, IRecord<TBasicRecord>, new()
-        where TProfile : IIn_C_CSVFile<IO_FilesIn>, new()
+        where TProfile : IInputFileType_CSV<IO_FilesIn>, new()
     {
         /// <summary>
         /// Long-form name, including unique process identifier, for this table.
         /// </summary>
         public string longName;
-        /// <summary>
-        /// The number of times a redundant record was added.
-        /// </summary>
-        public int RedundantRecords { get; protected set; } = 0;
-
-        /// <summary>
-        /// The keystrings of all records added so far, from this class.
-        /// </summary>
-        public Dictionary<KeyStrings, bool> UniqueKeys_YN { get; } = new Dictionary<KeyStrings, bool>();
-        /// <summary>
-        /// Hash
-        /// </summary>
-        public Dictionary<DataColumn, Func<DataRow, HashInt>> HashIndices = new Dictionary<DataColumn, Func<DataRow, HashInt>>();
 
         /// <summary>
         /// This DataTable's unique counter index.
@@ -54,7 +41,7 @@ namespace ETLProcess.General.Containers
         /// Is the key a unique key, or does it require an index to be unique?
         /// </summary>
         public bool unique;
-        private readonly SampleColumnTypes columnInfo;
+        private readonly TableHeaders columnInfo;
         internal BasicRecord<TBasicRecord> SampleBasicRecord = BasicRecord<TBasicRecord>.Sample;
         internal IRecord<TBasicRecord> SampleIRecord = BasicRecord<TBasicRecord>.Sample;
 
@@ -70,21 +57,11 @@ namespace ETLProcess.General.Containers
         /// <br>The List of strings after this is the headers.</br></param>
         public FileDataRecords(
             HeaderSource<List<StringMap>, List<string>> source
-            , Dictionary<Type, SampleColumnTypes> sampleColumns
+            , Dictionary<Type, TableHeaders> sampleColumns
             , ForeignKeyConstraintElements constraint = null
             , string longName = null) : base(typeof(TBasicRecord).Name)
         {
-            // reflect a member of the class referred to by the TProfile generic class argument,
-            //  whose interface has "SampleColumns" and whose constructor takes a single string,
-            //  then get the property of "SampleColumns" from it.
-            // This enables the decoupling of this class from the client-specific ETLProcess.
-
-            Dictionary<Type, SampleColumnTypes> SampleColumns = sampleColumns;
-
-            columnInfo = SampleColumns[typeof(TBasicRecord)];
-
-            // keyColumns = ClientETLProcess.Instance.SampleColumns[typeof(TBasicRecord)];
-            
+            columnInfo = sampleColumns[typeof(TBasicRecord)];
             unique = SampleBasicRecord.keyIsUniqueIdentifier;
 
             List<StringMap> dataList = source.data; // list of dictionaries of data strings, keyed by column strings
@@ -97,7 +74,7 @@ namespace ETLProcess.General.Containers
                 // Add a new Keystrings, record pair to the DataTable.
                 TBasicRecord record = ((IRecord<TBasicRecord>)SampleBasicRecord).Record(
                         strMap
-                        , SampleColumns[typeof(TBasicRecord)]
+                        , columnInfo
                         , headerStrings);
                 src.Add(
                     record.recordKey,
@@ -156,14 +133,6 @@ namespace ETLProcess.General.Containers
         /// <param name="record">The record</param>
         protected void Add(KeyStrings key, TBasicRecord record)
         {
-            bool found = UniqueKeys_YN.ContainsKey(key);
-            if (found)
-            {
-                RedundantRecords++;
-                UniqueKeys_YN[key] = false;
-            } else {
-                UniqueKeys_YN.Add(key, true);
-            }
             DataRow row = NewRow(); // method constructs and adds returned record to table.
             foreach (var cell in record) {
                 // TO DO: Correct type parsing errors (Date, for example).
@@ -171,33 +140,6 @@ namespace ETLProcess.General.Containers
                 row.SetField(Columns[cell.Key], cell.Value);
             }
             Rows.Add(row); // Does this check against primary keys for uniqueness?
-        }
-
-        /// <summary>
-        /// Dereference a single record on its unique composite key. For GP use.
-        /// </summary>
-        /// <param name="recordKey">The unique key</param>
-        /// <param name="ret">The return object.</param>
-        /// <returns></returns>
-        public bool TrySelectValue (
-            KeyStrings recordKey, out DataRow ret)
-        {
-            if (!this.unique) throw new WarningException("Getting only first element of non-unique set.");
-
-            DataRow[] filteredSelection = recordKey.Filter(this);
-            bool success = filteredSelection.Length > 0;
-            if (success)
-            {
-                try
-                {
-                    ret = filteredSelection[0] ??= null;
-                } catch (NullReferenceException) {
-                    ret = null; 
-                }
-            } else { 
-                ret = null;
-            }
-            return success;
         }
 
         /*****Promises*****/

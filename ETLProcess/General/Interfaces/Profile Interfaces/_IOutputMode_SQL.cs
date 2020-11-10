@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface to promise the structure of an ETLProcess which specifically produces output SQL queries.
     /// </summary>
-    public interface IOut_B_SQL : IOut_A_OutputProfile
+    public interface _IOutputMode_SQL : _IOutput_Profile
     {
         /// <summary>
         /// Promise that a class implementing SQL output with this interface will implement a method

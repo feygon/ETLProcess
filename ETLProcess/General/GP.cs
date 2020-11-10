@@ -16,25 +16,22 @@ using System.Runtime.InteropServices;
 using ETLProcess.General.Algorithms;
 using System.Data.Metadata.Edm;
 
-namespace ETLProcess.General
-
-{
+namespace ETLProcess.General {
     /// <summary>
     /// Wrapper for a string-keyed Dictionary with ValueTuple values of Type and bool.
     /// </summary>
-    public class SampleColumnTypes : Dictionary<string, (Type colType, bool isKey)>
-    {
+    public class TableHeaders : Dictionary<string, (Type colType, bool isKey)> {
         /// <summary>
         /// public parameterless constructor.
         /// </summary>
-        public SampleColumnTypes() : base() { }
-        internal SampleColumnTypes(int capacity) : base(capacity) { }
-        internal SampleColumnTypes(IEqualityComparer<string> comparer) : base(comparer) { }
-        internal SampleColumnTypes(IDictionary<string, (Type colType, bool isKey)> dictionary) 
+        public TableHeaders() : base() { }
+        internal TableHeaders(int capacity) : base(capacity) { }
+        internal TableHeaders(IEqualityComparer<string> comparer) : base(comparer) { }
+        internal TableHeaders(IDictionary<string, (Type colType, bool isKey)> dictionary) 
             : base(dictionary) { }
-        internal SampleColumnTypes(int capacity, IEqualityComparer<string> comparer) : base(capacity, comparer) { }
-        internal SampleColumnTypes(SerializationInfo info, StreamingContext context) : base(info, context) { }
-        internal SampleColumnTypes(
+        internal TableHeaders(int capacity, IEqualityComparer<string> comparer) : base(capacity, comparer) { }
+        internal TableHeaders(SerializationInfo info, StreamingContext context) : base(info, context) { }
+        internal TableHeaders(
                 IDictionary<string, (Type colType, bool isKey)> dictionary
                 , IEqualityComparer<string> comparer)
             : base(dictionary, comparer) { }
@@ -176,7 +173,7 @@ namespace ETLProcess.General
         }
 
         /// <summary>
-        /// Invoke a method on T by its name and return its return value.
+        /// Invoke a method on a newly created instance of T by the method's name and return its return value.
         /// </summary>
         /// <typeparam name="TRet">Return type of the method.</typeparam>
         /// <param name="methodName">Name of the method to call.</param>
@@ -204,7 +201,7 @@ namespace ETLProcess.General
         }
 
         /// <summary>
-        /// Invoke a method on T by its name and return its return value.
+        /// Invoke a method on a preexisting instance of T by the method's name and return its return value.
         /// </summary>
         /// <typeparam name="TRet">Return type of the method.</typeparam>
         /// <param name="methodName">Name of the method to call.</param>

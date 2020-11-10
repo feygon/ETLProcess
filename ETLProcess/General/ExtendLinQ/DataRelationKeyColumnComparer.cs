@@ -84,9 +84,10 @@ namespace ETLProcess.General.ExtendLinQ {
                 hashStr = string.Concat(hashStr, "##");
                 hashStr = string.Concat(hashStr, obj.ItemArray[col.Ordinal].ToString());
             }
-
+#if Debug
             Log.Write(string.Format($"GetHashCode found hashStr of {hashStr}.\n" +
                 $"Returning int.GetHashCode of that: {hashStr.GetHashCode()}"));
+#endif
             return hashStr.GetHashCode();
         }
 
@@ -100,12 +101,12 @@ namespace ETLProcess.General.ExtendLinQ {
             DataRow leftish = left ?? this.left ?? throw new Exception("Null reference exception imminent. Left member must be populated by parameter or constructor.");
             DataRow rightish = right ?? throw new Exception("Null reference exception imminent. Right member must be populated by parameter or constructor.");
 
-            DelRet<bool, (DataRow lf, DataRow rt)> comparator =
-                ((DataRow lf, DataRow rt) rows) => {
-                    return Equals(rows.lf, rows.rt);
-                };
+            // Local function
+            bool _Comparator((DataRow lf, DataRow rt) rows) {
+                return Equals(rows.lf, rows.rt);
+            }
 
-            return (rightish) => comparator((leftish, rightish));
+            return (rightish) => _Comparator((leftish, rightish));
         }
 
         //private List<int> GetHashList(IEnumerable<DataRow> rows) {

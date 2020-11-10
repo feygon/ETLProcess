@@ -14,7 +14,7 @@ namespace ETLProcess.General.Interfaces.Profile_Interfaces
     /// <summary>
     /// Promise that a class will implement methods specific to outputting data to a database in T-SQL
     /// </summary>
-    public interface IOut_C_TSQL<Singleton, TOutput> : IOut_B_SQL
+    public interface IOutputSQLLang_TSQL<Singleton, TOutput> : _IOutputMode_SQL
         where Singleton : SingletonProfile<IO_SQLOut>
         where TOutput : ISerializable
     {

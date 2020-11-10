@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface to promise the structure of an ETLProcess which specifically produces output files.
     /// </summary>
-    public interface IOut_B_Files : IOut_A_OutputProfile
+    public interface _IOutputMode_Files : _IOutput_Profile
     {
         /// <summary>
         /// Promise that a class implementing file output with this interface will implement a method to

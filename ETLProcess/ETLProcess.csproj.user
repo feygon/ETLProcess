@@ -8,7 +8,7 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <StartArguments>
-    </StartArguments>
+    <StartArguments>"IOFiles\Test1.zip" "out.txt"</StartArguments>
+    <StartWorkingDirectory>C:\Repos\CodeMap2\CodeMapCVSample\codemap\ETLProcess\</StartWorkingDirectory>
   </PropertyGroup>
 </Project>

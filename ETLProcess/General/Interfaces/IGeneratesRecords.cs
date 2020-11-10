@@ -14,13 +14,6 @@ namespace ETLProcess.General.Interfaces
     /// </summary>
     public interface IGeneratesRecords
     {
-        /// <summary>
-        /// Promise of a dictionary of bools, indicating whether a specific KeyString is unique in the interfaced class.
-        /// </summary>
-        public Dictionary<KeyStrings, bool> UniqueKeys_YN { get; }
-        /// <summary>
-        /// Promise of a counter for redundant records.
-        /// </summary>
-        public int RedundantRecords { get; }
+
     }
 }

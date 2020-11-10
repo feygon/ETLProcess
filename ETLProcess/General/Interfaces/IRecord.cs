@@ -25,7 +25,7 @@ namespace ETLProcess.General.Interfaces
         /// <summary>
         /// A dictionary of the types that each column will have in the final document, by header.
         /// </summary>
-        public SampleColumnTypes columnTypes { get; }
+        public TableHeaders columnTypes { get; }
         /// <summary>
         /// Called by sample.
         /// <br>A function is required which takes a delegate of the 'getDocStringMap' configuration.</br>
@@ -39,7 +39,7 @@ namespace ETLProcess.General.Interfaces
         /// <returns></returns>
         public TRecord Record(
             StringMap stringMap
-            , SampleColumnTypes sampleColumnTypes
+            , TableHeaders sampleColumnTypes
             , List<string> headers);
 
         // Code guidance for constructors:

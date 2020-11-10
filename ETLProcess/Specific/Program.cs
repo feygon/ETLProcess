@@ -54,7 +54,9 @@ namespace ETLProcess {
                 Log.InitLog(args[0]);
                 // Get customer rules defined in ETLProcessor definitions.
                 Log.Write("Test");
+#if Debug
                 HashCodeTest.TestHashSystem();
+#endif
                 Log.Write("Test");
 
 

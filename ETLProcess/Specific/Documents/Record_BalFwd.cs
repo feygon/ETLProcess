@@ -17,7 +17,7 @@ namespace ETLProcess.Specific
     /// </summary>
     internal sealed class Record_BalFwd : BasicRecord<Record_BalFwd>, IRecord<Record_BalFwd>
     {
-        public SampleColumnTypes columnTypes { get; } = new SampleColumnTypes
+        public TableHeaders columnTypes { get; } = new TableHeaders
         {
             { "Member ID", (typeof(string), false) }
             ,{ "Member Name", (typeof(string), false) }
@@ -63,7 +63,7 @@ namespace ETLProcess.Specific
         /// </summary>
         /// <param name="init"></param>
         /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
-        public Record_BalFwd(StringMap init, SampleColumnTypes sampleColumnTypes)
+        public Record_BalFwd(StringMap init, TableHeaders sampleColumnTypes)
             : base(
                   data: init
                   , sampleColumnTypes
@@ -81,7 +81,7 @@ namespace ETLProcess.Specific
         /// <returns></returns>
         public Record_BalFwd Record(
             StringMap stringMap
-            , SampleColumnTypes sampleColumnTypes
+            , TableHeaders sampleColumnTypes
             , List<string> sirNotAppearingInThisFilm = null)
         {
             return new Record_BalFwd(stringMap, sampleColumnTypes);

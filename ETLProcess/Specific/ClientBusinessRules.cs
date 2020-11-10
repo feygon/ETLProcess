@@ -14,34 +14,16 @@ using ETLProcess.General.ExtendLinQ;
 
 namespace ETLProcess.Specific
 {
-    class ClientBusinessRules
+    /// <summary>
+    /// Sequestered client business rules.
+    /// <para>This is a class for the containment and sequestration of client-specified business rules.
+    /// For instance, this particular implementation has a business rule that an output document consists of:
+    ///     A statement matched to one and only one member, with zero to many balance forward details.
+    ///     See: <see cref="ClientBusinessRules.GetStatementRows(DataSet)"/>.
+    /// </para>
+    /// </summary>
+    public class ClientBusinessRules
     {
-
-        //  // seriously running the query for every single record where this is the case?
-        // goofy.
-        //            if (MCSB691.Count == 0 && implementation == "W")
-        //            {
-
-        //                // Set all documents to the nomail exclusion
-        //                //foreach (Document doc in documents)
-        //                //{
-        //                //    doc.premiumWithhold = "S";
-        //                //}
-
-        //                // Perform query of all current member ID in our database
-        //                using DataTable uluroWebAccounts = GetClientAccounts.Execute();
-        //                // Filter the document list based on this query
-        //                for (int iDoc = (documents.Count - 1); (iDoc >= 0); --iDoc)
-        //                {
-        //                    DocM691_Invoice doc = documents[iDoc];
-        //                    // If the docs account/member ID pair exists in the system already then remove it
-        //                    if (uluroWebAccounts.Select($@"MEMBERID = '{doc.memberID}' AND ACCOUNTID = '{doc.accountNumber}'").Length > 0)
-        //                    {
-        //                        documents.RemoveAt(iDoc);
-        //                    }
-        //                }
-        //            }
-
         /*
             var mem = dataSet.Tables[typeof(Record_Members).Name];
             var stm = dataSet.Tables[typeof(Record_Statement).Name];
@@ -60,7 +42,11 @@ namespace ETLProcess.Specific
             DataRelationKeyColumnComparer DREC_mem_key_bal = new DataRelationKeyColumnComparer(new DataRelation("mem_key_bal", stmFKmem.ChildColumns, stmFKbal.ChildColumns));
         */
 
-
+        /// <summary>
+        /// Get statement rows from a dataset, with their accompanying data, and return a collection of outputdocuments.
+        /// </summary>
+        /// <param name="dataSet"></param>
+        /// <returns></returns>
         public static IEnumerable<OutputDoc> GetStatementRows(
             DataSet dataSet)
         {
@@ -108,9 +94,13 @@ namespace ETLProcess.Specific
             }
 
             return outputDocs;
-    
         }
 
+        /// <summary>
+        /// Get a collection of members where there does not exist a corresponding statement.
+        /// </summary>
+        /// <param name="dataSet"></param>
+        /// <returns></returns>
         public static IEnumerable<DataRow> GetMembersWOStmts(
             DataSet dataSet)
         {
@@ -124,6 +114,11 @@ namespace ETLProcess.Specific
             return DREC_stm_FK_mem.Except(mem.AsEnumerable(), stm.AsEnumerable());
         }
 
+        /// <summary>
+        /// Get a collection of statements where there does not exist a corresponding member.
+        /// </summary>
+        /// <param name="dataSet"></param>
+        /// <returns></returns>
         public static IEnumerable<DataRow> GetStmtsWOMembers(
             DataSet dataSet)
         {
@@ -137,6 +132,11 @@ namespace ETLProcess.Specific
             return DREC_stm_FK_mem.Except(stm.AsEnumerable(), mem.AsEnumerable());
         }
 
+        /// <summary>
+        /// Get a collection of balances where there does not exists any corresponding statement.
+        /// </summary>
+        /// <param name="dataSet"></param>
+        /// <returns></returns>
         public static IEnumerable<DataRow> GetBalancesWOStmts(
             DataSet dataSet)
         {
@@ -150,6 +150,11 @@ namespace ETLProcess.Specific
             return DREC_stm_FK_bal.Except(bal.AsEnumerable(), stm.AsEnumerable());
         }
 
+        /// <summary>
+        /// Get balances which have corresponding statements.
+        /// </summary>
+        /// <param name="dataSet"></param>
+        /// <returns></returns>
         public static IEnumerable<DataRow> GetBalancesWStmts(
             DataSet dataSet)
         {
@@ -164,6 +169,11 @@ namespace ETLProcess.Specific
             return DREC_stm_FK_bal.Intersect(bal.AsEnumerable(), stm.AsEnumerable(), true);
         }
 
+        /// <summary>
+        /// Get statements which have corresponding members.
+        /// </summary>
+        /// <param name="dataSet"></param>
+        /// <returns></returns>
         public static IEnumerable<DataRow> GetStmtsWMembers(
             DataSet dataSet)
         {
@@ -178,6 +188,11 @@ namespace ETLProcess.Specific
             return DREC_stm_FK_mem.Intersect(stm.AsEnumerable(), mem.AsEnumerable(), true);
         }
 
+        /// <summary>
+        /// Get members which have corresponding statements.
+        /// </summary>
+        /// <param name="dataSet"></param>
+        /// <returns></returns>
         public static IEnumerable<DataRow> GetMembersWStmts(
             DataSet dataSet)
         {
@@ -192,6 +207,11 @@ namespace ETLProcess.Specific
             return DREC_stm_FK_mem.Intersect(mem.AsEnumerable(), stm.AsEnumerable(), true);
         }
 
+        /// <summary>
+        /// Get balances which have corresponding members.
+        /// </summary>
+        /// <param name="dataSet"></param>
+        /// <returns></returns>
         public static IEnumerable<DataRow> GetBalancesWMembers(
             DataSet dataSet)
         {

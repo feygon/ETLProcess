@@ -12,8 +12,18 @@ namespace ETLProcess.General.Interfaces.Profile_Interfaces
 {
     /// <summary>
     /// Promise that a class will implement methods specific to outputting XML data files.
+    /// <list type="table">
+    /// <listheader>
+    ///  <term>Name</term><term>Operator</term><term>Description</term>
+    /// </listheader>
+    /// <item>
+    ///  <term><typeparamref name="Singleton"/></term><term> Type Argument</term><term> A reference of the <see cref="SingletonProfile{T}"/> class where T is <see cref="IO_XMLOut"/></term>
+    /// </item> <item>
+    ///  <term><typeparamref name="TOutput"/></term><term> Type Argument</term><term> An <see cref="ISerializable"/> class to be used as a Type Argument in the XMLExport(List{TOutput})"/> method.</term>
+    /// </item>
+    /// </list>
     /// </summary>
-    public interface IOut_C_XMLOut<Singleton, TOutput> : IOut_B_Files 
+    public interface IOutputFileType_XML<Singleton, TOutput> : _IOutputMode_Files 
         where Singleton : SingletonProfile<IO_XMLOut>
         where TOutput : ISerializable
     {

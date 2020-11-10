@@ -79,7 +79,7 @@ namespace ETLProcess.General.Containers
         /// <br>(Sometimes they're not.)</br></param>
         public BasicRecord(
             StringMap data
-            , SampleColumnTypes sampleColumnTypes
+            , TableHeaders sampleColumnTypes
             , bool keyIsUniqueIdentifier = true) : base()
         {
             try

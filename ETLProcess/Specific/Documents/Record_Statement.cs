@@ -19,8 +19,8 @@ namespace ETLProcess.Specific
         , IRecord<Record_Statement>
         , IRecord_Uses_ImportRows<Record_Statement>
     {
-        public SampleColumnTypes columnTypes { get; } = 
-            new SampleColumnTypes {  
+        public TableHeaders columnTypes { get; } = 
+            new TableHeaders {  
                 { "Group Billing Acct ID", (typeof(string), true) }
                 ,{ "Invoice Number", (typeof(string), true) }
                 ,{ "Invoice Amount", (typeof(decimal), false) }
@@ -70,7 +70,7 @@ namespace ETLProcess.Specific
         /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
         public Record_Statement(
             StringMap data
-            , SampleColumnTypes sampleColumnTypes
+            , TableHeaders sampleColumnTypes
             , List<string> headers) 
             : base(
                   data: data
@@ -97,7 +97,7 @@ namespace ETLProcess.Specific
         /// <returns></returns>
         public Record_Statement Record(
             StringMap stringMap
-            , SampleColumnTypes sampleColumnTypes
+            , TableHeaders sampleColumnTypes
             , List<string> headers)
         {
             return new Record_Statement(stringMap, sampleColumnTypes, headers);

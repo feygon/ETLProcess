@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
+using ETLProcess.General.Profiles;
 using ETLProcess.General.IO;
 
 namespace ETLProcess.General.Containers.AbstractClasses
@@ -17,13 +18,13 @@ namespace ETLProcess.General.Containers.AbstractClasses
     /// <typeparam name="T"></typeparam>
     public abstract class SingletonProfile<T> where T : class, IDisposable
     {
-        private static readonly object padlock = new object();
+        // private static readonly object padlock = new object();
+        private static bool childFirstRun = true;
 
         /// <summary>
         /// Is this object the base of the first constructed child class instance or the singleton's?
         /// </summary>
         protected bool firstRun = true;
-        private static bool childFirstRun = true;
         /// <summary>
         /// Is this object from the first constructed instance or the singleton?
         /// </summary>
@@ -48,8 +49,7 @@ namespace ETLProcess.General.Containers.AbstractClasses
         /// </summary>
         /// <param name="derivedClassType">Class Type of the derived class to be lazily instantiated.</param>
         /// <param name="classOptions">Optional parameters for the lazily instantiated class instance.</param>
-        public SingletonProfile(Type derivedClassType, object[] classOptions)
-        {
+        public SingletonProfile(Type derivedClassType, object[] classOptions) {
             if (!initialized) {
                 Log.WriteException($"SingletonProfile derived class \"{typeof(T).Name}\" was constructed without the use of the Initializer \"{typeof(T).Name}.Init(...)\". This is unsafe. Please use the initializer.");
             }
@@ -57,8 +57,10 @@ namespace ETLProcess.General.Containers.AbstractClasses
                 Log.WriteException($"Class type \"{derivedClassType.Name}\" baseType \"{derivedClassType.BaseType.Name}\" mismatch. " +
                     $"Must be \"{typeof(SingletonProfile<T>).Name}\" for type safety.");
             }
+
             firstRun = childFirstRun;
             childFirstRun = false;
+
             if (firstRun) {
                 bool success =
                 InstanceDict.TryAdd(derivedClassType,
@@ -109,13 +111,16 @@ namespace ETLProcess.General.Containers.AbstractClasses
                 if (!initialized)
                 {
                     initialized = true;
-                    using (T discard = (T)Activator.CreateInstance(typeof(T), classOptions))
-                    {
-                        Log.Write($"Initializing class \"{typeof(T).Name}\" and garbage collecting first-run instance.");
-                    }
+
+                    using T discard = (T)Activator.CreateInstance(typeof(T), classOptions);
+                    Log.Write($"Initializing class \"{typeof(T).Name}\" and garbage collecting first-run instance.");
                 }
             } catch (Exception err) {
-                Log.WriteException($"Error while disposing of Initial class instance. Is the class T: {typeof(T).FullName} a derived SingletonProfile?", err);
+#if Debug
+                Log.WriteException($"Unknown error while disposing of Initial class instance in derived class T: {typeof(T).FullName}.", err);
+#else
+                throw err;
+#endif
             }
         }
     }
