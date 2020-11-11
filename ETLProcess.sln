@@ -1,8 +1,11 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETLProcess", "ETLProcess\ETLProcess.csproj", "{FDE8C872-61FC-47C1-872E-4E1723D30977}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETLProcessFactory", "ETLProcessFactory\ETLProcessFactory.csproj", "{E19B8525-55B6-4955-B0D1-3D4835181870}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,6 +17,10 @@ Global
 		{FDE8C872-61FC-47C1-872E-4E1723D30977}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDE8C872-61FC-47C1-872E-4E1723D30977}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDE8C872-61FC-47C1-872E-4E1723D30977}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E19B8525-55B6-4955-B0D1-3D4835181870}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E19B8525-55B6-4955-B0D1-3D4835181870}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E19B8525-55B6-4955-B0D1-3D4835181870}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E19B8525-55B6-4955-B0D1-3D4835181870}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

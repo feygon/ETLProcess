@@ -1,14 +1,15 @@
 using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
-using ETLProcess.General.Interfaces;
-using ETLProcess.General.Containers;
-using ETLProcess.General;
-using System.Linq;
-using ETLProcess.General.Containers.Members;
 using System.Runtime.CompilerServices;
 
-using ETLProcess.General.Containers.AbstractClasses;
+using ETLProcessFactory.Interfaces;
+using ETLProcessFactory.Containers;
+using ETLProcessFactory;
+using ETLProcessFactory.Containers.Members;
+using ETLProcessFactory.Containers.AbstractClasses;
+using ETLProcessFactory.GP;
 
 namespace ETLProcess.Specific
 {
@@ -17,7 +18,7 @@ namespace ETLProcess.Specific
     /// </summary>
     internal sealed class Record_BalFwd : BasicRecord<Record_BalFwd>, IRecord<Record_BalFwd>
     {
-        public TableHeaders columnTypes { get; } = new TableHeaders
+        public TableHeaders ColumnTypes { get; } = new TableHeaders
         {
             { "Member ID", (typeof(string), false) }
             ,{ "Member Name", (typeof(string), false) }
@@ -32,11 +33,11 @@ namespace ETLProcess.Specific
         /// <summary>
         /// Satisfies interface requirement for headers accessor to above readonly Headers member.
         /// </summary>
-        public List<string> headers { get { return columnTypes.Keys.ToList(); } }
+        public List<string> Headers { get { return ColumnTypes.Keys.ToList(); } }
 
         public override List<string> GetHeaders()
         {
-            return headers;
+            return Headers;
         }
 
         public override Type GetChildType()
