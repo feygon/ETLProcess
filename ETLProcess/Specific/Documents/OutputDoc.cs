@@ -1,11 +1,12 @@
-using ETLProcess.General.Containers.Members;
-using ETLProcess.General.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Runtime.Serialization;
-using ETLProcess.General.IO;
+
+using ETLProcessFactory.IO;
+using ETLProcessFactory.Containers.Members;
+using ETLProcessFactory.Interfaces;
 
 namespace ETLProcess.Specific.Documents
 {
@@ -51,8 +52,7 @@ namespace ETLProcess.Specific.Documents
 		/// Detail members.
 		/// </summary>
 		public List<BalDetail> details = new List<BalDetail>();
-		
-		BalDetail sample = new BalDetail();
+        readonly BalDetail sample = new BalDetail();
 
 		/// <summary>
 		/// Default constructor, for getting a sample.

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using ETLProcess.General.Interfaces;
-using ETLProcess.General.Containers;
-using ETLProcess.General;
-using ETLProcess.General.Containers.AbstractClasses;
-
+using ETLProcessFactory.Interfaces;
+using ETLProcessFactory.Containers;
+using ETLProcessFactory;
+using ETLProcessFactory.Containers.AbstractClasses;
+using ETLProcessFactory.GP;
 
 namespace ETLProcess.Specific
 {
@@ -16,7 +16,7 @@ namespace ETLProcess.Specific
     /// </summary>
     internal sealed class Record_Members : BasicRecord<Record_Members>, IRecord<Record_Members>
     {
-        public TableHeaders columnTypes { get; } = new TableHeaders()
+        public TableHeaders ColumnTypes { get; } = new TableHeaders()
         {
             { "Billing Account Number", (typeof(string), true) }
             , { "First Name", (typeof(string), false)}
@@ -34,10 +34,10 @@ namespace ETLProcess.Specific
         /// <summary>
         /// Satisfies interface requirement for headers accessor to above readonly Headers member.
         /// </summary>
-        public List<string> headers { get { return columnTypes.Keys.ToList(); } }
+        public List<string> Headers { get { return ColumnTypes.Keys.ToList(); } }
 
         public override List<string> GetHeaders() {
-            return headers;
+            return Headers;
         }
 
         public override Type GetChildType() {
@@ -88,7 +88,7 @@ namespace ETLProcess.Specific
         {
             foreach (string header in headers)
             {
-                if (!this.headers.Contains(header)) { 
+                if (!this.Headers.Contains(header)) { 
                     string temp = "CSV Header \"" + header + "\" not found in Member Records.";
                     throw new Exception(temp);
                 }

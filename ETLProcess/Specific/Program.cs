@@ -9,24 +9,23 @@ using System.Linq;
 using System.Data;
 using Microsoft.VisualBasic.FileIO;
 using ETLProcess.Specific;
-using static ETLProcess.Parse;
 
 using ETLProcess.Tests;
-using ETLProcess.General.Containers;
-using ETLProcess.General;
-using ETLProcess.General.Containers.AbstractClasses;
-using ETLProcess.General.Profiles;
-using ETLProcess.General.IO;
+using ETLProcessFactory.Containers;
+using ETLProcessFactory;
+using ETLProcessFactory.Containers.AbstractClasses;
+using ETLProcessFactory.Profiles;
+using ETLProcessFactory.IO;
 using ETLProcess.Specific.Boilerplate;
-using ETLProcess.General.Interfaces;
+using ETLProcessFactory.Interfaces;
 using ETLProcess.Specific.Documents;
+using ETLProcessFactory.Containers.Members;
 
 using String = System.String;
 using AcctID = System.String;
 using MemberID = System.String;
 using System.Reflection;
 
-using ETLProcess.General.Containers.Members;
 
 namespace ETLProcess {
     /// <summary>
@@ -100,9 +99,9 @@ namespace ETLProcess {
         private static void CleanUp() {
 #if !Debug
             // Clean up any temp files
-            if (Directory.Exists(IOFiles.TempLocation))
+            if (Directory.Exists(IODirectory.TempLocation))
             {
-                Directory.Delete(IOFiles.TempLocation, true);
+                Directory.Delete(IODirectory.TempLocation, true);
             }
 #endif
         }

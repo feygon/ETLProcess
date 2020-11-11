@@ -2,12 +2,13 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-using ETLProcess.General;
-using ETLProcess.General.Interfaces;
-using ETLProcess.General.Containers;
-using ETLProcess.General.Containers.Members;
-using ETLProcess.General.Containers.AbstractClasses;
-
+using ETLProcessFactory;
+using ETLProcessFactory.Algorithms;
+using ETLProcessFactory.Interfaces;
+using ETLProcessFactory.Containers;
+using ETLProcessFactory.Containers.Members;
+using ETLProcessFactory.Containers.AbstractClasses;
+using ETLProcessFactory.GP;
 
 namespace ETLProcess.Specific
 {
@@ -19,7 +20,7 @@ namespace ETLProcess.Specific
         , IRecord<Record_Statement>
         , IRecord_Uses_ImportRows<Record_Statement>
     {
-        public TableHeaders columnTypes { get; } = 
+        public TableHeaders ColumnTypes { get; } = 
             new TableHeaders {  
                 { "Group Billing Acct ID", (typeof(string), true) }
                 ,{ "Invoice Number", (typeof(string), true) }
@@ -33,10 +34,10 @@ namespace ETLProcess.Specific
         /// <summary>
         /// Satisfies interface requirement for headers accessor to above readonly Headers member.
         /// </summary>
-        public List<string> headers { get { return columnTypes.Keys.ToList(); } }
+        public List<string> Headers { get { return ColumnTypes.Keys.ToList(); } }
 
         public override List<string> GetHeaders() {
-            return headers;
+            return Headers;
         }
 
         public override Type GetChildType() {
@@ -78,7 +79,7 @@ namespace ETLProcess.Specific
                   , keyIsUniqueIdentifier: true)
         {
             foreach (string header in headers) {
-                if (!this.headers.Contains(header))
+                if (!this.Headers.Contains(header))
                 {
                     string temp = "CSV Header \"" + header + "\" not found in Statement Records.";
                     throw new Exception(temp);
@@ -128,7 +129,7 @@ namespace ETLProcess.Specific
                 tempMapList.Add(docLine);
             }
             HeaderSource<List<StringMap>, List<string>> ret =
-                new HeaderSource<List<StringMap>, List<string>>(tempMapList, headers.ToArray());
+                new HeaderSource<List<StringMap>, List<string>>(tempMapList, Headers.ToArray());
 
             // return type: headerSource<List<StringMap>, string>
             return ret;

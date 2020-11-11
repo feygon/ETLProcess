@@ -3,28 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Data;
-
-using ETLProcess.General;
-using ETLProcess.General.Interfaces;
-using ETLProcess.General.IO;
-using ETLProcess.General.Containers;
-using ETLProcess.General.Algorithms;
-using ETLProcess.General.Profiles;
-
-using String = System.String;
-
-using ETLProcess.Specific.Documents;
-using ETLProcess.General.Interfaces.Profile_Interfaces;
-using System.Runtime.Serialization;
-using ETLProcess.General.ExtendLinQ;
 using System.ComponentModel;
+using System.Runtime.Serialization;
+
+using ETLProcessFactory.Interfaces;
+using ETLProcessFactory.IO;
+using ETLProcessFactory.Containers;
+using ETLProcessFactory.Algorithms;
+using ETLProcessFactory.Profiles;
+using ETLProcess.Specific.Documents;
+using ETLProcessFactory.Interfaces.Profile_Interfaces;
+using ETLProcessFactory.ExtendLinQ;
+using ETLProcessFactory.GP;
+using String = System.String;
 
 namespace ETLProcess.Specific.Boilerplate
 {
     /// <summary>
     /// A boilerplate example of a class to fulfill Client statement and welcome letter document types.
     /// </summary>
-    public class ClientETLProcess : DataSet, IInputFileType_CSV<IO_FilesIn>, IOutputFileType_XML<IO_XMLOut, OutputDoc>
+    public class ClientETLProcess : DataSet, ILoadable_CSVFile<IO_FilesIn>, IExportable_XML<IO_XMLOut, OutputDoc>
     {
         /// <summary>
         /// Bucket for tables, for easy reference by type instead of unique identifying string.
@@ -46,7 +44,7 @@ namespace ETLProcess.Specific.Boilerplate
         /// <summary>
         ///  Public parameterless constructor, for inheritance.
         /// </summary>
-        public ClientETLProcess() : base(IOFiles.PrepGuid.ToString()) { }
+        public ClientETLProcess() : base(IODirectory.PrepGuid.ToString()) { }
         /// <summary>
         /// Record of the argument that was passed into the boilerplate implementation of ClientETLProcess.
         /// </summary>
@@ -57,16 +55,15 @@ namespace ETLProcess.Specific.Boilerplate
         /// <param name="inArg">Filename argument for IOFilesIn initialization.</param>
         /// <param name="outArg">Filename argument for IO_XMLOut initialization.</param>
         public ClientETLProcess(string inArg, string outArg)
-            : base(IOFiles.PrepGuid.ToString())
+            : base(IODirectory.PrepGuid.ToString())
         {
-
             Record_Statement.InitSample();
             Record_Members.InitSample();
             Record_BalFwd.InitSample();
             AllTableHeadersByType = new Dictionary<Type, TableHeaders> {
-                 { typeof(Record_Statement), new TableHeaders((Record_Statement.Sample).columnTypes) }
-                ,{ typeof(Record_Members), new TableHeaders((Record_Members.Sample).columnTypes) }
-                ,{ typeof(Record_BalFwd), (Record_BalFwd.Sample).columnTypes }
+                 { typeof(Record_Statement), new TableHeaders((Record_Statement.Sample).ColumnTypes) }
+                ,{ typeof(Record_Members), new TableHeaders((Record_Members.Sample).ColumnTypes) }
+                ,{ typeof(Record_BalFwd), (Record_BalFwd.Sample).ColumnTypes }
             };
             argIn = inArg;
 
@@ -103,18 +100,18 @@ namespace ETLProcess.Specific.Boilerplate
         /// </summary>
         /// <param name="filename">Filename of the file in question.</param>
         /// <returns></returns>
-        public RecordType IdentifyRecordFile(string filename)
+        public int IdentifyRecordFile(string filename)
         {
             if (Path.GetFileNameWithoutExtension(filename).StartsWith("Statement", StringComparison.InvariantCultureIgnoreCase)) { 
-                return RecordType.Statements; 
+                return (int)RecordType.Statements; 
             }
             if (Path.GetFileNameWithoutExtension(filename).StartsWith("Member", StringComparison.InvariantCultureIgnoreCase)) { 
-                return RecordType.Members; 
+                return (int)RecordType.Members; 
             }
             if (Path.GetFileNameWithoutExtension(filename).Contains("Balance")) { 
-                return RecordType.BalancesForward; 
+                return (int)RecordType.BalancesForward; 
             }
-            return RecordType.Error; // error code;
+            return (int)RecordType.Error; // error code;
         }
 
         /// <summary>
@@ -141,7 +138,7 @@ namespace ETLProcess.Specific.Boilerplate
             {
                 filename = Path.GetFileName(filePath);
                 fileExtension = Path.GetExtension(filePath);
-                recordType = IdentifyRecordFile(filename);
+                recordType = (RecordType)IdentifyRecordFile(filename);
 
                 DataColumn[] _parentColumns;
                 String[] _childColumns;
@@ -195,7 +192,7 @@ namespace ETLProcess.Specific.Boilerplate
                     case (RecordType.BalancesForward):
                         // TO DO: once-over post-DataSet/DataTable type changes.
                         // balfwdfile has no internal headers.
-                        List<string> headers = Record_BalFwd.Sample.headers;
+                        List<string> headers = Record_BalFwd.Sample.Headers;
 
                         // TO DO: 
                         var balFwdByAcctID = CSV.ImportCSVWithHeader(
@@ -271,7 +268,7 @@ namespace ETLProcess.Specific.Boilerplate
             var dict = new Dictionary<string, int> ();
             foreach (string file in files)
             {
-                RecordType docType = IdentifyRecordFile(file);
+                RecordType docType = (RecordType)IdentifyRecordFile(file);
                 switch (docType)
                 {
                     case RecordType.Statements:
