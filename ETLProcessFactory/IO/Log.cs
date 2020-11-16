@@ -99,7 +99,9 @@ namespace ETLProcessFactory.IO
         public static void Remove()
         {
             Writer.Dispose();
+#if !DEBUG
             logFileInfo.Delete();
+#endif
         }
 	}
 }
