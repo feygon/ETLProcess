@@ -16,8 +16,11 @@ namespace ETLProcess.Specific
     /// <summary>
     /// Container for a primary redundant keyed data set reflecting Client's balance forward records.
     /// </summary>
-    internal sealed class Record_BalFwd : BasicRecord<Record_BalFwd>, IRecord<Record_BalFwd>
+    public class Record_BalFwd : BasicRecord<Record_BalFwd>, IRecord<Record_BalFwd>
     {
+        /// <summary>
+        /// Collection of column types and boolean whether they're part of the primary key.
+        /// </summary>
         public TableHeaders ColumnTypes { get; } = new TableHeaders
         {
             { "Member ID", (typeof(string), false) }
@@ -35,11 +38,18 @@ namespace ETLProcess.Specific
         /// </summary>
         public List<string> Headers { get { return ColumnTypes.Keys.ToList(); } }
 
+        /// <summary>
+        /// Get the headers of this row type.
+        /// </summary>
         public override List<string> GetHeaders()
         {
             return Headers;
         }
 
+        /// <summary>
+        /// Get the type of the child class.
+        /// </summary>
+        /// <returns></returns>
         public override Type GetChildType()
         {
             return this.GetType();

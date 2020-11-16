@@ -4,16 +4,16 @@ using System.Linq;
 using System.Data;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
+using ETLProcessFactory.Algorithms;
 using ETLProcessFactory.Containers;
 using ETLProcessFactory.Interfaces;
-
 using ETLProcessFactory.Profiles;
-using System.Runtime.InteropServices;
-using ETLProcessFactory.Algorithms;
 
 namespace ETLProcessFactory.GP {
     /// <summary>

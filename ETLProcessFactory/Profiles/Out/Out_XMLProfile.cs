@@ -12,35 +12,27 @@ namespace ETLProcessFactory.Profiles
     /// <summary>
     /// Output profile for exporting to an XML file.
     /// </summary>
-    public class IO_XMLOut : SingletonProfile<IO_XMLOut>, IDisposable {
+    public class Out_XMLProfile : SingletonProfile<Out_XMLProfile>, IDisposable {
         /// <summary>
         /// Name of the XML file to be exported as part of this output profile.
         /// </summary>
         public readonly string fileNameOut;
+
+        #region Constructors
         /// <summary>
         /// Parameterless constructor.
         /// </summary>
-        public IO_XMLOut() : base(typeof(IO_XMLOut), null) {
+        public Out_XMLProfile() : base(typeof(Out_XMLProfile), null) {
             this.fileNameOut = "out";
         }
         /// <summary>
         /// Constructor with string parameter for filename out.
         /// </summary>
         /// <param name="outArg"></param>
-        public IO_XMLOut(string outArg) : base(typeof(IO_XMLOut), null) {
+        public Out_XMLProfile(string outArg) : base(typeof(Out_XMLProfile), null) {
             this.fileNameOut = outArg;
         }
-        /// <summary>
-        /// Dispose of this object.
-        /// </summary>
-        public void Dispose() {
-            if (firstRun) {
-                disposable.Dispose();
-                GC.SuppressFinalize(this);
-            } else {
-                Log.WriteException("Dispose called on singleton or non-initial instance.");
-            }
-        } // end method
+        #endregion
 
         /// <summary>
         /// Export a list of serializable items to XML for serialization into a document.
@@ -51,5 +43,23 @@ namespace ETLProcessFactory.Profiles
         {
             XML.Export(nonDefaultFilename ?? fileNameOut, outputDocs);
         } // end method.
+
+        #region promised
+        /// <summary>
+        /// Dispose of this object.
+        /// </summary>
+        public void Dispose()
+        {
+            if (firstRun)
+            {
+                disposable.Dispose();
+                GC.SuppressFinalize(this);
+            }
+            else
+            {
+                Log.WriteException("Dispose called on singleton or non-initial instance.");
+            }
+        } // end method
+        #endregion
     } // end class
 } // end namespace

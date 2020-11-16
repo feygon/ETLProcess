@@ -10,9 +10,14 @@ namespace ETLProcessFactory.IO
         /// <summary>
         /// Replace these credentials with your own auth.
         /// </summary>
-        public static SqlConnection Conn { get; } =
-            new SqlConnection(@"Data Source=Database\DatabaseName;Initial Catalog=DatabaseName;User id=Username;Password=Userpassword;");
+        public static SqlConnection Conn { get; set; } =
 
+#if !DEBUG
+            /* Your connection here. */
+            new SqlConnection(@"Data Source=Database\DatabaseName;Initial Catalog=DatabaseName;");
+#else
+            new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Repos\CodeMap2\CodeMapCVSample\codemap\ETLProcessFactory\Containers\Databases\ETLProcessTestDB.mdf;Integrated Security=True");
+#endif
         /// <summary>
         /// Queries a SQL server and executes a command, returning a DataTable of the results or null in case of an error. 
         /// Also handles the error processing in case of errors.

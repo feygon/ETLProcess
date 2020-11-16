@@ -25,7 +25,7 @@ using String = System.String;
 using AcctID = System.String;
 using MemberID = System.String;
 using System.Reflection;
-
+using ETLProcessFactory.GP;
 
 namespace ETLProcess {
     /// <summary>
@@ -59,7 +59,7 @@ namespace ETLProcess {
                 Log.Write("Test");
 
 
-                string arg2 = "out.txt"; 
+                string arg2 = "out.txt";
                 if (args.Length >= 2) { arg2 = args[1] ?? "out.txt"; }
                 client = new ClientETLProcess(args[0], arg2 ?? "out.txt");
 
@@ -69,8 +69,14 @@ namespace ETLProcess {
                 // Enact client business rules
                 List<OutputDoc> outputDocs = client.ProcessRecords(
                     out IEnumerable<DataRow> membersWithoutStatements
-                    , out IEnumerable<DataRow> balancesWithoutStatements 
+                    , out IEnumerable<DataRow> balancesWithoutStatements
                     , out IEnumerable<DataRow> statementsWithoutMembers);
+                // Export SQL reports to LocalDB file.
+                client.ExportReports();
+
+                DelRet<bool> SqlReportCheck = client.GetCheck_SQL_Output(new object[] { client.TablesByType[typeof(Record_Statement)].First() });
+                bool success = SqlReportCheck();
+                
 
                 // Report on these, other than returned outputDocs, probably by SQLBulkCopy to a new or proscribed table,
                 //  or output to csv.
@@ -97,7 +103,7 @@ namespace ETLProcess {
         }
 
         private static void CleanUp() {
-#if !Debug
+#if !DEBUG
             // Clean up any temp files
             if (Directory.Exists(IODirectory.TempLocation))
             {
@@ -106,7 +112,4 @@ namespace ETLProcess {
 #endif
         }
     }
-
-    
-
 }

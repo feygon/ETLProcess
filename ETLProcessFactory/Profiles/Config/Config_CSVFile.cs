@@ -97,13 +97,15 @@ namespace ETLProcess.Specific.Information
             return ret.FirstOrDefault();
         }
 
-        public void Contains(string alias)
+        public string Contains(string alias)
         {
+            string ret = null;
             throw new NotImplementedException("What is alias for?");
             foreach (var header in headerAliases)
             {
 
             }
+            return ret;
         }
 
         public void Dispose() {

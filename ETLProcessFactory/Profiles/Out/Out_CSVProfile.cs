@@ -1,17 +1,17 @@
 using System;
-using ETLProcessFactory.Containers.AbstractClasses;
+
 using ETLProcessFactory.IO;
+using ETLProcessFactory.Containers.AbstractClasses;
 
 namespace ETLProcessFactory.Profiles
 {
-    internal class IO_FlatfileOut : SingletonProfile<IO_FlatfileOut>, IDisposable {
-
-        public IO_FlatfileOut() : base(typeof(IO_FlatfileOut), null) {
+    internal class Out_CSVProfile : SingletonProfile<Out_CSVProfile>, IDisposable {
+        public Out_CSVProfile() : base(typeof(Out_CSVProfile), null) {
             throw new NotImplementedException();
             Console.WriteLine("TO DO: Implement this");
         }
 
-        public IO_FlatfileOut(Exception err) : base(typeof(IO_FlatfileOut), null) {
+        public Out_CSVProfile(Exception err) : base(typeof(Out_CSVProfile), null) {
             throw new NotImplementedException();
             Console.WriteLine("TO DO: Implement this");
         }

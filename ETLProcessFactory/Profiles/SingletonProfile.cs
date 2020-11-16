@@ -106,6 +106,7 @@ namespace ETLProcessFactory.Containers.AbstractClasses
         /// </summary>
         /// <param name="classOptions"></param>
         public static void Init(object[] classOptions) {
+            Log.Write(string.Format($"Initializing class {typeof(T).Name}"));
             try
             {
                 if (!initialized)
@@ -116,8 +117,8 @@ namespace ETLProcessFactory.Containers.AbstractClasses
                     Log.Write($"Initializing class \"{typeof(T).Name}\" and garbage collecting first-run instance.");
                 }
             } catch (Exception err) {
-#if Debug
-                Log.WriteException($"Unknown error while disposing of Initial class instance in derived class T: {typeof(T).FullName}.", err);
+#if DEBUG
+                Log.WriteException($"Unknown error while creating instance or disposing of Initial class instance in derived class T: {typeof(T).FullName}.", err);
 #else
                 throw err;
 #endif
