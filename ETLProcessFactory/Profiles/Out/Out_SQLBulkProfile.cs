@@ -77,7 +77,19 @@ namespace ETLProcessFactory.Profiles
             }
             sqlBulkCopy.DestinationTableName = destinationTableName;
             GetColumnMappings();
-            sqlBulkCopy.WriteToServer(dataTable);
+
+            try
+            {
+                sqlBulkCopy.WriteToServer(dataTable);
+            } catch (SqlException err) {
+#if DEBUG
+                Log.Write(string.Format($"Updated identical row in test LocalDB: {err.Message}, {err.Number}"));
+#else
+                Log.WriteException("Updated identical row: ", err);
+#endif
+            }
+
+
             Log.Write(string.Format($"SQL REPORT: Wrote dataTable {dataTable.TableName} to sql table {destinationTableName}."));
         }
 
