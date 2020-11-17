@@ -5,8 +5,8 @@ using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 
-using ETLProcess.General.IO;
-using ETLProcess.General.Containers.Members;
+using ETLProcessFactory.IO;
+using ETLProcessFactory.Containers.Members;
 
 
 namespace ETLProcess.Tests
@@ -22,7 +22,7 @@ namespace ETLProcess.Tests
         static public int GetHashCode(DataRow obj, DataColumn[] comparedCols)
         {
             DataColumn[] keyCols = comparedCols;
-            string hashStr = IOFiles.PrepGuid.ToString();
+            string hashStr = IODirectory.PrepGuid.ToString();
 
             foreach (DataColumn col in keyCols)
             {

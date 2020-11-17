@@ -9,24 +9,23 @@ using System.Linq;
 using System.Data;
 using Microsoft.VisualBasic.FileIO;
 using ETLProcess.Specific;
-using static ETLProcess.Parse;
 
 using ETLProcess.Tests;
-using ETLProcess.General.Containers;
-using ETLProcess.General;
-using ETLProcess.General.Containers.AbstractClasses;
-using ETLProcess.General.Profiles;
-using ETLProcess.General.IO;
+using ETLProcessFactory.Containers;
+using ETLProcessFactory;
+using ETLProcessFactory.Containers.AbstractClasses;
+using ETLProcessFactory.Profiles;
+using ETLProcessFactory.IO;
 using ETLProcess.Specific.Boilerplate;
-using ETLProcess.General.Interfaces;
+using ETLProcessFactory.Interfaces;
 using ETLProcess.Specific.Documents;
+using ETLProcessFactory.Containers.Members;
 
 using String = System.String;
 using AcctID = System.String;
 using MemberID = System.String;
 using System.Reflection;
-
-using ETLProcess.General.Containers.Members;
+using ETLProcessFactory.GP;
 
 namespace ETLProcess {
     /// <summary>
@@ -60,7 +59,7 @@ namespace ETLProcess {
                 Log.Write("Test");
 
 
-                string arg2 = "out.txt"; 
+                string arg2 = "out.txt";
                 if (args.Length >= 2) { arg2 = args[1] ?? "out.txt"; }
                 client = new ClientETLProcess(args[0], arg2 ?? "out.txt");
 
@@ -70,8 +69,14 @@ namespace ETLProcess {
                 // Enact client business rules
                 List<OutputDoc> outputDocs = client.ProcessRecords(
                     out IEnumerable<DataRow> membersWithoutStatements
-                    , out IEnumerable<DataRow> balancesWithoutStatements 
+                    , out IEnumerable<DataRow> balancesWithoutStatements
                     , out IEnumerable<DataRow> statementsWithoutMembers);
+                // Export SQL reports to LocalDB file.
+                client.ExportReports();
+
+                DelRet<bool> SqlReportCheck = client.GetCheck_SQL_Output(new object[] { client.TablesByType[typeof(Record_Statement)].First() });
+                bool success = SqlReportCheck();
+                
 
                 // Report on these, other than returned outputDocs, probably by SQLBulkCopy to a new or proscribed table,
                 //  or output to csv.
@@ -98,16 +103,13 @@ namespace ETLProcess {
         }
 
         private static void CleanUp() {
-#if !Debug
+#if !DEBUG
             // Clean up any temp files
-            if (Directory.Exists(IOFiles.TempLocation))
+            if (Directory.Exists(IODirectory.TempLocation))
             {
-                Directory.Delete(IOFiles.TempLocation, true);
+                Directory.Delete(IODirectory.TempLocation, true);
             }
 #endif
         }
     }
-
-    
-
 }

@@ -2,24 +2,28 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-using ETLProcess.General;
-using ETLProcess.General.Interfaces;
-using ETLProcess.General.Containers;
-using ETLProcess.General.Containers.Members;
-using ETLProcess.General.Containers.AbstractClasses;
-
+using ETLProcessFactory;
+using ETLProcessFactory.Algorithms;
+using ETLProcessFactory.Interfaces;
+using ETLProcessFactory.Containers;
+using ETLProcessFactory.Containers.Members;
+using ETLProcessFactory.Containers.AbstractClasses;
+using ETLProcessFactory.GP;
 
 namespace ETLProcess.Specific
 {
     /// <summary>
     /// Container for a primary unique keyed data set reflecting Client's Statement File records.
     /// </summary>
-    internal sealed class Record_Statement : 
+    public class Record_Statement : 
         BasicRecord<Record_Statement>
         , IRecord<Record_Statement>
         , IRecord_Uses_ImportRows<Record_Statement>
     {
-        public TableHeaders columnTypes { get; } = 
+        /// <summary>
+        /// Collection of column types and boolean whether they're part of the primary key.
+        /// </summary>
+        public TableHeaders ColumnTypes { get; } = 
             new TableHeaders {  
                 { "Group Billing Acct ID", (typeof(string), true) }
                 ,{ "Invoice Number", (typeof(string), true) }
@@ -33,12 +37,18 @@ namespace ETLProcess.Specific
         /// <summary>
         /// Satisfies interface requirement for headers accessor to above readonly Headers member.
         /// </summary>
-        public List<string> headers { get { return columnTypes.Keys.ToList(); } }
+        public List<string> Headers { get { return ColumnTypes.Keys.ToList(); } }
 
+        /// <summary>
+        /// Get the headers of this row type.
+        /// </summary>
         public override List<string> GetHeaders() {
-            return headers;
+            return Headers;
         }
 
+        /// <summary>
+        /// Get the type of the child class.
+        /// </summary>
         public override Type GetChildType() {
             return this.GetType();
         }
@@ -78,7 +88,7 @@ namespace ETLProcess.Specific
                   , keyIsUniqueIdentifier: true)
         {
             foreach (string header in headers) {
-                if (!this.headers.Contains(header))
+                if (!this.Headers.Contains(header))
                 {
                     string temp = "CSV Header \"" + header + "\" not found in Statement Records.";
                     throw new Exception(temp);
@@ -128,7 +138,7 @@ namespace ETLProcess.Specific
                 tempMapList.Add(docLine);
             }
             HeaderSource<List<StringMap>, List<string>> ret =
-                new HeaderSource<List<StringMap>, List<string>>(tempMapList, headers.ToArray());
+                new HeaderSource<List<StringMap>, List<string>>(tempMapList, Headers.ToArray());
 
             // return type: headerSource<List<StringMap>, string>
             return ret;
