@@ -17,4 +17,4 @@ I created a software library called ETLProcess that would provide inversion of c
 The library uses this decoupled flow of control to populate the Entity Relationship Model (using LinQ to DataSet, XMLSerializer, csv parsing algorithms, etc.), then serialize output to XMLSerializer and SQLBulkCopy based upon a serializable profile singleton.
 
 Upcoming:
-It is intended to develop an ASP.NET interface which will model intended input and output documents and queries, and generate 90% of this code for the user into reiterable modular release packages.
+It is intended to develop a user interface which will model intended input and output documents and queries, and generate boilerplate code for the user into reiterable modular release packages.
