@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using ETLProcess.General.IO;
+using ETLProcessFactory.IO;
+using ETLProcessFactory;
+using ETLProcessFactory.Containers;
+using ETLProcessFactory.Containers.Members;
+using ETLProcessFactory.ExtendLinQ;
 using ETLProcess.Specific.Documents;
-using ETLProcess.General;
-using ETLProcess.General.Containers;
-using ETLProcess.General.Containers.Members;
-using ETLProcess.General.ExtendLinQ;
 
 namespace ETLProcess.Specific
 {

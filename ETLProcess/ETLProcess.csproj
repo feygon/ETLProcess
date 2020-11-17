@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -39,6 +40,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -51,74 +58,47 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="General\Algorithms\CSV.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\_IOutputMode_Files.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\_IOutputMode_SQL.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IOutputSQLLang_TSQL.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IOutputFileType_XML.cs" />
-    <Compile Include="General\ExtendLinQ\DataRelationKeyColumnComparer.cs" />
-    <Compile Include="General\Profiles\In\IO_XMLIn.cs" />
-    <Compile Include="General\Containers\ForeignKeyConstraintElements.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IInputFileType_CSV.cs" />
-    <Compile Include="General\Containers\KeyStrings.cs" />
-    <Compile Include="General\Containers\HeaderSource.cs" />
-    <Compile Include="General\GP.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\_IInputMode_Files.cs" />
-    <Compile Include="General\Interfaces\IOutputDetail.cs" />
-    <Compile Include="General\Interfaces\IOutputDoc.cs" />
-    <Compile Include="General\Interfaces\IRecord.cs" />
-    <Compile Include="General\Interfaces\IRecord_Uses_ImportRows.cs" />
-    <Compile Include="General\Interfaces\IGeneratesRecords.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\_IInput_Profile.cs" />
-    <Compile Include="General\Containers\Members\Address.cs" />
-    <Compile Include="General\Containers\Members\Date.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\IInputFileType_PositionDelimited.cs" />
-    <Compile Include="General\Interfaces\Profile Interfaces\_IOutput_Profile.cs" />
-    <Compile Include="General\IO\IOFiles.cs" />
-    <Compile Include="General\IO\XML.cs" />
-    <Compile Include="General\IO\ZipFiles.cs" />
-    <Compile Include="General\Profiles\SingletonProfile.cs" />
-    <Compile Include="General\Profiles\Out\IO_CSVOut.cs" />
-    <Compile Include="General\Profiles\In\IO_FilesIn.cs" />
-    <Compile Include="General\Profiles\Out\IO_FlatfileOut.cs" />
-    <Compile Include="General\Profiles\In\IO_SQLIn.cs" />
-    <Compile Include="General\Profiles\Out\IO_SQLOut.cs" />
-    <Compile Include="General\Profiles\Out\IO_XMLOut.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Specific\ClientBusinessRules.cs" />
     <Compile Include="Specific\Boilerplate\ClientETLProcess.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Specific\Documents\BalDetail.cs" />
     <Compile Include="Specific\Documents\Record_Statement.cs" />
-    <Compile Include="General\Containers\FileDataRecords.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="General\IO\Email.cs" />
-    <Compile Include="General\Containers\AbstractClasses\BasicRecord.cs" />
     <Compile Include="Specific\Documents\Record_MemberFile.cs" />
     <Compile Include="Specific\Documents\OutputDoc.cs" />
     <Compile Include="Specific\ClientSpecificSQL.cs" />
-    <Compile Include="General\IO\Log.cs" />
-    <Compile Include="General\Algorithms\Parse.cs" />
-    <Compile Include="General\Profiles\Config\Config_CSVFile.cs" />
-    <Compile Include="General\Profiles\Config\Config_FlatFile.cs" />
     <Compile Include="Specific\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specific\Documents\Record_BalFwd.cs" />
-    <Compile Include="General\IO\SQL.cs" />
     <Compile Include="Tests\HashCodeTest.cs" />
+    <Compile Include="Tests\SQL\ETLProcessDBTest1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="CodeMaps\2020-09-24 Map_MajorPlayers.dgml" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CodeMaps\ETLProcess Flow.png" />
+    <Content Include="ETLProcessFactory.dll" />
     <Content Include="Specific\SQLInput.sql" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tests\HashCodeTest\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ETLProcessFactory\ETLProcessFactory.csproj">
+      <Project>{e19b8525-55b6-4955-b0d1-3d4835181870}</Project>
+      <Name>ETLProcessFactory</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
 </Project>
