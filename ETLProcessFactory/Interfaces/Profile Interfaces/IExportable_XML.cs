@@ -30,9 +30,9 @@ namespace ETLProcessFactory.Interfaces.Profile_Interfaces
         /// <summary>
         /// Promise that a specific implementation will have methods to export to XML 
         ///     from a list of serializable outputdocs of generic type T.
-        /// <para>Note: It is recommended to use <see cref="Out_XMLProfile.Export{T}(List{T}, string)"/> in this method.</para>
+        /// <para>Note: It is recommended to use <see cref="Out_XMLProfile.Export{T}()"/> in this method.</para>
         /// </summary>
         /// <param name="outputDocs">List of serializable docs.</param>
-        public void XMLExport(List<TOutput> outputDocs);
+        public void XMLExport();
     }
 }

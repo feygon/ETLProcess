@@ -8,7 +8,8 @@ using System.Collections.Generic;
 using ETLProcessFactory.IO;
 using ETLProcessFactory.Interfaces;
 using ETLProcessFactory.Containers.AbstractClasses;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
+using UniversalCoreLib;
 
 namespace ETLProcessFactory.Profiles
 {

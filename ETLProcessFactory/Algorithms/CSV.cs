@@ -12,7 +12,7 @@ using ETLProcessFactory.IO;
 using String = System.String;
 using AcctID = System.String;
 using MemberID = System.String;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
 
 namespace ETLProcessFactory.Algorithms
 {

@@ -13,7 +13,8 @@ using ETLProcessFactory.Containers.Members;
 using ETLProcessFactory.IO;
 using ETLProcessFactory;
 using ETLProcess.Specific.Documents;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
+using UniversalCoreLib;
 
 namespace ETLProcess.Specific.Documents
 {

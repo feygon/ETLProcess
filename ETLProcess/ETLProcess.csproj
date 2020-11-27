@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Specific\Boilerplate\ClientCore.cs" />
     <Compile Include="Specific\ClientBusinessRules.cs" />
     <Compile Include="Specific\Boilerplate\ClientETLProcess.cs">
       <SubType>Component</SubType>
@@ -70,8 +71,6 @@
     <Compile Include="Specific\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specific\Documents\Record_BalFwd.cs" />
-    <Compile Include="Tests\HashCodeTest.cs" />
-    <Compile Include="Tests\SQL\ETLProcessDBTest1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -83,13 +82,15 @@
     <Content Include="ETLProcessFactory.dll" />
     <Content Include="Specific\SQLInput.sql" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tests\HashCodeTest\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\ETLProcessFactory\ETLProcessFactory.csproj">
       <Project>{e19b8525-55b6-4955-b0d1-3d4835181870}</Project>
       <Name>ETLProcessFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UniversalCoreLib\UniversalCoreLib.csproj">
+      <Project>{d8f08900-93c8-4716-b852-d15ab90b74c6}</Project>
+      <Name>UniversalCoreLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

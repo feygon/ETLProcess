@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ETLProcessFactory.Containers;
 using ETLProcessFactory;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
 
 namespace ETLProcessFactory.Interfaces
 {

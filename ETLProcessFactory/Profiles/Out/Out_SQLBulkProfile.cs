@@ -6,9 +6,10 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using ETLProcessFactory.Containers;
 using ETLProcessFactory.Containers.AbstractClasses;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
 using ETLProcessFactory.Interfaces;
 using ETLProcessFactory.IO;
+using UniversalCoreLib;
 
 namespace ETLProcessFactory.Profiles
 {

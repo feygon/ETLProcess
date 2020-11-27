@@ -8,7 +8,7 @@ using System.Data;
 using ETLProcessFactory.IO;
 using ETLProcessFactory.Containers;
 
-namespace ETLProcessFactory.Containers
+namespace ETLProcessFactory.Containers.ExtendLinQ
 {
     /// <summary>
     /// Wrapper class for critical components of a foreign key constraint.

@@ -1,7 +1,9 @@
-﻿using ETLProcessFactory.GP;
+﻿using ETLProcessFactory.Containers.Dictionaries;
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using UniversalCoreLib;
+
 namespace ETLProcessFactory.Containers.Members
 {
     /// <summary>

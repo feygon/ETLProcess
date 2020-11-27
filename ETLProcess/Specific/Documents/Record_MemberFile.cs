@@ -7,7 +7,8 @@ using ETLProcessFactory.Interfaces;
 using ETLProcessFactory.Containers;
 using ETLProcessFactory;
 using ETLProcessFactory.Containers.AbstractClasses;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
+using System.Data;
 
 namespace ETLProcess.Specific
 {
@@ -16,10 +17,7 @@ namespace ETLProcess.Specific
     /// </summary>
     public class Record_Members : BasicRecord<Record_Members>, IRecord<Record_Members>
     {
-        /// <summary>
-        /// Container for a primary unique keyed data set reflecting Client's Statement File records.
-        /// </summary>
-        public TableHeaders ColumnTypes { get; } = new TableHeaders()
+        private static TableHeaders _columnTypes { get; } = new TableHeaders()
         {
             { "Billing Account Number", (typeof(string), true) }
             , { "First Name", (typeof(string), false)}
@@ -33,6 +31,11 @@ namespace ETLProcess.Specific
             , { "MemberID", (typeof(string), false)}
             , { "Premium Withhold", (typeof(string), false)}
         };
+
+        /// <summary>
+        /// Container for a primary unique keyed data set reflecting Client's Statement File records.
+        /// </summary>
+        public TableHeaders ColumnTypes { get { return _columnTypes; } }
 
         /// <summary>
         /// Satisfies interface requirement for headers accessor to above readonly Headers member.
@@ -71,15 +74,17 @@ namespace ETLProcess.Specific
         /// <br>Satisfies interface</br>
         /// </summary>
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
+        /// <param name="table">Table constructing this record's DataRow</param>
         /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
         /// <param name="headers">The column headers</param>
         /// <returns></returns>
         public Record_Members Record(
             StringMap stringMap
+            , DataTable table
             , TableHeaders sampleColumnTypes
             , List<string> headers)
         {
-            return new Record_Members(stringMap, sampleColumnTypes, headers);
+            return new Record_Members(stringMap, table, sampleColumnTypes, headers);
         }
 
         /// <summary>
@@ -87,14 +92,17 @@ namespace ETLProcess.Specific
         /// <br>Required by the IRecord interface.</br>
         /// </summary>
         /// <param name="memberFile">StringMap of a line of data</param>
+        /// <param name="table">Table constructing this record's DataRow</param>
         /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
         /// <param name="headers">Headers of the data</param>
         public Record_Members(
             StringMap memberFile
+            , DataTable table
             , TableHeaders sampleColumnTypes
             , List<string> headers) 
             : base(
                   data:memberFile
+                  , table
                   , sampleColumnTypes
                   , keyIsUniqueIdentifier: true)
         {

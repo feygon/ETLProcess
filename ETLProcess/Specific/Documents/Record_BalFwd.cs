@@ -9,7 +9,8 @@ using ETLProcessFactory.Containers;
 using ETLProcessFactory;
 using ETLProcessFactory.Containers.Members;
 using ETLProcessFactory.Containers.AbstractClasses;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
+using System.Data;
 
 namespace ETLProcess.Specific
 {
@@ -18,10 +19,7 @@ namespace ETLProcess.Specific
     /// </summary>
     public class Record_BalFwd : BasicRecord<Record_BalFwd>, IRecord<Record_BalFwd>
     {
-        /// <summary>
-        /// Collection of column types and boolean whether they're part of the primary key.
-        /// </summary>
-        public TableHeaders ColumnTypes { get; } = new TableHeaders
+        private static TableHeaders _columnTypes = new TableHeaders
         {
             { "Member ID", (typeof(string), false) }
             ,{ "Member Name", (typeof(string), false) }
@@ -32,6 +30,11 @@ namespace ETLProcess.Specific
             ,{ "Outstanding Amount", (typeof(decimal), false) }
             ,{ "Number of Days Overdue", (typeof(int), false) }
         };
+
+        /// <summary>
+        /// Collection of column types and boolean whether they're part of the primary key.
+        /// </summary>
+        public TableHeaders ColumnTypes { get { return _columnTypes; } }
 
         /// <summary>
         /// Satisfies interface requirement for headers accessor to above readonly Headers member.
@@ -73,10 +76,12 @@ namespace ETLProcess.Specific
         /// Constructor, takes Stringmap.
         /// </summary>
         /// <param name="init"></param>
+        /// <param name="table">Table constructing the dataRow of this record.</param>
         /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
-        public Record_BalFwd(StringMap init, TableHeaders sampleColumnTypes)
+        public Record_BalFwd(StringMap init, DataTable table, TableHeaders sampleColumnTypes)
             : base(
                   data: init
+                  , table
                   , sampleColumnTypes
                   , keyIsUniqueIdentifier: false)
         { // as normal. 
@@ -87,15 +92,17 @@ namespace ETLProcess.Specific
         /// <br>Satisfies interface <see cref="IRecord{DocM504A_BalFwdRecord}"/></br>
         /// </summary>
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
+        /// <param name="table">Table constructing this record's DataRow</param>
         /// <param name="sampleColumnTypes">A dictionary of column types by header name in this type of Record</param>
         /// <param name="sirNotAppearingInThisFilm">A member which is unused in this implementation.</param>
         /// <returns></returns>
         public Record_BalFwd Record(
             StringMap stringMap
+            , DataTable table
             , TableHeaders sampleColumnTypes
             , List<string> sirNotAppearingInThisFilm = null)
         {
-            return new Record_BalFwd(stringMap, sampleColumnTypes);
+            return new Record_BalFwd(stringMap, table, sampleColumnTypes);
         }
     }
 }

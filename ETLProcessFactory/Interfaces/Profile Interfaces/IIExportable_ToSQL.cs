@@ -1,4 +1,5 @@
-﻿using ETLProcessFactory.GP;
+﻿using ETLProcessFactory.Containers.Dictionaries;
+using UniversalCoreLib;
 
 namespace ETLProcessFactory.Interfaces.Profile_Interfaces
 {

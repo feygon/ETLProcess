@@ -18,7 +18,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
 using ETLProcessFactory.Interfaces;
 using System;
 using System.Globalization;
