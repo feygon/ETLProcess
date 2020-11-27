@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ETLProcessFactory.Containers;
 using ETLProcessFactory.Containers.AbstractClasses;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
 using SampleColumnTypes = System.Collections.Generic.Dictionary<string, System.Type>;
 
 namespace ETLProcessFactory.Interfaces
@@ -39,6 +39,7 @@ namespace ETLProcessFactory.Interfaces
         /// <returns></returns>
         public TRecord Record(
             StringMap stringMap
+            , DataTable table
             , TableHeaders sampleColumnTypes
             , List<string> headers);
 

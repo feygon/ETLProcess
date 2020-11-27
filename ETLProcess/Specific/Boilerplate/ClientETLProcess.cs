@@ -1,42 +1,44 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
 using System.Data;
-using System.ComponentModel;
-using System.Runtime.Serialization;
-
-using ETLProcessFactory.Interfaces;
-using ETLProcessFactory.IO;
-using ETLProcessFactory.Containers;
-using ETLProcessFactory.Algorithms;
-using ETLProcessFactory.Profiles;
-using ETLProcess.Specific.Documents;
-using ETLProcessFactory.Interfaces.Profile_Interfaces;
-using ETLProcessFactory.ExtendLinQ;
-using ETLProcessFactory.GP;
-using String = System.String;
 using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
 
+using ETLProcess.Specific.Documents;
+using ETLProcessFactory.Algorithms;
+using ETLProcessFactory.Containers;
+using ETLProcessFactory.Containers.Dictionaries;
+using ETLProcessFactory.Containers.ExtendLinQ;
+using ETLProcessFactory.Interfaces;
+using ETLProcessFactory.Interfaces.Profile_Interfaces;
+using ETLProcessFactory.IO;
+using ETLProcessFactory.Profiles;
+using UniversalCoreLib;
+
+using FDR_Record_Members = ETLProcessFactory.Containers.FileDataRecords<ETLProcess.Specific.Record_Members, ETLProcess.Specific.Boilerplate.ClientETLProcess>;
+using FDR_Record_Statements = ETLProcessFactory.Containers.FileDataRecords<ETLProcess.Specific.Record_Statement, ETLProcess.Specific.Boilerplate.ClientETLProcess>;
+using String = System.String;
 
 namespace ETLProcess.Specific.Boilerplate
 {
     /// <summary>
     /// A boilerplate example of a class to fulfill Client statement and welcome letter document types.
     /// </summary>
-    public class ClientETLProcess : 
+    public class ClientETLProcess :
         DataSet
+        , IClient
         , ILoadable_CSVFile<IO_FilesIn>
         , IExportable_XML<Out_XMLProfile, OutputDoc>
         // interface to promise a way to export the Statement records to SQL DB.
         , IExportable_SQL_TSQL
-            <Out_SQLBulkProfile<FileDataRecords<Record_Statement, ClientETLProcess>>
-                , FileDataRecords<Record_Statement, ClientETLProcess>
+            <Out_SQLBulkProfile<FDR_Record_Statements>
+                , FDR_Record_Statements
                 >
         , IExportable_SQL_TSQL
             <Out_SQLBulkProfile<
-                FileDataRecords<Record_Members, ClientETLProcess>>
-                , FileDataRecords<Record_Members, ClientETLProcess>
+                FDR_Record_Members>
+                , FDR_Record_Members
                 >
     {
         #region Members
@@ -51,6 +53,7 @@ namespace ETLProcess.Specific.Boilerplate
         private FileDataRecords<Record_Members, ClientETLProcess> memberRecords;
         private FileDataRecords<Record_BalFwd, ClientETLProcess> balFwdRecords;
 
+        List<OutputDoc> outputDocs;
 
         // Key Columns of each class (not including indexers).
         /// <summary>
@@ -108,7 +111,7 @@ namespace ETLProcess.Specific.Boilerplate
         /// In this case, it checks for number of files.
         /// </summary>
         public DelRet<bool, string[]> CheckFiles_Delegate { get; } =
-            (string[] files) => { 
+            (string[] files) => {
                 if (files.Length != 3) {
                     throw new Exception("Wrong number of files, expected 3");
                 }
@@ -124,14 +127,14 @@ namespace ETLProcess.Specific.Boilerplate
         /// <returns></returns>
         public int IdentifyRecordFile(string filename)
         {
-            if (Path.GetFileNameWithoutExtension(filename).StartsWith("Statement", StringComparison.InvariantCultureIgnoreCase)) { 
-                return (int)RecordType.Statements; 
+            if (Path.GetFileNameWithoutExtension(filename).StartsWith("Statement", StringComparison.InvariantCultureIgnoreCase)) {
+                return (int)RecordType.Statements;
             }
-            if (Path.GetFileNameWithoutExtension(filename).StartsWith("Member", StringComparison.InvariantCultureIgnoreCase)) { 
-                return (int)RecordType.Members; 
+            if (Path.GetFileNameWithoutExtension(filename).StartsWith("Member", StringComparison.InvariantCultureIgnoreCase)) {
+                return (int)RecordType.Members;
             }
-            if (Path.GetFileNameWithoutExtension(filename).Contains("Balance")) { 
-                return (int)RecordType.BalancesForward; 
+            if (Path.GetFileNameWithoutExtension(filename).Contains("Balance")) {
+                return (int)RecordType.BalancesForward;
             }
             return (int)RecordType.Error; // error code;
         }//end method
@@ -139,10 +142,11 @@ namespace ETLProcess.Specific.Boilerplate
         /// <summary>
         /// Public call to populate docs.
         /// </summary>
-        public void PopulateRecords() 
+        public IClient PopulateRecords()
         {
             PopulateRecords(Process_FilesIn.Files);
             Log.Write("Records Populated.");
+            return this;
         }
 
         /// <summary>
@@ -165,12 +169,19 @@ namespace ETLProcess.Specific.Boilerplate
         } // end method
 
         /// <summary>
+        /// The member to pass into the Extension Method below as output.
+        /// </summary>
+        public Queue<string> FileListOrder { get; }
+
+        /// <summary>
         /// Specific ETLProcess implementations need to order the entry of each file into the table, so the foreign key constraints
         ///     will be added in order.
         /// </summary>
         /// <param name="files">The array of filenames to be processed.</param>
+        /// <param name="fileListOrder">Files in order, in a queue of filenames, to put into <see cref="FileListOrder"></see></param>
         /// <returns>A <see cref="Queue{T}"/> which orders the files to be processed into tables.</returns>
-        public Queue<string> OrderFileList(string[] files)
+        public IClient OrderFileList(string[] files, out Queue<string> fileListOrder)
+        // is IClient return needed? See PopulateRecords below.
         {
             var dict = new Dictionary<string, int> ();
             foreach (string file in files)
@@ -197,7 +208,8 @@ namespace ETLProcess.Specific.Boilerplate
                 ret.Enqueue(min);
                 dict.Remove(min);
             }
-            return ret;
+            fileListOrder = ret;
+            return this;
         } // end method
         #endregion
         #endregion
@@ -212,7 +224,7 @@ namespace ETLProcess.Specific.Boilerplate
             RecordType recordType;
             string filename
                 , fileExtension;
-            Queue<string> fileList = OrderFileList(files);
+            OrderFileList(files, out Queue<string>fileList);
 
             foreach (string filePath in fileList)
             {
@@ -307,45 +319,40 @@ namespace ETLProcess.Specific.Boilerplate
 
         #region Public Core Algorithm
         /// <summary>
-        /// <Pre>PopulateDocs has already gotten all records and made them into tables.</Pre>
-        /// <Post>A schema has been built around the relations of these tables.<br>
-        /// Any relevant filters have been run, and reports have been made on bad data.</br></Post>
+        /// <Pre>Pre: PopulateDocs has already gotten all records and made them into tables.<br /></Pre>
+        /// <Post>Post: A schema has been built around the relations of these tables.<br />
+        /// Any relevant filters have been run.</Post>
         /// </summary>
         /// <returns></returns>
-        internal List<OutputDoc> ProcessRecords(
-            out IEnumerable<DataRow> membersWithoutStatements
-            , out IEnumerable<DataRow> balancesWithoutStatements
-            , out IEnumerable<DataRow> statementsWithoutMembers)
+        public IClient ProcessRecords()
         {
             // PopulateDocs has already:
             // Gotten All Invoices, Bal Fwd Records, Member Records, and made them into tables in a dataset.
 
             // Get the report lists out.
             // Datarows from members where there DOES NOT EXIST a statement with a matching Member ID.
-            membersWithoutStatements = ClientBusinessRules.GetMembersWOStmts(this);
+            IEnumerable<DataRow>  membersWithoutStatements = ClientBusinessRules.GetMembersWOStmts(this);
             // DataRows from balances where there DOES NOT EXIST statement with a matching account ID.
-            balancesWithoutStatements = ClientBusinessRules.GetBalancesWOStmts(this);
+            IEnumerable<DataRow>  balancesWithoutStatements = ClientBusinessRules.GetBalancesWOStmts(this);
             // DataRows from members where there DOES NOT EXIST a member to match a statement.
-            statementsWithoutMembers = ClientBusinessRules.GetStmtsWOMembers(this);
+            IEnumerable<DataRow>  statementsWithoutMembers = ClientBusinessRules.GetStmtsWOMembers(this);
 
             //var balancesWStms = ClientBusinessRules.GetBalancesWStmts(this);
             //var membersWithStatements = ClientBusinessRules.GetMembersWStmts(this);
             //var balancesWithMembers = ClientBusinessRules.GetBalancesWMembers(this);
 
             // Make outputDocs from each statement, its corresponding member, and any and all balances forward.
-            List<OutputDoc> outputDocs = ClientBusinessRules.GetStatementRows(this).ToList();
-
-
-
-            return outputDocs;
+            outputDocs = ClientBusinessRules.GetStatementRows(this).ToList();
+            return this;
         }
         /// <summary>
         /// Export SQL Reports. Call after ProcessRecords.
         /// </summary>
-        public void ExportReports()
+        public IClient ExportReports()
         {
             ExportSQLOutput(memberRecords);
             ExportSQLOutput(statementRecords);
+            return this;
         }
         #endregion
 
@@ -364,8 +371,7 @@ namespace ETLProcess.Specific.Boilerplate
         /// <summary>
         /// Fulfillment of IOut_C_XMLOut interface requirement of an output-document-type-specific XMLOutput function.
         /// </summary>
-        /// <param name="outputDocs"></param>
-        public void XMLExport(List<OutputDoc> outputDocs) 
+        public void XMLExport() 
         {
             Process_XMLOut.Export(outputDocs.AsEnumerable().ToList());
         }

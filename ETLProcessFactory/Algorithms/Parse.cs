@@ -66,5 +66,13 @@ namespace ETLProcessFactory.Algorithms
 			}
             return inputString.Substring(startPos, length);
 		}
+
+		public static string Get2DSubstring(
+			string[] inputString
+			, (int row, int col) startPos
+			, (int height, int width) length)
+        {
+			throw new NotImplementedException();
+        }
 	}
 }

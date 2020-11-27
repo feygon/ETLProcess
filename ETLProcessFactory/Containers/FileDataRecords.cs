@@ -12,7 +12,8 @@ using ETLProcessFactory.Containers.AbstractClasses;
 using System.ComponentModel.DataAnnotations.Schema;
 using HashInt = System.Int32;
 using IndexInt = System.Int32;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
+using ETLProcessFactory.Containers.ExtendLinQ;
 
 namespace ETLProcessFactory.Containers
 {
@@ -63,34 +64,29 @@ namespace ETLProcessFactory.Containers
         {
             columnInfo = sampleColumns[typeof(TBasicRecord)];
             unique = SampleBasicRecord.keyIsUniqueIdentifier;
-
-            List<StringMap> dataList = source.data; // list of dictionaries of data strings, keyed by column strings
-            List<string> headerStrings = source.headers;
-
-            var src = new Dictionary<KeyStrings, TBasicRecord>();
-            // TO DO: Analyze for parallelism
-            foreach (StringMap strMap in dataList)
-            {
-                // Add a new Keystrings, record pair to the DataTable.
-                TBasicRecord record = ((IRecord<TBasicRecord>)SampleBasicRecord).Record(
-                        strMap
-                        , columnInfo
-                        , headerStrings);
-                src.Add(
-                    record.recordKey,
-                    record
-                    );
-            }
-            TableName = $"FilesIn_Table_{ typeof(TBasicRecord).Name}_{ IODirectory.PrepGuid}_{ctr}";
-
             this.longName = longName ?? string.Format(
                 $"FilesIn_Table_{SampleBasicRecord.GetChildType().Name}_{IODirectory.PrepGuid}_{ctr}");
             string index = null;
             if (ctr > 0) { index = string.Format($"_{ctr}"); }
             this.TableName = string.Format($"{SampleBasicRecord.GetChildType().Name}{index}");
 
+            List<StringMap> dataList = source.data; // list of dictionaries of data strings, keyed by column strings
+            List<string> headerStrings = source.headers;
+
             SetColumns();
-            SetRows(src);
+
+            // TO DO: Analyze for parallelism
+            foreach (StringMap strMap in dataList)
+            {
+                // Add a new Keystrings, record pair to the DataTable.
+                TBasicRecord record = ((IRecord<TBasicRecord>)SampleBasicRecord).Record(
+                        strMap
+                        , this
+                        , columnInfo
+                        , headerStrings);
+                Add(record);
+            }
+
             constraint.masterSet.Tables.Add(this);
             LinkTable_FK(constraint);
             
@@ -127,19 +123,13 @@ namespace ETLProcessFactory.Containers
         /*****Overloads*****/
 
         /// <summary>
-        /// Add a single TBasicRecord to the base dictionary.
+        /// Add a record's DataRow to the base dictionary.
         /// </summary>
         /// <param name="key">Key of the record</param>
         /// <param name="record">The record</param>
         protected void Add(TBasicRecord record)
         {
-            DataRow row = NewRow(); // method constructs and adds returned record to table.
-            foreach (var cell in record) {
-                // TO DO: Correct type parsing errors (Date, for example).
-                if (!Columns.Contains(cell.Key)) { Log.WriteException($"Column named \"{cell.Key}\" not present in the table."); }
-                row.SetField(Columns[cell.Key], cell.Value);
-            }
-            Rows.Add(row); // Does this check against primary keys for uniqueness?
+            Rows.Add(record.recordRow);
         }
 
         /*****Promises*****/
@@ -179,16 +169,6 @@ namespace ETLProcessFactory.Containers
                 primaryKeys.Add(indexCol);
             }
             PrimaryKey = primaryKeys.ToArray();
-        }
-
-        /// <summary>
-        /// Add rows to base table and recordsAdded key-watcher.
-        /// </summary>
-        private void SetRows(Dictionary<KeyStrings, TBasicRecord> source) {
-            foreach (KeyValuePair<KeyStrings, TBasicRecord> kvp in source)
-            {
-                Add(kvp.Value);
-            }
-        }
+        } // end method
     } // end class.
 } // end namespace.

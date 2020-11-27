@@ -10,7 +10,6 @@ using System.Data;
 using Microsoft.VisualBasic.FileIO;
 using ETLProcess.Specific;
 
-using ETLProcess.Tests;
 using ETLProcessFactory.Containers;
 using ETLProcessFactory;
 using ETLProcessFactory.Containers.AbstractClasses;
@@ -25,7 +24,8 @@ using String = System.String;
 using AcctID = System.String;
 using MemberID = System.String;
 using System.Reflection;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
+using UniversalCoreLib;
 
 namespace ETLProcess {
     /// <summary>
@@ -58,31 +58,23 @@ namespace ETLProcess {
 #endif
                 Log.Write("Test");
 
-
                 string arg2 = "out.txt";
                 if (args.Length >= 2) { arg2 = args[1] ?? "out.txt"; }
                 client = new ClientETLProcess(args[0], arg2 ?? "out.txt");
-
-                // input data from basic record types (Statement, Balance Forward, Member Files)
-                client.PopulateRecords();
-
-                // Enact client business rules
-                List<OutputDoc> outputDocs = client.ProcessRecords(
-                    out IEnumerable<DataRow> membersWithoutStatements
-                    , out IEnumerable<DataRow> balancesWithoutStatements
-                    , out IEnumerable<DataRow> statementsWithoutMembers);
-                // Export SQL reports to LocalDB file.
-                client.ExportReports();
+                
+                // See IClient interface for public chained method signatures.
+                client.PopulateRecords()    // Input data from basic record types (Statement, Balance Forward, Member Files)
+                      .ProcessRecords()     // Enact client business rules
+                      .ExportReports();     // Export SQL reports to LocalDB file.
 
                 DelRet<bool> SqlReportCheck = client.GetCheck_SQL_Output(new object[] { client.TablesByType[typeof(Record_Statement)].First() });
                 bool success = SqlReportCheck();
                 
-
                 // Report on these, other than returned outputDocs, probably by SQLBulkCopy to a new or proscribed table,
                 //  or output to csv.
                 
                 // output data to client profiles
-                client.XMLExport(outputDocs);
+                client.XMLExport();
 
                 //throw new Exception("Finish implementing ProcessDocs.");
                 /**********************************/

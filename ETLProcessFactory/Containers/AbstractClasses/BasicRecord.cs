@@ -15,7 +15,8 @@ using ETLProcessFactory.Containers.AbstractClasses;
 using ETLProcessFactory.IO;
 
 using SampleColumnTypes = System.Collections.Generic.Dictionary<string, System.Type>;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
+using UniversalCoreLib;
 
 namespace ETLProcessFactory.Containers
 {
@@ -23,8 +24,10 @@ namespace ETLProcessFactory.Containers
     /// An abstract class for wrapping implementation-specific document types in easily accessible expectations of their contents.
     /// <br>See members for details.</br>
     /// </summary>
-    public abstract class BasicRecord<T> : StringMap where T : BasicRecord<T>, new()
+    public abstract class BasicRecord<T> where T : BasicRecord<T>, new()
     {
+        public DataRow recordRow;
+
         /// <summary>
         /// Singleton sample accessor for child class. Child class should have constraint: "BasicRecord-ChildClass",
         ///     where Childclass is in generic brackets.
@@ -80,16 +83,19 @@ namespace ETLProcessFactory.Containers
         /// <br>(Sometimes they're not.)</br></param>
         public BasicRecord(
             StringMap data
+            , DataTable table
             , TableHeaders sampleColumnTypes
             , bool keyIsUniqueIdentifier = true) : base()
         {
             try
             {
-                foreach (KeyValuePair<string, string> record in data)
+                recordRow = table.NewRow();
+                foreach (var x in data)
                 {
-                    Add(record.Key, record.Value);
+                    int y = recordRow.Table.Columns[x.Key].Ordinal;
+                    recordRow.ItemArray[y] = x.Value;
                 }
-
+                
                 recordKey = new KeyStrings();
 
                 // TO DO: Decouple from clientETLProcess (should be providable from FileDataRecords).
@@ -120,14 +126,16 @@ namespace ETLProcessFactory.Containers
         /// <param name="record">Object to be copied from</param>
         public BasicRecord(BasicRecord<T> record)
         {
+            this.recordRow = record.recordRow.Table.NewRow();
+            for (int i=0; i < record.recordRow.ItemArray.Length; i++)
+            {
+                recordRow.ItemArray[i] = record.recordRow.ItemArray[i];
+            }
             this.recordKey = record.recordKey.ToArray().ToList() as KeyStrings; // force copy
             this.keyIsUniqueIdentifier = record.keyIsUniqueIdentifier;
-            foreach (KeyValuePair<string, string> cell in record)
-            {
-                Add(cell.Key, cell.Value);
-            }
         }
 
+        #region Record Parsing Methods
         /// <summary>
         /// Get decimal value from Stringmap entry on specified column. Called by derived constructor
         /// </summary>
@@ -163,4 +171,5 @@ namespace ETLProcessFactory.Containers
         protected static bool IsMissingValue(string s)
             => s.Equals(MissingValueTag, StringComparison.InvariantCultureIgnoreCase);
     }
+    #endregion
 }

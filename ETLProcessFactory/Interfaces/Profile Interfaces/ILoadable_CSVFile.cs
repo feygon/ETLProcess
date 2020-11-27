@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 
 using ETLProcessFactory.Containers.AbstractClasses;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
 using ETLProcessFactory.Profiles;
 
 namespace ETLProcessFactory.Interfaces

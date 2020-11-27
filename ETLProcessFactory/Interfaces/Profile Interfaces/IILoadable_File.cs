@@ -1,10 +1,11 @@
 ﻿using ETLProcess;
-using ETLProcessFactory.GP;
+using ETLProcessFactory.Containers.Dictionaries;
 using ETLProcessFactory.Profiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UniversalCoreLib;
 
 namespace ETLProcessFactory.Interfaces
 {
@@ -28,10 +29,16 @@ namespace ETLProcessFactory.Interfaces
         public int IdentifyRecordFile(string filename);
 
         /// <summary>
+        /// Promise of a place to put the order of the file list, promised as a return for <see cref="OrderFileList(string[], out Queue{string})"/>
+        /// </summary>
+        public Queue<string> FileListOrder { get; }
+
+        /// <summary>
         /// Promise that specific ETLProcesses will provide an order for their files to be parsed in.
         /// </summary>
-        /// <param name="files"></param>
+        /// <param name="files">Files to order by filename</param>
+        /// <param name="FileListOrder">Files in order, in a queue of filenames, to put into <see cref="FileListOrder"/></param>
         /// <returns></returns>
-        public Queue<string> OrderFileList(string[] files);
+        public IClient OrderFileList(string[] files, out Queue<string> FileListOrder);
     }
 }
