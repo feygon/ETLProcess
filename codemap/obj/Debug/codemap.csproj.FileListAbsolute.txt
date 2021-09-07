@@ -1,0 +1,15 @@
+C:\Users\feygo\source\repos\codemap\codemap\obj\Debug\codemap.csprojAssemblyReference.cache
+C:\Users\feygo\source\repos\codemap\codemap\bin\Debug\codemap.exe.config
+C:\Users\feygo\source\repos\codemap\codemap\bin\Debug\codemap.xml
+C:\Users\feygo\source\repos\codemap\codemap\bin\Debug\codemap.exe
+C:\Users\feygo\source\repos\codemap\codemap\bin\Debug\codemap.pdb
+C:\Users\feygo\source\repos\codemap\codemap\obj\Debug\codemap.exe
+C:\Users\feygo\source\repos\codemap\codemap\obj\Debug\codemap.pdb
+C:\Repos\codemap\codemap\obj\Debug\codemap.csprojAssemblyReference.cache
+C:\Repos\codemap\codemap\obj\Debug\codemap.csproj.CoreCompileInputs.cache
+C:\Repos\codemap\codemap\obj\Debug\codemap.exe
+C:\Repos\codemap\codemap\obj\Debug\codemap.pdb
+C:\Repos\codemap\codemap\bin\Debug\codemap.exe.config
+C:\Repos\codemap\codemap\bin\Debug\codemap.xml
+C:\Repos\codemap\codemap\bin\Debug\codemap.exe
+C:\Repos\codemap\codemap\bin\Debug\codemap.pdb
