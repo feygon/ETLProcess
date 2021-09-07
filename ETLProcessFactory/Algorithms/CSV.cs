@@ -13,6 +13,7 @@ using String = System.String;
 using AcctID = System.String;
 using MemberID = System.String;
 using ETLProcessFactory.Containers.Dictionaries;
+using ETLProcessFactory.GP;
 
 namespace ETLProcessFactory.Algorithms
 {

@@ -70,6 +70,10 @@ namespace ETLProcess {
                 DelRet<bool> SqlReportCheck = client.GetCheck_SQL_Output(new object[] { client.TablesByType[typeof(Record_Statement)].First() });
                 bool success = SqlReportCheck();
                 
+                DelRet<bool> SqlReportCheck = client.GetCheck_SQL_Output(new object[] { client.TablesByType[typeof(Record_Statement)].First() });
+                bool success = SqlReportCheck();
+                
+
                 // Report on these, other than returned outputDocs, probably by SQLBulkCopy to a new or proscribed table,
                 //  or output to csv.
                 

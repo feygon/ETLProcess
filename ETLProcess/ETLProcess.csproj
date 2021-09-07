@@ -93,6 +93,12 @@
       <Name>UniversalCoreLib</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ETLProcessFactory\ETLProcessFactory.csproj">
+      <Project>{e19b8525-55b6-4955-b0d1-3d4835181870}</Project>
+      <Name>ETLProcessFactory</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

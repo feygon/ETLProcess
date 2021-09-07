@@ -19,6 +19,7 @@ using UniversalCoreLib;
 using FDR_Record_Members = ETLProcessFactory.Containers.FileDataRecords<ETLProcess.Specific.Record_Members, ETLProcess.Specific.Boilerplate.ClientETLProcess>;
 using FDR_Record_Statements = ETLProcessFactory.Containers.FileDataRecords<ETLProcess.Specific.Record_Statement, ETLProcess.Specific.Boilerplate.ClientETLProcess>;
 using String = System.String;
+using System.Data.SqlClient;
 
 namespace ETLProcess.Specific.Boilerplate
 {
