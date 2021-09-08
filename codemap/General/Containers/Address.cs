@@ -33,5 +33,23 @@
             zip = "";
             country = "";
         }
+
+        public Address(
+            string firstName,
+            string lastName,
+            string line1,
+            string line2,
+            string city,
+            string state, 
+            string zip)
+        {
+            bool twoNames = (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName));
+            this.name = $"{firstName}{(twoNames ? "" : " ")}{lastName}";
+            this.line1 = line1;
+            this.line2 = line2;
+            this.city = city;
+            this.state = state;
+            this.zip = zip;
+        }
     }
 }

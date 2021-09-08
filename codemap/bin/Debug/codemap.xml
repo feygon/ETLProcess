@@ -1,0 +1,1096 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>codemap</name>
+    </assembly>
+    <members>
+        <member name="T:BasicPreprocess.Address">
+            <summary>
+            Container for postal address-related information.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.Address.name">
+            <summary>
+            A string, as named.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.Address.line1">
+            <summary>
+            A string, as named.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.Address.line2">
+            <summary>
+            A string, as named.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.Address.line3">
+            <summary>
+            A string, as named.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.Address.line4">
+            <summary>
+            A string, as named.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.Address.city">
+            <summary>
+            A string, as named.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.Address.state">
+            <summary>
+            A string, as named.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.Address.zip">
+            <summary>
+            A string, as named.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.Address.country">
+            <summary>
+            A string, as named.
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Address.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="T:BasicPreprocess.General.Containers.Auto_Incr_IntMap`1">
+            <summary>
+            A map class of integers which increment starting from 0, mapped on primary keys.
+            <br>Also available with 2 Generic types.</br>
+            </summary>
+            <typeparam name="keyType">Data type of primary member of composite key</typeparam>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.Auto_Incr_IntMap`1.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Default serialization constructor.
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.Auto_Incr_IntMap`1.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            required method for serialization interface, inherited from Dictionary.
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.Auto_Incr_IntMap`1.#ctor">
+            <summary>
+            Construct an empty map. 
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.Auto_Incr_IntMap`1.#ctor(System.Collections.Generic.List{`0})">
+            <summary>
+            Construct a map en masse, instantiating with a List of key values, 
+              being the record-values dereferenced by primary keys (i.e. strings for StringMaps)
+            </summary>
+            <param name="primaryKeyColumnValues"></param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.Auto_Incr_IntMap`1.Add(`0)">
+            <summary>
+            Add a key to the dictionary of generic type of keys.
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="T:BasicPreprocess.General.Containers.Auto_Incr_IntMap`2">
+            <summary>
+            A map class of integers which increment starting from 0, mapped on composite keys.
+            <br>Also available with only 1 generic type.</br>
+            </summary>
+            <typeparam name="TPrim">Type of primary member of composite key</typeparam>
+            <typeparam name="TSec">Type of secondary member of composite key</typeparam>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.Auto_Incr_IntMap`2.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Default serialization constructor.
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.Auto_Incr_IntMap`2.#ctor">
+            <summary>
+            Construct an empty map. 
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.Auto_Incr_IntMap`2.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            required method for serialization interface, inherited from Dictionary.
+            </summary>
+            <param name="info"></param>
+            <param name="context"></param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.Auto_Incr_IntMap`2.Add(System.ValueTuple{`0,`1})">
+            <summary>
+            Add a key to the dictionary of generic type of keys.
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.Auto_Incr_IntMap`2.#ctor(System.Collections.Generic.List{System.ValueTuple{`0,`1}})">
+            <summary>
+            Construct a map en masse, instantiating with a List of keys (i.e. strings for StringMaps)
+            </summary>
+            <param name="compositeKeyColumnValues"></param>
+        </member>
+        <member name="T:BasicPreprocess.General.Containers.BasicDoc">
+            <summary>
+            An abstract class for wrapping implementation-specific document types in easily accessible expectations of their contents.
+            <br>See members for details.</br>
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.General.Containers.BasicDoc.primaryKey">
+            <summary>
+            The name of the column which is the primary key for this class.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.General.Containers.BasicDoc.compositeKey">
+            <summary>
+            The names of the columns which are the composite keys for this class, in order of primary, secondary.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.General.Containers.BasicDoc.keyIsUniqueIdentifier">
+            <summary>
+            Is the primary or composite key a unique identifier, or does it require indexing to be unique?
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.General.Containers.BasicDoc.headers">
+            <summary>
+            An array of the names of columns in the document data.
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.BasicDoc.#ctor">
+            <summary>
+            Default Constructor -- only here for XMLSerializer. Do not use!
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.BasicDoc.#ctor(System.String[],System.String,System.Boolean)">
+            <summary>
+            Constructor: A metadata wrapper for different types of 
+                unique/redundant primary keyed document classes.
+            </summary>
+            <param name="headers">an array of column headers</param>
+            <param name="primary">String of primary key.</param>
+            <param name="secondary">String of composite key's secondary column, if any.</param>
+            <param name="keyIsUniqueIdentifier">Is the primary or composite key a unique identifier?
+            <br>(Sometimes they're not.)</br></param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.BasicDoc.#ctor(System.String[],System.Collections.Generic.List{System.String},System.Boolean)">
+            <summary>
+            Constructor: A metadata wrapper for different types of
+                unique/redundant composite keyed document classes.
+            </summary>
+            <param name="headers"></param>
+            <param name="composite"></param>
+            <param name="keyisUniqueIdentifier"></param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.BasicDoc.#ctor(BasicPreprocess.General.Containers.BasicDoc)">
+            <summary>
+            Copy Constructor
+            </summary>
+            <param name="doc">Document to be copied</param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.BasicDoc.GetDecimalColumn(System.Collections.Generic.Dictionary{System.String,System.String},System.String)">
+            <summary>
+            Get decimal value from Stringmap entry on specified column. Called by derived constructor
+            </summary>
+            <param name="data"></param>
+            <param name="column">The header name of a column where the value in a single record is to be found.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.BasicDoc.GetDateColumn(System.Collections.Generic.Dictionary{System.String,System.String},System.String)">
+            <summary>
+            Get date from Stringmap entry on specified column. Called by derived constructor.
+            </summary>
+            <param name="data">Stringmap data</param>
+            <param name="column">specified column of data</param>
+            <returns></returns>
+        </member>
+        <member name="T:BasicPreprocess.General.Containers.HeaderSource`2">
+            <summary>
+            Wrapper class for a List of document records and their headers.
+            </summary>
+            <typeparam name="StringMapList">List of Document records</typeparam>
+            <typeparam name="StringList">A list of strings meant to serve as headers for the document columns.</typeparam>
+        </member>
+        <member name="F:BasicPreprocess.General.Containers.HeaderSource`2.headers">
+            <summary>
+            List of column header strings
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.General.Containers.HeaderSource`2.data">
+            <summary>
+            The data records
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.HeaderSource`2.#ctor(`0,System.String[])">
+            <summary>
+            Constructor, takes Data lists and headers.
+            </summary>
+            <param name="data"></param>
+            <param name="headerStrings"></param>
+        </member>
+        <member name="T:BasicPreprocess.General.Containers.KeyColumns`1">
+            <summary>
+            A dictionary of keys (and corresponding indices, any), constructible by the desired key type.
+            </summary>
+            <typeparam name="TBasicDoc"></typeparam>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.KeyColumns`1.#ctor(`0,BasicPreprocess.General.Containers.KeyType,BasicPreprocess.General.Containers.Auto_Incr_IntMap{System.String},BasicPreprocess.General.Containers.Auto_Incr_IntMap{System.Collections.Generic.List{System.String}})">
+            <summary>
+            Constructor of a different types of maps of keys, in a public _TKeyTypes container.
+            </summary>
+            <param name="sample">A default constructed sample instance of the TBasicToc generic class.</param>
+            <param name="docKeyType">The type of key in the source data.</param>
+            <param name="primaryIndexMap">The map of unique-delineating primary indices, if any.
+                <br>ignored if docKeyType is not a redundant primary key.</br>
+            </param>
+            <param name="compositeIndexMap">The map of unique-delineating composite indices, if any.
+                <br>ignored if docKeyType is not a redundant composite key.</br>
+            </param>
+        </member>
+        <member name="T:BasicPreprocess.General.Containers.KeyType">
+            <summary>
+            Enumerated types of Keys, i.e. primary/composite, unique/indexed
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.General.Containers.KeyType.primaryUnique">
+            <summary>
+            A primary key which is unique.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.General.Containers.KeyType.compositeUnique">
+            <summary>
+            A composite key which is unique.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.General.Containers.KeyType.primaryRedundant">
+            <summary>
+            A primary key which requires composition with an index to be unique.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.General.Containers.KeyType.compositeRedundant">
+            <summary>
+            A composite key which requires tertiary composition with an index to be unique.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.General.Containers.KeyType.Error">
+            <summary>
+            Catch-all error enumerator.
+            </summary>
+        </member>
+        <member name="T:BasicPreprocess.General.Containers.KeyedDocs`1">
+            <summary>
+            Container class for lists of documents with various types of keys
+            </summary>
+            <typeparam name="TBasicDoc"></typeparam>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.KeyedDocs`1.#ctor(BasicPreprocess.General.Containers.HeaderSource{System.Collections.Generic.List{System.Collections.Generic.Dictionary{System.String,System.String}},System.Collections.Generic.List{System.String}})">
+            <summary>
+            A class to contain data, whether it is primary or composite keyed,
+                either redundantly or uniquely.
+                <br>TO DO: Could be more general purpose with more explicit interfaces,
+                    by promising certain generic types for allBasicDocs and headers</br>
+            </summary>
+            <param name="source"></param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers.KeyedDocs`1.FilterDocs(BasicPreprocess.General.Containers.KeyedDocs{`0},BasicPreprocess.General.Containers.KeyType,System.ValueTuple{System.String,System.ValueTuple{System.String,System.Int32},System.ValueTuple{System.String,System.String},System.ValueTuple{System.String,System.String,System.Int32}})">
+            <summary>
+            A constructor that takes only unique keys, and uses Linq to generate a selection of these documents.
+            </summary>
+            <param name="keyType">An enumeration of which key types is intended to use.</param>
+            <param name="keyedDocs">The documents to be Selected from.</param>
+            <param name="columns">A selection of key columns, only one of which is useful at a time.</param>
+            <returns></returns>
+        </member>
+        <member name="P:BasicPreprocess.General.Containers.KeyedDocs`1.Item(System.String,System.Int32)">
+            <summary>
+            Derefrence a specific document with a primary key and an index, if any.
+            </summary>
+            <param name="primaryKey">The primary key</param>
+            <param name="index">The numeric index, if any.</param>
+            <returns></returns>
+        </member>
+        <member name="P:BasicPreprocess.General.Containers.KeyedDocs`1.Item(System.String,BasicPreprocess.General.Containers.KeyType)">
+            <summary>
+            Dereference a primary indexed data set to a single index of similarly composite-keyed records.
+            </summary>
+            <param name="primaryIndexedKey">The redundant primary key without its index.</param>
+            <param name="keyType">What type of key does this document take?</param>
+            <returns></returns>
+        </member>
+        <member name="P:BasicPreprocess.General.Containers.KeyedDocs`1.Item(System.Collections.Generic.List{System.String},System.Int32)">
+            <summary>
+            Dereferece a specific document on its composite key and index, if any.
+            </summary>
+            <param name="compositeKey">The composite key of two strings</param>
+            <param name="index">The numeric index, if any</param>
+            <returns></returns>
+        </member>
+        <member name="P:BasicPreprocess.General.Containers.KeyedDocs`1.Item(System.ValueTuple{System.Collections.Generic.List{System.String},System.Int32})">
+            <summary>
+            Dereference a composite indexed data set to a single index of similarly composite-keyed records.
+            </summary>
+            <param name="compositeIndexedKey">The shared composite key</param>
+            <returns></returns>
+        </member>
+        <member name="T:BasicPreprocess.General.Containers._TKeyTypes">
+            <summary>
+            A class to track the names of columns used as unique identifiers in tabular data, 
+            and if necessary, hold a column of auto-incrementing indexes which may be dereferenced 
+            on instances of their accompanying keys.
+            <para>Probably not used outside of other General.Containers->KeyColumns internal sealed class.</para>
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers._TKeyTypes.#ctor(System.String)">
+            <summary>
+            Build a public tuple with a value in the primary key.
+            </summary>
+            <param name="primaryKey">A key with only one string which is unique in its column.</param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers._TKeyTypes.#ctor(System.String,BasicPreprocess.General.Containers.Auto_Incr_IntMap{System.String})">
+            <summary>
+            Build a public tuple with a value in the primaryRedundant key.
+            </summary>
+            <param name="primaryKey">The column of a key with only one string which is not unique in its column.</param>
+            <param name="primaryIndexMap">A map of index ints, mapped on the primary key.</param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers._TKeyTypes.GetNextRedundantPrimaryKey(System.String)">
+            <summary>
+            Get the next unique index corresponding to a given primary key.
+            </summary>
+            <param name="primary_of_Item">A given primary key,
+            generated by referencing an item in a column on the primary key.
+            <br>For instance: a specific account number,
+            if the primary key column is account numbers.</br>
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers._TKeyTypes.#ctor(System.Collections.Generic.List{System.String})">
+            <summary>
+            Build a public tuple with a value in the composite key.
+            </summary>
+            <param name="compositeKey">A key with two strings which together are a unique combination of strings in their columns.</param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers._TKeyTypes.#ctor(System.Collections.Generic.List{System.String},BasicPreprocess.General.Containers.Auto_Incr_IntMap{System.Collections.Generic.List{System.String}})">
+            <summary>
+            Build a public tuple with a value in the compositeRedundant key.
+            </summary>
+            <param name="compositeKey">A key with two strings which together are a combination of strings
+                in their columns which are redundant with only a few others.</param>
+            <param name="compositeIndexMap">A map in index ints, mapped on the composite key.</param>
+        </member>
+        <member name="M:BasicPreprocess.General.Containers._TKeyTypes.GetNextRedundantCompositeKey(System.Collections.Generic.List{System.String})">
+            <summary>
+            Get the next key with this composite signature.
+            </summary>
+            <param name="keys"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BasicPreprocess.General.Interfaces.iDocType_Takes_StringMap`1">
+            <summary>
+            An interface to promise that each document based upon a basic doc will implement (a) certain method(s).
+            </summary>
+            <typeparam name="TDoc"></typeparam>
+        </member>
+        <member name="M:BasicPreprocess.General.Interfaces.iDocType_Takes_StringMap`1.GetT(System.Collections.Generic.Dictionary{System.String,System.String},System.String[])">
+            <summary>
+            Called by sample.
+            <br>A function is required which takes a delegate of the 'getDocStringMap' configuration.</br>
+            <br>This will promise that a constructor is called which uses a StringMap as an argument, and may use an array of strings.</br>
+            <code>(See above comment block for sample code)</code>
+            </summary>
+            <param name="stringMap">A sample record</param>
+            <param name="headers">The headers for the given document</param>
+            <returns></returns>
+        </member>
+        <member name="T:BasicPreprocess.General.Interfaces.iPreProcess_From_Zip">
+            <summary>
+            Interface to promise the structure of a preprocess which receives files from a ZipFile.
+            </summary>
+        </member>
+        <member name="P:BasicPreprocess.General.Interfaces.iPreProcess_From_Zip.Debug">
+            <summary>
+            Must implement debug log somewhere.
+            </summary>
+        </member>
+        <member name="P:BasicPreprocess.General.Interfaces.iPreProcess_From_Zip.Files">
+            <summary>
+            Must implement files somewhere.
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.General.Interfaces.iPreProcess_From_Zip.SetDebug(System.String)">
+            <summary>
+            Implements Debugging log with path for logging to go.
+            </summary>
+            <param name="filename">Filename of the zipfile in question.</param>
+        </member>
+        <member name="T:BasicPreprocess.General.Log">
+            <summary>
+            A class for logging and outputting debug messages.
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.General.Log.#ctor(System.String)">
+            <summary>
+            Constructor for output log
+            </summary>
+            <param name="directory"></param>
+        </member>
+        <member name="M:BasicPreprocess.General.Log.Write(System.String)">
+            <summary>
+            Write to the output log
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="M:BasicPreprocess.General.Log.Remove">
+            <summary>
+            Dispose of a log.
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.General.IO.XML.Export``1(System.String,BasicPreprocess.General.Containers.KeyedDocs{``0},BasicPreprocess.General.ILog)">
+            <summary>
+            Export to xml
+            </summary>
+            <param name="fileName">The file to export</param>
+            <param name="documents">The list of documents to export</param>
+            <param name="Debug">The log where debug messages will go.</param>
+        </member>
+        <member name="M:BasicPreprocess.General.IO.ZipFiles.Extract(System.String,System.String)">
+            <summary>
+            Uses 7Zip to extract the filePath to the _TempLocation. If the extract fails then it is assumed the file is not an archive
+            and will just be copied to _TempLocation for processing
+            </summary>
+            <param name="filePath">The full path of the file to extract</param>
+            <param name="destination">The destination path of a zipfile. Deprecated by using <see cref="F:BasicPreprocess.General.IO.ZipFiles._TempLocation"/></param>
+        </member>
+        <member name="M:BasicPreprocess.General.IO.ZipFiles.GetFiles(System.String)">
+            <summary>
+            Get files from zipped archive into temporary directory, using command line arguments.
+            </summary>
+            <param name="filepath">The path of a zipfile where the files are temporarily stored.</param>
+            <returns></returns>
+        </member>
+        <member name="T:BasicPreprocess.Date">
+            <summary>
+            A container for date-related members.
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.Date.MaxValue">
+            <summary>
+            Max date value
+            </summary>
+        </member>
+        <member name="F:BasicPreprocess.Date.MinValue">
+            <summary>
+            Min date value
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Date.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Constructor by year, month, day.
+            </summary>
+            <param name="year">The 4-digit year</param>
+            <param name="month">The month</param>
+            <param name="day">The day</param>
+        </member>
+        <member name="M:BasicPreprocess.Date.#ctor(System.DateTime)">
+            <summary>
+            Conversion constructor from datetime.
+            </summary>
+            <param name="dateTime"></param>
+        </member>
+        <member name="M:BasicPreprocess.Date.op_Subtraction(BasicPreprocess.Date,BasicPreprocess.Date)">
+            <summary>
+            operator overload for date - date = timespan
+            </summary>
+            <param name="d1">The later date</param>
+            <param name="d2">The earlier date</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.op_Subtraction(BasicPreprocess.Date,System.TimeSpan)">
+            <summary>
+            operator overload for date - timespan = date
+            </summary>
+            <param name="d">The date</param>
+            <param name="t">The timespan</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.op_Inequality(BasicPreprocess.Date,BasicPreprocess.Date)">
+            <summary>
+            Operator overload for date != date = true/false
+            </summary>
+            <param name="d1">A date</param>
+            <param name="d2">Another date</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.op_Addition(BasicPreprocess.Date,System.TimeSpan)">
+            <summary>
+            Operator overload for Date + Timespan = Date
+            </summary>
+            <param name="d">The date</param>
+            <param name="t">The timespan</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.op_LessThan(BasicPreprocess.Date,BasicPreprocess.Date)">
+            <summary>
+            Operator overload for Date LT Date = true/false, 
+            where later dates are higher values than earlier dates.
+            </summary>
+            <param name="d1">A date</param>
+            <param name="d2">Another date</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.op_LessThanOrEqual(BasicPreprocess.Date,BasicPreprocess.Date)">
+            <summary>
+            Operator overload for Date LTE Date = true/false, 
+            where later dates are higher values than earlier dates.
+            </summary>
+            <param name="d1">A date</param>
+            <param name="d2">Another date</param>
+        </member>
+        <member name="M:BasicPreprocess.Date.op_Equality(BasicPreprocess.Date,BasicPreprocess.Date)">
+            <summary>
+            Operator overload for Date == Date = true/false, 
+            where later dates are higher values than earlier dates.
+            </summary>
+            <param name="d1">A date</param>
+            <param name="d2">Another date</param>
+        </member>
+        <member name="M:BasicPreprocess.Date.op_GreaterThan(BasicPreprocess.Date,BasicPreprocess.Date)">
+            <summary>
+            Operator overload for Date > Date = true/false, 
+            where later dates are higher values than earlier dates.
+            </summary>
+            <param name="d1">A date</param>
+            <param name="d2">Another date</param>
+        </member>
+        <member name="M:BasicPreprocess.Date.op_GreaterThanOrEqual(BasicPreprocess.Date,BasicPreprocess.Date)">
+            <summary>
+            Operator overload for Date >= Date = true/false, 
+            where later dates are higher values than earlier dates.
+            </summary>
+            <param name="d1">A date</param>
+            <param name="d2">Another date</param>
+        </member>
+        <member name="M:BasicPreprocess.Date.op_Implicit(BasicPreprocess.Date)~System.DateTime">
+            <summary>
+            Implicit operator overload for DateTime to be used like Date.
+            </summary>
+            <param name="d"></param>
+        </member>
+        <member name="M:BasicPreprocess.Date.op_Explicit(System.DateTime)~BasicPreprocess.Date">
+            <summary>
+            Explicit operator overload for Date to be used like Datetime.
+            </summary>
+            <param name="d"></param>
+        </member>
+        <member name="P:BasicPreprocess.Date.Day">
+            <summary>
+            Get day member of date
+            </summary>
+        </member>
+        <member name="P:BasicPreprocess.Date.DayOfWeek">
+            <summary>
+            Get day of week enumeration
+            </summary>
+        </member>
+        <member name="P:BasicPreprocess.Date.DayOfYear">
+            <summary>
+            Get day of year value
+            </summary>
+        </member>
+        <member name="P:BasicPreprocess.Date.Month">
+            <summary>
+            get month of year value
+            </summary>
+        </member>
+        <member name="P:BasicPreprocess.Date.Today">
+            <summary>
+            Get today's date.
+            </summary>
+        </member>
+        <member name="P:BasicPreprocess.Date.Year">
+            <summary>
+            Get the year value.
+            </summary>
+        </member>
+        <member name="P:BasicPreprocess.Date.Ticks">
+            <summary>
+            Get the tick value.
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Date.AddDays(System.Int32)">
+            <summary>
+            Add days to a date.
+            </summary>
+            <param name="value">The number of days to add.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.AddMonths(System.Int32)">
+            <summary>
+            Add months to a date.
+            </summary>
+            <param name="value">The number of months to add.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.AddYears(System.Int32)">
+            <summary>
+            Add years to a date.
+            </summary>
+            <param name="value">The number of years to add.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.Compare(BasicPreprocess.Date,BasicPreprocess.Date)">
+            <summary>
+            Compare 2 dates, and output the int difference.
+            </summary>
+            <param name="d1">A date</param>
+            <param name="d2">Another date</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.CompareTo(BasicPreprocess.Date)">
+            <summary>
+            Compare another date to this date
+            </summary>
+            <param name="value">Another date</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.CompareTo(System.Object)">
+            <summary>
+            Compare another value to this date
+            </summary>
+            <param name="value">The other value</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.DaysInMonth(System.Int32,System.Int32)">
+            <summary>
+            Get the number of days in a given month.
+            </summary>
+            <param name="year">The year of the month in question (in case of february in a leap year)</param>
+            <param name="month">The month in question</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.Equals(BasicPreprocess.Date)">
+            <summary>
+            Are two dates equal?
+            </summary>
+            <param name="value">The date in question</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.Equals(System.Object)">
+            <summary>
+            Are a date and a value equal?
+            </summary>
+            <param name="value">The object in question</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.GetHashCode">
+            <summary>
+            Get the int hashcode of a date.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.Equals(BasicPreprocess.Date,BasicPreprocess.Date)">
+            <summary>
+            Are two dates equal?
+            </summary>
+            <param name="d1">A date</param>
+            <param name="d2">Another date</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.IsLeapYear(System.Int32)">
+            <summary>
+            Is this a leap year?
+            </summary>
+            <param name="year"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.Parse(System.String)">
+             <summary>
+            
+             </summary>
+             <param name="s"></param>
+             <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.Parse(System.String,System.IFormatProvider)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <param name="provider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.Parse(System.String,System.IFormatProvider,System.Globalization.DateTimeStyles)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <param name="provider"></param>
+            <param name="style"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.ParseExact(System.String,System.String,System.IFormatProvider)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <param name="format"></param>
+            <param name="provider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.ParseExact(System.String,System.String,System.IFormatProvider,System.Globalization.DateTimeStyles)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <param name="format"></param>
+            <param name="provider"></param>
+            <param name="style"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.ParseExact(System.String,System.String[],System.IFormatProvider,System.Globalization.DateTimeStyles)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <param name="formats"></param>
+            <param name="provider"></param>
+            <param name="style"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.Subtract(BasicPreprocess.Date)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.Subtract(System.TimeSpan)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.ToLongString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.ToShortString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.ToString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.ToString(System.IFormatProvider)">
+            <summary>
+            
+            </summary>
+            <param name="provider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.ToString(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.ToString(System.String,System.IFormatProvider)">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <param name="provider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.TryParse(System.String,BasicPreprocess.Date@)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <param name="result"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.TryParse(System.String,System.IFormatProvider,System.Globalization.DateTimeStyles,BasicPreprocess.Date@)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <param name="provider"></param>
+            <param name="style"></param>
+            <param name="result"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.TryParseExact(System.String,System.String,System.IFormatProvider,System.Globalization.DateTimeStyles,BasicPreprocess.Date@)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <param name="format"></param>
+            <param name="provider"></param>
+            <param name="style"></param>
+            <param name="result"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Date.TryParseExact(System.String,System.String[],System.IFormatProvider,System.Globalization.DateTimeStyles,BasicPreprocess.Date@)">
+            <summary>
+            
+            </summary>
+            <param name="s"></param>
+            <param name="formats"></param>
+            <param name="provider"></param>
+            <param name="style"></param>
+            <param name="result"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BasicPreprocess.DateTimeExtensions">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.DateTimeExtensions.ToDate(System.DateTime)">
+            <summary>
+            
+            </summary>
+            <param name="dt"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BasicPreprocess.MetroEmail">
+            <summary>
+            An object that can send over the metropresort email system. 
+            Can throw EmailException when creating the object
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.MetroEmail.#ctor">
+            <summary>
+            Creates a new email object
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.MetroEmail.Send">
+            <summary>
+            Sends an email using Metropresort Inc Email Mandrill service
+            Can throw EmailException if email fails to send
+            </summary>
+        </member>
+        <member name="T:BasicPreprocess.Specific.Boilerplate.SpecificPreProcess">
+            <summary>
+            A class to fulfill Atrio statement and welcome letter document types.
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Specific.Boilerplate.SpecificPreProcess.#ctor(System.String[])">
+            <summary>
+            Constructor for boilerplate implementation class files, required by interface.
+            </summary>
+            <param name="files"></param>
+        </member>
+        <member name="P:BasicPreprocess.Specific.Boilerplate.SpecificPreProcess.Debug">
+            <summary>
+            Debug Log accessor/mutator, required by interface.
+            </summary>
+        </member>
+        <member name="P:BasicPreprocess.Specific.Boilerplate.SpecificPreProcess.Files">
+            <summary>
+            Filenames from zipped files.
+            <br>required by interface.</br>
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Specific.Boilerplate.SpecificPreProcess.SetDebug(System.String)">
+            <summary>
+            Set the location of the Debug Log
+            </summary>
+            <param name="filename">Filename of the zipFile of atrio documents to be processed.</param>
+        </member>
+        <member name="M:BasicPreprocess.Specific.Boilerplate.SpecificPreProcess.ProcessDocs(System.ValueTuple{BasicPreprocess.General.Containers.KeyedDocs{BasicPreprocess.Specific.InvoiceData},BasicPreprocess.General.Containers.KeyedDocs{BasicPreprocess.Specific.MemberRecord},BasicPreprocess.General.Containers.KeyedDocs{BasicPreprocess.Specific.BalFwdRecord}})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="atrioDocs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Specific.MergedStatementRecord.GetT(System.Collections.Generic.Dictionary{System.String,System.String},System.String[])">
+            <summary>
+            A method that calls a Constructor which takes a StringMap
+            <br>Satisfies interface <see cref="T:BasicPreprocess.General.Interfaces.iDocType_Takes_StringMap`1"/></br>
+            </summary>
+            <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
+            <param name="headers">The column headers</param>
+            <returns></returns>
+            <returns></returns>
+        </member>
+        <member name="T:BasicPreprocess.Specific.MemberRecord">
+            <summary>
+            Container for a primary unique keyed set of data reflecting Atrio's member records.
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Specific.MemberRecord.#ctor">
+            <summary>
+            Default constructor, with primary key string.
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Specific.MemberRecord.GetT(System.Collections.Generic.Dictionary{System.String,System.String},System.String[])">
+            <summary>
+            A method that calls a Constructor which takes a StringMap
+            <br>Satisfies interface <see cref="T:BasicPreprocess.General.Interfaces.iDocType_Takes_StringMap`1"/></br>
+            </summary>
+            <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
+            <param name="headers">The column headers</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Specific.MemberRecord.#ctor(System.Collections.Generic.Dictionary{System.String,System.String},System.String[])">
+            <summary>
+            Constructor that takes a StringMap and headers.
+            <br>Required by the GetT interface.</br>
+            <br><see cref="T:BasicPreprocess.General.Interfaces.iDocType_Takes_StringMap`1"/></br>
+            </summary>
+            <param name="memberFile">StringMap of a line of data</param>
+            <param name="headers">Headers of the data</param>
+        </member>
+        <member name="T:BasicPreprocess.Specific.BalFwdRecord">
+            <summary>
+            Container for a primary redundant keyed data set reflecting Atrio's balance forward records.
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Specific.BalFwdRecord.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Specific.BalFwdRecord.GetT(System.Collections.Generic.Dictionary{System.String,System.String},System.String[])">
+            <summary>
+            A method that calls a Constructor which takes a StringMap
+            <br>Satisfies interface <see cref="T:BasicPreprocess.General.Interfaces.iDocType_Takes_StringMap`1"/></br>
+            </summary>
+            <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
+            <param name="sirNotAppearingInThisFilm">A member which is unused in this implementation.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Specific.BalFwdRecord.#ctor(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Constructor, takes Stringmap -- not yet implemented.
+            </summary>
+            <param name="init"></param>
+        </member>
+        <member name="T:BasicPreprocess.Specific.InvoiceData">
+            <summary>
+            Container for a primary unique keyed data set reflecting Atrio's Statement File records.
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Specific.InvoiceData.#ctor(BasicPreprocess.Specific.InvoiceData)">
+            <summary>
+            Copy Constructor
+            </summary>
+            <param name="doc">Source document</param>
+        </member>
+        <member name="M:BasicPreprocess.Specific.InvoiceData.GetT(System.Collections.Generic.Dictionary{System.String,System.String},System.String[])">
+            <summary>
+            A method that calls a Constructor which takes a StringMap
+            <br>Satisfies interface <see cref="T:BasicPreprocess.General.Interfaces.iDocType_Takes_StringMap`1"/></br>
+            </summary>
+            <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
+            <param name="headers">A string of column headers</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Specific.InvoiceData.ParseM691(System.String[])">
+            <summary>
+            Get a List of statement document lines from an array of strings.
+            </summary>
+            <param name="lines">Array of text lines in the format specified by Atrio as a statement file.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Program.CheckFiles(System.String[])">
+            <summary>
+            Check number of files.
+            </summary>
+            <param name="files">string array of filenames.</param>
+        </member>
+        <member name="M:BasicPreprocess.Program.SetTempDir(System.String)">
+            <summary>
+            Implements ZipFiles._TempLocation with path for zipfiles to go.
+            <param>The filename to set the temp directory from.</param>
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Program.GetPreprocessorDefinitions">
+            <summary>
+            Input various values into implementation codes based on preprocessor definitions.
+            <br>Done this way to encapsulate customer requirements in preprocessor definitions.</br>
+            </summary>
+        </member>
+        <member name="M:BasicPreprocess.Program.PopulateDocs(System.String[])">
+            <summary>
+            Populate 
+            </summary>
+            <param name="files"></param>
+        </member>
+        <member name="M:BasicPreprocess.Program.IdentifyDoc(System.String)">
+            <summary>
+            return an enumeration of which file it is.
+            <br>Implementation Specific.</br>
+            </summary>
+            <param name="filename">Filename of the file in question.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BasicPreprocess.Program.ImportRows(System.String)">
+            <summary>
+            Imports a single file by row. Each string object in the list is 1 row in the file.
+            </summary>
+            <param name="fileName">The full path of the file to import</param>
+            <returns>A List of 1 string per row</returns>
+        </member>
+        <member name="M:BasicPreprocess.Program.ImportCSVWithHeader(System.String,System.String,System.Boolean,System.Collections.Generic.IList{System.String})">
+            <param name="headers">A preloaded set of headers -- optional.</param>
+            <returns>A List of Dictionary per row where KEY=Row1</returns>
+        </member>
+        <member name="M:BasicPreprocess.Program.ImportCSV(System.String,System.String,System.Boolean)">
+            <summary>
+            Imports a single file as a delimited file. The list is a collection of the delimited rows.
+            </summary>
+            <param name="fileName">The ful path of the file to import</param>
+            <param name="delimiter"></param>
+            <param name="useQuotes"></param>
+            <returns>A List of string[] per row</returns>
+        </member>
+        <member name="M:BasicPreprocess.Program.CleanUp">
+            <summary>
+            Clean up file IO artifacts. (Called on Program.cs Finally)
+            </summary>
+        </member>
+        <member name="T:DocType">
+            <summary>
+            Enumeration of Implementation-specific Document Types
+            </summary>
+        </member>
+        <member name="F:DocType.Statement">
+            <summary>
+            Client's Statement file
+            </summary>
+        </member>
+        <member name="F:DocType.Members">
+            <summary>
+            Client's's Member File
+            </summary>
+        </member>
+        <member name="F:DocType.BalanceForward">
+            <summary>
+            Client's Balance Forward file
+            </summary>
+        </member>
+        <member name="F:DocType.Error">
+            <summary>
+            Catch-all error enumeration.
+            </summary>
+        </member>
+    </members>
+</doc>

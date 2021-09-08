@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Globalization;
+using System.Data;
+using codemap.General.Containers;
 
 namespace BasicPreprocess.General.Containers
 {
@@ -12,8 +14,19 @@ namespace BasicPreprocess.General.Containers
     /// An abstract class for wrapping implementation-specific document types in easily accessible expectations of their contents.
     /// <br>See members for details.</br>
     /// </summary>
-    public abstract class BasicDoc
+    public abstract class BasicDoc : IBasicDoc
     {
+        /// <summary>
+        /// Data table where this doc's data row will go.
+        /// </summary>
+        public DataTable ParentTable { get; set; }
+        /// <summary>
+        /// Data row where this doc's fields will go.
+        /// </summary>
+        public DataRow DocRow { get; set; }
+
+        // needed? vvvv
+
         /// <summary>
         /// The name of the column which is the primary key for this class.
         /// </summary>
@@ -42,7 +55,6 @@ namespace BasicPreprocess.General.Containers
         /// </summary>
         /// <param name="headers">an array of column headers</param>
         /// <param name="primary">String of primary key.</param>
-        /// <param name="secondary">String of composite key's secondary column, if any.</param>
         /// <param name="keyIsUniqueIdentifier">Is the primary or composite key a unique identifier?
         /// <br>(Sometimes they're not.)</br></param>
         public BasicDoc(string[] headers, string primary, bool keyIsUniqueIdentifier = true)

@@ -48,30 +48,23 @@ namespace BasicPreprocess.Specific
         public MemberRecord(Dictionary<string, string> memberFile, string[] headers) 
             : base(headers, "Billing Account Number")
         {
-            // TO DO: check headers?
-
-            string firstName = memberFile["First Name"];
-            firstName = IsMissingValue(firstName) ? "" : $"{firstName} ";
-            string middleName = memberFile["Middle Name"];
-            middleName = IsMissingValue(middleName) ? "" : $"{middleName} ";
-            string lastName = FilterMissingValue(memberFile["Last Name"]);
-
-            address = new Address
-            {
-                name = $"{firstName}{lastName}",
-                line1 = FilterMissingValue(memberFile["Address1"]),
-                line2 = FilterMissingValue(memberFile["Address2"]),
-                city = FilterMissingValue(memberFile["City"]),
-                state = FilterMissingValue(memberFile["State"]),
-                zip = FilterMissingValue(memberFile["Zip"])
-            };
+            this.address = new Address
+                (firstName: FilterMissingValue(memberFile["First Name"]),
+                lastName: FilterMissingValue(memberFile["Last Name"]),
+                line1: FilterMissingValue(memberFile["Address1"]),
+                line2: FilterMissingValue(memberFile["Address2"]),
+                city: FilterMissingValue(memberFile["City"]),
+                state: FilterMissingValue(memberFile["State"]),
+                zip: FilterMissingValue(memberFile["Zip"]) );
             this.MemberID = memberFile["MemberID"];        // check this.
             this.BillingAcctNum = memberFile["Billing Account Number"]; // check this.
             this.PremiumWithhold = memberFile["Premium Withold"]; // check this.
         }
 
-        private static string FilterMissingValue(string s)
-    => IsMissingValue(s) ? "" : s;
+        private static string FilterMissingValue(string s, string alternative = "")
+    => IsMissingValue(s) ? 
+            (string.IsNullOrWhiteSpace(alternative) ? "" : alternative) :
+            s;
 
         private static bool IsMissingValue(string s)
             => s.Equals(MissingValueTag, StringComparison.InvariantCultureIgnoreCase);

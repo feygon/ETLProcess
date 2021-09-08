@@ -35,8 +35,7 @@ namespace BasicPreprocess.General.Containers
         public HeaderSource(StringMapList data, string[] headerStrings)
         {
             this.data = data;
-            IList<string> ilist = headerStrings; // assignment operator works on <IList> = <string[]>
-            this.headers = new List<string>(ilist);
+            this.headers = new List<string>(headerStrings.ToList());
         }
     }
 }
