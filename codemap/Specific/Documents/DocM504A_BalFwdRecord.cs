@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using BasicPreprocess.General.Interfaces;
 using BasicPreprocess.General.Containers;
+using codemap.General.Containers;
 
 namespace BasicPreprocess.Specific
 {
@@ -49,13 +50,11 @@ namespace BasicPreprocess.Specific
         /// <param name="stringMap">The stringmap to have turned into a Balance Forward record.</param>
         /// <param name="sirNotAppearingInThisFilm">A member which is unused in this implementation.</param>
         /// <returns></returns>
-        public BalFwdRecord GetT(StringMap stringMap, string[] sirNotAppearingInThisFilm = null)
-        {
-            return new BalFwdRecord(stringMap);
-        }
+        public BalFwdRecord GetT(StringMap stringMap, string[] sirNotAppearingInThisFilm = null) =>
+            new BalFwdRecord(stringMap);
 
         /// <summary>
-        /// Constructor, takes Stringmap -- not yet implemented.
+        /// Constructor, takes Stringmap.
         /// </summary>
         /// <param name="init"></param>
         public BalFwdRecord(StringMap init)

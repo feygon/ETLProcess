@@ -364,12 +364,10 @@ namespace BasicPreprocess
         /// <param name="fileName">The full path of the file to import</param>
         /// <param name="delimiter">What is the delimiting character? i.e. comma, pipe, tab, etc.</param>
         /// <param name="useQuotes">Are there quotes around values?</param>
-//        /// <param name="primaryKey">Primary key -- major index of composite if composite.</param>
         /// <param name="headers">A preloaded set of headers -- optional.</param>
         /// <returns>A List of Dictionary per row where KEY=Row1</returns>
         private static HeaderSource<List<StringMap>, List<string>> ImportCSVWithHeader(
             string fileName
-//            , string primaryKey
             , string delimiter
             , bool useQuotes
             , IList<string> headers = null)

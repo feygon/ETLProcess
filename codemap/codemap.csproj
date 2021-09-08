@@ -53,7 +53,11 @@
     <Compile Include="General\Containers\Auto_Incr_IntMap.cs" />
     <Compile Include="General\Containers\BasicDoc.cs" />
     <Compile Include="General\Containers\Date.cs" />
+    <Compile Include="General\Containers\DocTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="General\Containers\HeaderSource.cs" />
+    <Compile Include="General\Interfaces\IBasicDoc.cs" />
     <Compile Include="General\Containers\KeyColumns.cs" />
     <Compile Include="General\Containers\KeyedDocs.cs" />
     <Compile Include="General\Containers\_TKeyTypes.cs" />
