@@ -1,6 +1,7 @@
 Language: C# .Net Framework
-Techniques: LinQ to DataSet, XMLSerializer, CSV Parsing algorithms, SQLBulkCopy
-Design Patterns: Singleton, Component model, 
+Design Patterns: Singleton, Component model, Inversion of Control
+Techniques: LinQ to DataSet, XMLSerializer, CSV Parsing algorithms, SQLBulkCopy, Interfaces, Extension methods, Decoupling, Dependency Injection
+
 
 #ETLProcess
 This code contains a decoupled library of classes designed for generic implementation of specific ETL business requirements, accepting SQL data, XML, CSV, and flat files as input.
