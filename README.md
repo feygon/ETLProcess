@@ -1,5 +1,7 @@
 Language: C# .Net Framework
+
 Design Patterns: Singleton, Component model, Inversion of Control
+
 Techniques: LinQ to DataSet, XMLSerializer, CSV Parsing algorithms, SQLBulkCopy, Interfaces, Extension methods, Decoupling, Dependency Injection
 
 
