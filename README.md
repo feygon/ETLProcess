@@ -1,3 +1,7 @@
+Language: C# .Net Framework
+Techniques: LinQ to DataSet, XMLSerializer, CSV Parsing algorithms, SQLBulkCopy
+Design Patterns: Singleton, Component model, 
+
 #ETLProcess
 This code contains a decoupled library of classes designed for generic implementation of specific ETL business requirements, accepting SQL data, XML, CSV, and flat files as input.
 It utilizes Linq to Dataset for extraction and transformation, and exports data by XML Serialization or SQL Bulk Copy for reporting.
