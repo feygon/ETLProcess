@@ -17,7 +17,8 @@ working tree, replaced with fail-closed environment reads, and **purged from eve
 history** via `git filter-branch` across all branches and tags.
 
 Verified from a fresh clone: zero occurrences of the SMTP key, the SQL credentials, the internal
-server names, the UNC path, or any `Sample@ETLP.sample.com` address across all 39 commits.
+server names, the UNC path, any former-employer email address, the former employer's name, or the
+former client's name — across all 39 commits on every branch and tag.
 
 **One thing still needs a human at a console:**
 
@@ -60,8 +61,8 @@ That is the lesson worth keeping: sanitizing one copy of a duplicated tree is no
 - `MailAddress` literals now read `ETLP_SMTP_FROM`.
 - Processor-side addresses replaced with `Sample@ETLP.sample.com`; the external/client
   placeholder is `Sample@GPHealth.sample.com`. Both belong in `.env`, not in source.
-- The former employer's name was replaced throughout with `ETLP`, including the `ETLPEmail`
-  class, which is now `ETLPEmail`.
+- The former employer's name was replaced throughout with `ETLP`, in XML doc comments and in the
+  email class, which is now named `ETLPEmail`.
 - The former client name was replaced throughout with the neutral placeholder `GPHealth`.
 - Added `.env.example` and a `.gitignore` that excludes `.env` while keeping `.env.example`.
 
@@ -109,8 +110,19 @@ Two caveats that a rewrite does not fix:
 ### Second pass — employer name removed
 
 A follow-up rewrite (same day) removed the former employer's name entirely, at the owner's
-direction. `ETLPEmail` became `ETLPEmail`; `ETLP`, `ETLP`, and `ETLP`
-in XML doc comments and namespaces all became `ETLP`.
+direction. All spelling variants — spaced, unspaced, lowercase, and the `…Email` class name —
+now read `ETLP` / `ETLPEmail` throughout code and history.
+
+Note for anyone editing this file: it is itself subject to the scrub. Earlier passes rewrote
+this document's own prose into nonsense ("X became X"), because the filter cannot distinguish a
+secret from a description of that secret. Describe what was removed in the abstract; do not
+quote the removed strings.
+
+**Deliberately kept:** `DocGen` (the commercial statement-processing platform), including
+`DocGenConnection` and the `ProprietaryStack.dbo` schema references. It is a third-party product name rather
+than a client or employer identifier, and it appears on the owner's public résumé. Removing it
+would break the semantics of the connection property for no confidentiality gain. Revisit if the
+combination of product, industry, and region is judged too identifying.
 
 The first pass had deliberately left the company name in place on the reasoning that it is
 provenance rather than a secret, and appears on the owner's public résumé. The owner's call
