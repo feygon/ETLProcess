@@ -1,4 +1,4 @@
-﻿#define Statement
+#define Statement
 
 using System;
 using System.Diagnostics;

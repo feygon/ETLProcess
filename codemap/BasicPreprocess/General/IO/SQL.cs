@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -8,7 +8,7 @@ namespace BasicPreprocess
     internal static class SQL
     {
         internal static SqlConnection DocGenConnection { get; } =
-            new SqlConnection(@"Data Source=SERVER\INSTANCE;Initial Catalog=DATABASE;Integrated Security=True;");
+            new SqlConnection(Env("ETLP_SQL_CONNECTION"));
 
         /// <summary>
         /// Queries a SQL server and executes a command, returning a DataTable of the results or null in case of an error. 
@@ -92,5 +92,14 @@ namespace BasicPreprocess
             command.Connection.Close();
             return res;
         }
-    }
+    
+        /// <summary>
+        /// Reads a required setting from the environment. Fails closed: no defaults,
+        /// no fallbacks, no secrets in source. See .env.example for the required keys.
+        /// </summary>
+        private static string Env(string key) =>
+            System.Environment.GetEnvironmentVariable(key)
+            ?? throw new System.InvalidOperationException(
+                $"Missing required environment variable '{key}'. See .env.example.");
+}
 }

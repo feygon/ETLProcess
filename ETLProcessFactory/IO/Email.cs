@@ -12,10 +12,10 @@ namespace ETLProcess
 	/// </summary>
 	internal sealed class CompanyEmail
 	{
-        private const string smtpUser = @"Username";
-        private const string smtpPassword = @"SuperSecretPassword_!";
-        private const int smtpPort = 12345;
-        private const string smtpHost = @"smtp.hostname.com";
+        private static readonly string smtpUser = Env("ETLP_SMTP_USER");
+        private static readonly string smtpPassword = Env("ETLP_SMTP_PASSWORD");
+        private static readonly int smtpPort = int.Parse(Env("ETLP_SMTP_PORT"), System.Globalization.CultureInfo.InvariantCulture);
+        private static readonly string smtpHost = Env("ETLP_SMTP_HOST");
 
         private static SmtpClient client;
 
@@ -58,8 +58,8 @@ namespace ETLProcess
         {
             using var mailMessage = new MailMessage()
             {
-                Sender = new MailAddress(@"Sample@ETLP.sample.com"),
-                From = new MailAddress(@"Sample@ETLP.sample.com"),
+                Sender = new MailAddress(Env("ETLP_SMTP_FROM")),
+                From = new MailAddress(Env("ETLP_SMTP_FROM")),
                 Subject = Subject,
                 Body = Body,
                 IsBodyHtml = IsBodyHtml
@@ -78,5 +78,14 @@ namespace ETLProcess
             }
             client.Send(mailMessage);
         }
-	}
+	
+        /// <summary>
+        /// Reads a required setting from the environment. Fails closed: no defaults,
+        /// no fallbacks, no secrets in source. See .env.example for the required keys.
+        /// </summary>
+        private static string Env(string key) =>
+            System.Environment.GetEnvironmentVariable(key)
+            ?? throw new System.InvalidOperationException(
+                $"Missing required environment variable '{key}'. See .env.example.");
+}
 }

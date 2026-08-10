@@ -1,0 +1,15 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Build output
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+.vs/
+
+# Vendored NuGet packages (packages.config era).
+# Currently still tracked; see docs/SECRETS-REMEDIATION.md for the cleanup note.
+# packages/
