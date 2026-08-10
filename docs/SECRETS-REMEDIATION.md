@@ -8,17 +8,22 @@ tags: [secrets, credentials, remediation, env]
 
 # 🔑 ETLProcess — Secrets Remediation
 
-**Status:** 🟡 Working tree cleaned · **git history still contains the secrets**
+**Status:** 🟢 Working tree cleaned · **history rewritten and force-pushed 2026-08-09**
 
 ## TLDR
 
 Live credentials were hardcoded in this public repository. They have been removed from the
-working tree and replaced with fail-closed environment reads.
+working tree, replaced with fail-closed environment reads, and **purged from every commit in
+history** via `git filter-branch` across all branches and tags.
 
-**Two things still need a human at a console:**
+Verified from a fresh clone: zero occurrences of the SMTP key, the SQL credentials, the internal
+server names, the UNC path, or any `Sample@ETLP.sample.com` address across all 39 commits.
 
-1. Create a local `.env` from `.env.example` (the code will not run without it).
-2. Decide what to do about git history, which still contains every secret below.
+**One thing still needs a human at a console:**
+
+1. Create a local `.env` from `.env.example` — the code will not run without it.
+
+**One thing is outside our control:** see [After the rewrite](#after-the-rewrite).
 
 ## Contents
 
@@ -35,7 +40,7 @@ All of this was public, in a repository pinned to the owner's GitHub profile.
 
 | Secret | Where | Severity |
 |---|---|---|
-| Mandrill SMTP API key `REDACTED_SMTP_KEY` | `codemap/General/IO/Email.cs`, `codemap/BasicPreprocess/General/IO/Email.cs` | 🔴 Live third-party service credential |
+| Mandrill SMTP API key (22-char, redacted) | `codemap/General/IO/Email.cs`, `codemap/BasicPreprocess/General/IO/Email.cs` | 🔴 Live third-party service credential |
 | SQL credentials `User id=REDACTED;Password=REDACTED` | `codemap/General/IO/SQL.cs`, `codemap/BasicPreprocess/General/IO/SQL.cs` | 🔴 Username and password, identical to each other |
 | Server names `SERVER\INSTANCE`, `DATABASE` | same files | 🟠 Internal infrastructure disclosure |
 | UNC path `\\SERVER\SUBMIT\prt\` | `codemap/Specific/Program.cs`, `codemap/BasicPreprocess/Specific/Program.cs` | 🟠 Internal infrastructure disclosure |
@@ -76,24 +81,32 @@ Then fill in `.env`:
 ⚠️ .NET Framework does not load `.env` files natively. Either set these as real environment
 variables, or add a loader. **Do not** reintroduce a config file that gets committed.
 
-## History is not clean
+## After the rewrite
 
-Removing a secret from the working tree does not remove it from git. Every credential above is
-still retrievable from this repository's history by anyone who clones it.
+**Done, 2026-08-09.** History was rewritten with `git filter-branch --tree-filter` across all
+refs and force-pushed. `master`, `Library`, and both tags (`v1.0.1alpha`, `v1.1.1alphaStable`)
+were rewritten. A backup bundle of the pre-rewrite state is at
+`D:\Repos\ETLProcess-BACKUP-2026-08-09.bundle` — **that bundle still contains every secret**, so
+it is local-only and must never be published.
 
-Options, roughly in order of effort:
+`git-filter-repo` was not used: it is not installed, and adding a dependency mid-remediation
+would have violated this project's own supply-chain rule. `filter-branch` is built into git and
+is entirely adequate for 39 commits.
 
-1. **Treat as compromised.** The Mandrill key and the SQL account belong to a former employer.
-   The genuinely responsible move is to notify ETLP so they can rotate, regardless of
-   what happens to this repo. These are likely long dead, but "likely" is not "verified."
-2. **Rewrite history** with `git filter-repo` and force-push. Effective, but rewrites every
-   commit hash in a public repo.
-3. **Delete and recreate the repository** from the cleaned tree, losing history entirely. For a
-   portfolio case study, the history has little value — this is the cheapest complete fix.
+Two caveats that a rewrite does not fix:
 
-**Until one of these happens, this repo should probably not be pinned to a profile that
-advertises supply-chain hardening.** The contradiction is the risk, more than the dead
-credential.
+1. **GitHub retains unreferenced objects.** After a force-push, old commits can remain reachable
+   by direct SHA URL until GitHub garbage-collects, and forks or clones taken before the rewrite
+   are unaffected. To force server-side cleanup, open a GitHub Support request asking them to run
+   `gc` on the repository.
+2. **The credentials should still be treated as compromised.** They were public for years. The
+   Mandrill key and the SQL account belong to a former employer, so the responsible step —
+   independent of this repo — is to let ETLP know they should rotate. "Probably long
+   dead" is not "verified dead."
+
+What deliberately was **not** scrubbed: the company name in XML doc comments ("Sends an email
+using ETLP Inc Email Mandrill service"). ETLP appears on the owner's public
+résumé; the company name is provenance, not a secret. Zero `Sample@ETLP.sample.com` addresses remain.
 
 ## Still outstanding
 
