@@ -58,8 +58,10 @@ That is the lesson worth keeping: sanitizing one copy of a duplicated tree is no
   private `Env(string key)` helper that **throws** when a key is absent. No defaults, no
   fallbacks — a missing key is a loud failure, not a silent bad connection.
 - `MailAddress` literals now read `ETLP_SMTP_FROM`.
-- ETLP addresses replaced with `Sample@ETLP.sample.com`; the external/client
+- Processor-side addresses replaced with `Sample@ETLP.sample.com`; the external/client
   placeholder is `Sample@GPHealth.sample.com`. Both belong in `.env`, not in source.
+- The former employer's name was replaced throughout with `ETLP`, including the `ETLPEmail`
+  class, which is now `ETLPEmail`.
 - The former client name was replaced throughout with the neutral placeholder `GPHealth`.
 - Added `.env.example` and a `.gitignore` that excludes `.env` while keeping `.env.example`.
 
@@ -101,12 +103,19 @@ Two caveats that a rewrite does not fix:
    `gc` on the repository.
 2. **The credentials should still be treated as compromised.** They were public for years. The
    Mandrill key and the SQL account belong to a former employer, so the responsible step —
-   independent of this repo — is to let ETLP know they should rotate. "Probably long
-   dead" is not "verified dead."
+   independent of this repo — is to notify them so they can rotate. "Probably long dead" is not
+   "verified dead."
 
-What deliberately was **not** scrubbed: the company name in XML doc comments ("Sends an email
-using ETLP Inc Email Mandrill service"). ETLP appears on the owner's public
-résumé; the company name is provenance, not a secret. Zero `Sample@ETLP.sample.com` addresses remain.
+### Second pass — employer name removed
+
+A follow-up rewrite (same day) removed the former employer's name entirely, at the owner's
+direction. `ETLPEmail` became `ETLPEmail`; `ETLP`, `ETLP`, and `ETLP`
+in XML doc comments and namespaces all became `ETLP`.
+
+The first pass had deliberately left the company name in place on the reasoning that it is
+provenance rather than a secret, and appears on the owner's public résumé. The owner's call
+overrode that, and it is the more defensible position: a portfolio artifact does not need to
+name the client whose production system it describes, and the code reads no worse for it.
 
 ## Still outstanding
 
