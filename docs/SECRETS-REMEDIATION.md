@@ -118,11 +118,21 @@ this document's own prose into nonsense ("X became X"), because the filter canno
 secret from a description of that secret. Describe what was removed in the abstract; do not
 quote the removed strings.
 
-**Deliberately kept:** `DocGen` (the commercial statement-processing platform), including
-`DocGenConnection` and the `ProprietaryStack.dbo` schema references. It is a third-party product name rather
-than a client or employer identifier, and it appears on the owner's public résumé. Removing it
-would break the semantics of the connection property for no confidentiality gain. Revisit if the
-combination of product, industry, and region is judged too identifying.
+### Third pass — vendor platform name removed
+
+The commercial statement-processing platform was initially kept, on the reasoning that a
+third-party product name is not a client identifier. That was revisited: product + industry +
+region together are identifying enough, and the demo has no dependency on that platform anyway.
+
+- `DocGenConnection` → `DocGenConnection`
+- `ProprietaryStack.dbo.Submissions` / `ProprietaryStack.dbo.Documents` → `ProprietaryStack.dbo.*`
+- `docGenWebAccounts` → `docGenWebAccounts`, and remaining comment references → `DocGen`
+
+**Verified dead before renaming.** `GetGPHealthAccounts` is the sole consumer of the connection
+property, and its only call site is commented out in both copies of the tree
+(`// using DataTable docGenWebAccounts = GetGPHealthAccounts.Execute();`). `docGenWebAccounts`
+appears exclusively inside commented blocks. These are live declarations on a dead path — the
+rename cannot break a working code path because there is no working code path.
 
 The first pass had deliberately left the company name in place on the reasoning that it is
 provenance rather than a secret, and appears on the owner's public résumé. The owner's call
