@@ -124,9 +124,10 @@ The commercial statement-processing platform was initially kept, on the reasonin
 third-party product name is not a client identifier. That was revisited: product + industry +
 region together are identifying enough, and the demo has no dependency on that platform anyway.
 
-- `DocGenConnection` → `DocGenConnection`
-- `ProprietaryStack.dbo.Submissions` / `ProprietaryStack.dbo.Documents` → `ProprietaryStack.dbo.*`
-- `docGenWebAccounts` → `docGenWebAccounts`, and remaining comment references → `DocGen`
+The connection property is now `DocGenConnection`, the schema references are now
+`ProprietaryStack.dbo.*`, the local DataTable is now `docGenWebAccounts`, and remaining comment
+references read `DocGen`. (Per the note above: the prior names are deliberately not quoted here,
+because this file is itself subject to the filter.)
 
 **Verified dead before renaming.** `GetGPHealthAccounts` is the sole consumer of the connection
 property, and its only call site is commented out in both copies of the tree
